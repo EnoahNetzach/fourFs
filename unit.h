@@ -14,7 +14,7 @@ namespace FourFs
 class Unit
 {
 public:
-   Unit();
+   explicit Unit();
    ~Unit();
 
    const unsigned & longevity() const;

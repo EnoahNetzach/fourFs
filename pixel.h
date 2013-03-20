@@ -14,7 +14,7 @@ namespace FourFs
 class Pixel
 {
 public:
-   Pixel();
+   explicit Pixel();
    ~Pixel();
 
    const unsigned & position() const;
