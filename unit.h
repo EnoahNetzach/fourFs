@@ -11,15 +11,18 @@
 namespace FourFs
 {
 
+class State;
+
 class Unit
 {
 public:
-   explicit Unit();
+   explicit Unit(State & linkedState);
    ~Unit();
 
    const unsigned & longevity() const;
    const unsigned & fertility() const;
    const unsigned & belligerance() const;
+   const State & linkedState() const;
 
 protected:
 
@@ -31,6 +34,7 @@ private:
    double m_belligerance;
    // TODO m_linkedPixels [&]
    // TODO m_linkedState [&]
+   State * m_linkedState;
 
 };
 

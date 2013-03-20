@@ -7,12 +7,14 @@
 
 #include "unit.h"
 
+#include "state.h"
+
 using namespace FourFs;
 
-Unit::Unit()
+Unit::Unit(State & linkedState)
+   : m_linkedState(& linkedState)
 {
    // TODO Auto-generated constructor stub
-
 }
 
 Unit::~Unit()
@@ -33,4 +35,9 @@ const unsigned & Unit::fertility () const
 const unsigned & Unit::belligerance () const
 {
    return m_belligerance;
+}
+
+const State & Unit::linkedState() const
+{
+   return * m_linkedState;
 }

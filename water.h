@@ -18,6 +18,10 @@ class Water : public virtual Environment
 public:
    Water();
    ~Water();
+
+protected:
+
+private:
 };
 
 } /* namespace FourFs */
