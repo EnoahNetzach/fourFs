@@ -9,6 +9,7 @@
 
 int main(int argc, char * argv[])
 {
-	return 0;
+   std::cout << 42 << std::endl;
+   return 0;
 }
 
