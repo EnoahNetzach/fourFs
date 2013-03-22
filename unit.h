@@ -15,6 +15,7 @@
 namespace FourFs
 {
 
+class Pixel;
 class State;
 
 class Unit

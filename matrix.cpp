@@ -96,5 +96,4 @@ void Matrix::print() const
       std::cout << "\n";
    }
    std::cout << std::flush;
-
 }
