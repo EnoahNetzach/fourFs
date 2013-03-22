@@ -8,6 +8,8 @@
 #ifndef fourFs_STATE_H_
 #define fourFs_STATE_H_
 
+#include <list>
+
 namespace FourFs
 {
 
@@ -22,7 +24,7 @@ public:
 protected:
 
 private:
-   // TODO m_linkedUnits [&]
+   std::list< Unit & > m_linkedUnits;
 };
 
 } /* namespace FourFs */

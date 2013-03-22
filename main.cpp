@@ -17,6 +17,7 @@ int main(int argc, char * argv[])
 
    Unit unit(state);
 
+	int a=0;
 	return 0;
 }
 
