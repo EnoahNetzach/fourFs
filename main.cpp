@@ -7,17 +7,33 @@
 
 #include <iostream>
 
-#include "unit.cpp"
+#include "matrix.h"
+#include "pixel.h"
 #include "state.h"
+#include "unit.h"
+#include "utilities.hpp"
+
+using namespace FourFs;
 
 int main(int argc, char * argv[])
 {
-   State state;
-   state.test = 42;
+   Matrix matrix(20, 20);
 
-   Unit unit(state);
+   Unit unit1, unit2;
 
-	int a=0;
+   pixelsList area1 = matrix.pixelsAroundPosition(3, 14);
+   pixelsList area2 = matrix.pixelsAroundPosition(15, 2);
+
+   pixelsIterator it;
+   for (it = area1.begin(); it != area1.end(); ++it)
+   {
+//      unit1.addPixel(* it); // TODO resolve
+   }
+   for (it = area2.begin(); it != area2.end(); ++it)
+   {
+//      unit2.addPixel(* it); // TODO resolve
+   }
+
 	return 0;
 }
 

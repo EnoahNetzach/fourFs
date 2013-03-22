@@ -8,25 +8,34 @@
 #ifndef fourFs_PIXEL_H_
 #define fourFs_PIXEL_H_
 
+#include "utilities.hpp"
+
 namespace FourFs
 {
+
+class Unit;
 
 class Pixel
 {
 public:
-   explicit Pixel();
+   explicit Pixel(unsigned index);
    ~Pixel();
 
-   const unsigned & position() const;
+   unsigned test;
+
+   unsigned index() const;
    bool isBorder() const;
+   void addUnit(const Unit & unit);
+   bool removeUnit(const Unit & unit);
+   unitsList units();
 
 protected:
 
 private:
-   unsigned m_position;
+   unsigned m_index;
    bool m_border;
-   // TODO m_linkedEnvironment [&]
-   // TODO m_linkedUnits [&]
+   // TODO m_environment [&]
+   unitsList m_units;
 };
 
 } /* namespace FourFs */

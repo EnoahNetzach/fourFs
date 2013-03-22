@@ -9,9 +9,9 @@
 
 using namespace FourFs;
 
-Pixel::Pixel()
+Pixel::Pixel(unsigned index)
+   : m_index(index)
 {
-   // TODO Auto-generated constructor stub
 
 }
 
@@ -20,12 +20,40 @@ Pixel::~Pixel()
    // TODO Auto-generated destructor stub
 }
 
-const unsigned & Pixel::position () const
+unsigned Pixel::index () const
 {
-   return m_position;
+   return m_index;
 }
 
 bool Pixel::isBorder() const
 {
    return m_border;
+}
+
+void Pixel::addUnit(const Unit & unit)
+{
+   m_units.push_back(& unit);
+}
+
+bool Pixel::removeUnit(const Unit & unit)
+{
+   bool found = false;
+   unitsIterator it;
+
+   for (it = m_units.begin(); it != m_units.end(); ++it)
+   {
+      if ((* it) == & unit)
+      {
+         found = true;
+         m_units.erase(it);
+         break;
+      }
+   }
+
+   return found;
+}
+
+unitsList Pixel::units()
+{
+   return m_units;
 }

@@ -8,9 +8,10 @@
 #ifndef fourFs_MATRIX_H_
 #define fourFs_MATRIX_H_
 
-#include <boost/container/flat_map.hpp>
+#include <vector>
 
 #include "pixel.h"
+#include "utilities.hpp"
 
 namespace FourFs
 {
@@ -18,13 +19,26 @@ namespace FourFs
 class Matrix
 {
 public:
-   Matrix();
+   Matrix(unsigned width, unsigned height);
    ~Matrix();
+
+   unsigned indexFromPosition(unsigned x, unsigned y) const;
+   std::pair< unsigned, unsigned > positionFromIndex(unsigned index) const;
+   unsigned height() const;
+   unsigned width() const;
+   Pixel & pixelAtIndex(unsigned index);
+   Pixel & pixelAtPosition(unsigned x, unsigned y);
+   pixelsList pixelsAroundIndex(unsigned index);
+   pixelsList pixelsAroundPosition(unsigned x, unsigned y);
+
+   void print() const;
 
 protected:
 
 private:
-   boost::container::flat_map< unsigned, Pixel * > m_pixels;
+   unsigned m_height;
+   unsigned m_width;
+   std::vector< Pixel * > m_pixels;
 };
 
 } /* namespace FourFs */

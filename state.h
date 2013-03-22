@@ -8,15 +8,13 @@
 #ifndef fourFs_STATE_H_
 #define fourFs_STATE_H_
 
-#include <list>
-
 namespace FourFs
 {
 
 class State
 {
 public:
-   State();
+   explicit State();
    ~State();
 
    unsigned test;
@@ -24,7 +22,7 @@ public:
 protected:
 
 private:
-   std::list< Unit & > m_linkedUnits;
+   // TODO m_units [&]
 };
 
 } /* namespace FourFs */

@@ -7,12 +7,12 @@
 
 #include "unit.h"
 
+#include "pixel.h"
 #include "state.h"
 
 using namespace FourFs;
 
-Unit::Unit(State & linkedState)
-   : m_linkedState(& linkedState)
+Unit::Unit()
 {
    // TODO Auto-generated constructor stub
 }
@@ -22,22 +22,65 @@ Unit::~Unit()
    // TODO Auto-generated destructor stub
 }
 
-const unsigned & Unit::longevity () const
+unsigned Unit::longevity () const
 {
    return m_longevity;
 }
 
-const unsigned & Unit::fertility () const
+unsigned Unit::fertility () const
 {
    return m_fertility;
 }
 
-const unsigned & Unit::belligerance () const
+unsigned Unit::belligerance () const
 {
    return m_belligerance;
 }
 
-const State & Unit::linkedState() const
+void Unit::addPixel(const Pixel & pixel)
 {
-   return * m_linkedState;
+   m_pixels.push_back(& pixel);
+}
+
+bool Unit::removePixel(const Pixel & pixel)
+{
+   bool found = false;
+   pixelsIterator it;
+
+   for (it = m_pixels.begin(); it != m_pixels.end(); ++it)
+   {
+      if ((* it) == & pixel)
+      {
+         found = true;
+         m_pixels.erase(it);
+         break;
+      }
+   }
+
+   return found;
+}
+
+void Unit::clearPixels()
+{
+   m_pixels.clear();
+}
+
+pixelsConstIterator Unit::pixelsBegin() const
+{
+   return m_pixels.begin();
+}
+
+pixelsConstIterator Unit::pixelsEnd() const
+{
+   return m_pixels.end();
+}
+
+State & Unit::state()
+{
+   return * m_state;
+}
+
+const State & Unit::state() const
+{
+   return * m_state;
 }
