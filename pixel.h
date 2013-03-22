@@ -14,19 +14,21 @@ namespace FourFs
 class Pixel
 {
 public:
-   explicit Pixel();
+   explicit Pixel(unsigned index);
    ~Pixel();
 
-   const unsigned & position() const;
+   unsigned test;
+
+   unsigned index() const;
    bool isBorder() const;
 
 protected:
 
 private:
-   unsigned m_position;
+   unsigned m_index;
    bool m_border;
-   // TODO m_linkedEnvironment [&]
-   // TODO m_linkedUnits [&]
+   // TODO m_environment [&]
+   // TODO m_units [&]
 };
 
 } /* namespace FourFs */

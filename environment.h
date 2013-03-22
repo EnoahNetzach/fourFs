@@ -20,7 +20,7 @@ public:
 protected:
 
 private:
-   // TODO m_linkedPixels [&]
+   // TODO m_pixels [&]
 };
 
 } /* namespace FourFs */

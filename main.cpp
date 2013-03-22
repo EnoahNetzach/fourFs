@@ -7,17 +7,31 @@
 
 #include <iostream>
 
-#include "unit.cpp"
+#include "matrix.h"
+#include "pixel.h"
 #include "state.h"
+#include "unit.h"
+
+using namespace FourFs;
 
 int main(int argc, char * argv[])
 {
-   State state;
-   state.test = 42;
+   Unit unit;
 
-   Unit unit(state);
+   for (unsigned i = 0; i < 10; ++i)
+   {
+      Pixel * p = new Pixel(i);
+      p->test = i;
 
-	int a=0;
+      unit.addPixel(* p);
+   }
+
+   Unit::pixelsIterator it;
+   for (it = unit.pixelsBegin(); it != unit.pixelsEnd(); ++it)
+   {
+      std::cout << (* it)->test << std::endl;
+   }
+
 	return 0;
 }
 

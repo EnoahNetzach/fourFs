@@ -9,7 +9,8 @@
 
 using namespace FourFs;
 
-Pixel::Pixel()
+Pixel::Pixel(unsigned index)
+   : m_index(index)
 {
    // TODO Auto-generated constructor stub
 
@@ -20,9 +21,9 @@ Pixel::~Pixel()
    // TODO Auto-generated destructor stub
 }
 
-const unsigned & Pixel::position () const
+unsigned Pixel::index () const
 {
-   return m_position;
+   return m_index;
 }
 
 bool Pixel::isBorder() const
