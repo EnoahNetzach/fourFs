@@ -21,7 +21,7 @@ int main(int argc, char * argv[])
 
    Unit unit1, unit2;
 
-   pixelsList area1 = matrix.pixelsAroundPosition(3, 14);
+   pixelsList area1 = matrix.pixelsAroundPosition(6, 14);
    pixelsList area2 = matrix.pixelsAroundPosition(15, 2);
 
    pixelsIterator it;
