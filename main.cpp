@@ -17,13 +17,14 @@ using namespace FourFs;
 
 int main(int argc, char * argv[])
 {
-   Matrix matrix(20, 20);
+   Matrix matrix(50, 19);
 
-   Unit unit1, unit2, unit3;
+   Unit unit1, unit2, unit3, unit4;
 
-   pixelsList area1 = matrix.pixelsAroundPosition(6, 14);
-   pixelsList area2 = matrix.pixelsAroundPosition(15, 2);
+   pixelsList area1 = matrix.pixelsAroundPosition(42, 2);
+   pixelsList area2 = matrix.pixelsAroundPosition(15, 13);
    pixelsList area3 = matrix.pixelsAroundPosition(0, 1);
+   pixelsList area4 = matrix.pixelsAroundPosition(41, 4);
 
    pixelsIterator it;
    for (it = area1.begin(); it != area1.end(); ++it)
@@ -40,6 +41,11 @@ int main(int argc, char * argv[])
    {
       unit3.addPixel(** it);
       (* it)->addUnit(unit3);
+   }
+   for (it = area4.begin(); it != area4.end(); ++it)
+   {
+      unit4.addPixel(** it);
+      (* it)->addUnit(unit4);
    }
 
    matrix.print();

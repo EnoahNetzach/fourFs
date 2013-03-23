@@ -35,6 +35,11 @@ bool Pixel::isEmpty() const
    return m_units.empty();
 }
 
+bool Pixel::isUnique() const
+{
+   return m_units.size() <= 1;
+}
+
 void Pixel::addUnit(Unit & unit)
 {
    m_units.push_back(& unit);

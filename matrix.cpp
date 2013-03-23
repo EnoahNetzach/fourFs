@@ -100,7 +100,20 @@ void Matrix::print() const
    {
       for (unsigned x = 0; x < m_width; x++)
       {
-         std::cout << (m_pixels.at(indexFromPosition(x, y))->isEmpty() ? ". " : "+ ");
+         char c;
+         if (m_pixels.at(indexFromPosition(x, y))->isEmpty())
+         {
+            c = '.';
+         }
+         else if (m_pixels.at(indexFromPosition(x, y))->isUnique())
+         {
+            c = '+';
+         }
+         else
+         {
+            c = 'o';
+         }
+         std::cout << c << " ";
       }
       std::cout << "\n";
    }
