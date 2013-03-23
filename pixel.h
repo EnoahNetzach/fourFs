@@ -22,6 +22,8 @@ public:
    unsigned test;
 
    unsigned index() const;
+   double & vivibility();
+   const double & vivibility() const;
    bool isBorder() const;
    Environment & environment();
    const Environment & environment() const;
@@ -37,6 +39,7 @@ protected:
 
 private:
    unsigned m_index;
+   double m_vivibility;
    bool m_border;
    Environment * m_environment;
    unitsList m_units;

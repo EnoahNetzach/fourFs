@@ -19,11 +19,16 @@ class Environment;
 class Matrix;
 class Pixel;
 class State;
+class Terrain;
 class Unit;
 
 typedef std::list< Pixel * > pixelsList;
 typedef pixelsList::iterator pixelsIterator;
 typedef pixelsList::const_iterator pixelsConstIterator;
+
+typedef std::list< const Pixel * > constPixelsList;
+typedef constPixelsList::iterator constPixelsIterator;
+typedef constPixelsList::const_iterator constPixelsConstIterator;
 
 typedef std::list< Unit * > unitsList;
 typedef unitsList::iterator unitsIterator;

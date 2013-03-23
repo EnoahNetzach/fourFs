@@ -31,17 +31,17 @@ Unit::~Unit()
 {
 }
 
-double Unit::longevity () const
+const double & Unit::longevity () const
 {
    return m_longevity;
 }
 
-double Unit::fertility () const
+const double & Unit::fertility () const
 {
    return m_fertility;
 }
 
-double Unit::belligerance () const
+const double & Unit::belligerance () const
 {
    return m_belligerance;
 }

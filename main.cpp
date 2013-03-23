@@ -10,6 +10,7 @@
 #include "matrix.h"
 #include "pixel.h"
 #include "state.h"
+#include "terrain.h"
 #include "unit.h"
 #include "utilities.hpp"
 
@@ -17,7 +18,8 @@ using namespace FourFs;
 
 int main(int argc, char * argv[])
 {
-   Matrix matrix(50, 19);
+   Terrain terrain(50, 19);
+   Matrix & matrix = terrain.matrix();
 
    Unit unit1, unit2, unit3, unit4;
 
@@ -48,8 +50,7 @@ int main(int argc, char * argv[])
       (* it)->addUnit(unit4);
    }
 
-   matrix.print();
+   terrain.show();
 
 	return 0;
 }
-

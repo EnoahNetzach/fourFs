@@ -23,9 +23,9 @@ public:
 
    static unsigned radius();
    static unsigned fieldOfView();
-   double longevity() const;
-   double fertility() const;
-   double belligerance() const;
+   const double & longevity() const;
+   const double & fertility() const;
+   const double & belligerance() const;
    void addPixel(Pixel & pixel);
    bool removePixel(Pixel & pixel);
    void clearPixels();

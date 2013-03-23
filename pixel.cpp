@@ -28,6 +28,16 @@ unsigned Pixel::index () const
    return m_index;
 }
 
+double & Pixel::vivibility()
+{
+   return m_vivibility;
+}
+
+const double & Pixel::vivibility() const
+{
+   return m_vivibility;
+}
+
 bool Pixel::isBorder() const
 {
    return m_border;

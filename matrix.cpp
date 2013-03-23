@@ -71,7 +71,17 @@ Pixel & Matrix::pixelAtIndex(unsigned index)
    return * m_pixels.at(index);
 }
 
+const Pixel & Matrix::pixelAtIndex(unsigned index) const
+{
+   return * m_pixels.at(index);
+}
+
 Pixel & Matrix::pixelAtPosition(unsigned x, unsigned y)
+{
+   return pixelAtIndex(indexFromPosition(x, y));
+}
+
+const Pixel & Matrix::pixelAtPosition(unsigned x, unsigned y) const
 {
    return pixelAtIndex(indexFromPosition(x, y));
 }
@@ -83,9 +93,13 @@ pixelsList Matrix::pixelsAroundIndex(unsigned index)
    return pixelsAroundPosition(pos.first, pos.second);
 }
 
-/*
- * return a square of pixels around given (x, y), so (x+-r, y+-r)
- */
+const constPixelsList Matrix::pixelsAroundIndex(unsigned index) const
+{
+   std::pair< unsigned, unsigned > pos = positionFromIndex(index);
+
+   return pixelsAroundPosition(pos.first, pos.second);
+}
+
 pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y)
 {
    pixelsList pixels;
@@ -105,29 +119,21 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y)
    return pixels;
 }
 
-/*
- * debug pourpose
- */
-void Matrix::print() const
+const constPixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y) const
 {
-   for (unsigned y = 0; y < m_height; y++)
-   {
-      for (unsigned x = 0; x < m_width; x++)
-      {
-         Pixel & pixel = * m_pixels.at(indexFromPosition(x, y));
+   constPixelsList pixels;
 
-         char c;
-         if (pixel.isUnitsEmpty())
-         {
-            c = 'á';
-         }
-         else
-         {
-            c = 48 + pixel.nOfUnits();
-         }
-         std::cout << c << " ";
+   for (int x1 = std::max(0, int(x) - int(Unit::radius()));
+        x1 <= std::min(int(m_width), int(x) + int(Unit::radius()));
+        x1++)
+   {
+      for (int y1 = std::max(0, int(y) - int(Unit::radius()));
+           y1 <= std::min(int(m_height), int(y) + int(Unit::radius()));
+           y1++)
+      {
+         pixels.push_back(& pixelAtPosition(x1, y1));
       }
-      std::cout << "\n";
    }
-   std::cout << std::flush;
+
+   return pixels;
 }

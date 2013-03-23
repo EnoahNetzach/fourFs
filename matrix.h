@@ -18,6 +18,8 @@ namespace FourFs
 
 class Matrix
 {
+   friend class Terrain;
+
 public:
    Matrix(unsigned width, unsigned height);
    ~Matrix();
@@ -27,14 +29,15 @@ public:
    unsigned height() const;
    unsigned width() const;
    Pixel & pixelAtIndex(unsigned index);
-   Pixel & pixelAtPosition(unsigned x, unsigned y);
+   const Pixel & pixelAtIndex(unsigned index) const;
    pixelsList pixelsAroundIndex(unsigned index);
+   const constPixelsList pixelsAroundIndex(unsigned index) const;
+   Pixel & pixelAtPosition(unsigned x, unsigned y);
+   const Pixel & pixelAtPosition(unsigned x, unsigned y) const;
    pixelsList pixelsAroundPosition(unsigned x, unsigned y);
-
-   void print() const;
+   const constPixelsList pixelsAroundPosition(unsigned x, unsigned y) const;
 
 protected:
-   int a;
 
 private:
    unsigned m_height;
