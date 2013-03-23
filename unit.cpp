@@ -12,6 +12,17 @@
 
 using namespace FourFs;
 
+// STATIC members
+unsigned Unit::radius()
+{
+   return 1;
+}
+
+unsigned Unit::fieldOfView()
+{
+   return 5;
+}
+
 Unit::Unit()
 {
 }

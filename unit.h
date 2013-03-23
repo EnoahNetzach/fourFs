@@ -24,6 +24,8 @@ public:
    explicit Unit();
    ~Unit();
 
+   static unsigned radius();
+   static unsigned fieldOfView();
    unsigned longevity() const;
    unsigned fertility() const;
    unsigned belligerance() const;
@@ -38,8 +40,6 @@ public:
 protected:
 
 private:
-   static unsigned m_area;
-   static unsigned m_fieldOfView;
    double m_longevity;
    double m_fertility;
    double m_belligerance;

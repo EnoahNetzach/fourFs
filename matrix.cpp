@@ -5,10 +5,12 @@
  *      Author: Enoah Netzach
  */
 
+#include "matrix.h"
+
 #include <algorithm>
 #include <iostream>
 
-#include "matrix.h"
+#include "unit.h"
 
 using namespace FourFs;
 
@@ -68,15 +70,19 @@ pixelsList Matrix::pixelsAroundIndex(unsigned index)
 }
 
 /*
- * return a square of pixels around given (x, y), so (x+-1, y+-1)
+ * return a square of pixels around given (x, y), so (x+-r, y+-r)
  */
 pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y)
 {
    pixelsList pixels;
 
-   for (int x1 = std::max(0, int(x) - 1); x1 <= std::min(int(m_width), int(x) + 1); x1++)
+   for (int x1 = std::max(0, int(x) - int(Unit::radius()));
+        x1 <= std::min(int(m_width), int(x) + int(Unit::radius()));
+        x1++)
    {
-      for (int y1 = std::max(0, int(y) - 1); y1 <= std::min(int(m_height), int(y) + 1); y1++)
+      for (int y1 = std::max(0, int(y) - int(Unit::radius()));
+           y1 <= std::min(int(m_height), int(y) + int(Unit::radius()));
+           y1++)
       {
          pixels.push_back(& pixelAtPosition(x1, y1));
       }

@@ -23,7 +23,7 @@ int main(int argc, char * argv[])
 
    pixelsList area1 = matrix.pixelsAroundPosition(6, 14);
    pixelsList area2 = matrix.pixelsAroundPosition(15, 2);
-   pixelsList area3 = matrix.pixelsAroundPosition(8, 10);
+   pixelsList area3 = matrix.pixelsAroundPosition(0, 1);
 
    pixelsIterator it;
    for (it = area1.begin(); it != area1.end(); ++it)
