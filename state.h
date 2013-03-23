@@ -8,6 +8,8 @@
 #ifndef fourFs_STATE_H_
 #define fourFs_STATE_H_
 
+#include "utilities.hpp"
+
 namespace FourFs
 {
 
@@ -17,12 +19,15 @@ public:
    explicit State();
    ~State();
 
-   unsigned test;
+   void addUnit(Unit & unit);
+   bool removeUnit(const Unit & unit);
+   void clearUnits();
+   unitsList & units();
 
 protected:
 
 private:
-   // TODO m_units [&]
+   unitsList m_units;
 };
 
 } /* namespace FourFs */

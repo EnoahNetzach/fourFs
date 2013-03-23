@@ -13,8 +13,6 @@
 namespace FourFs
 {
 
-class Unit;
-
 class Pixel
 {
 public:
@@ -25,18 +23,22 @@ public:
 
    unsigned index() const;
    bool isBorder() const;
-   bool isEmpty() const;
-   bool isUnique() const;
+   Environment & environment();
+   const Environment & environment() const;
+   bool isUnitsEmpty() const;
+   bool isUnitsUnique() const;
+   unsigned nOfUnits() const;
    void addUnit(Unit & unit);
    bool removeUnit(const Unit & unit);
-   unitsList units();
+   void clearUnits();
+   unitsList & units();
 
 protected:
 
 private:
    unsigned m_index;
    bool m_border;
-   // TODO m_environment [&]
+   Environment * m_environment;
    unitsList m_units;
 };
 

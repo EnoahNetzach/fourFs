@@ -29,20 +29,19 @@ Unit::Unit()
 
 Unit::~Unit()
 {
-   // TODO Auto-generated destructor stub
 }
 
-unsigned Unit::longevity () const
+double Unit::longevity () const
 {
    return m_longevity;
 }
 
-unsigned Unit::fertility () const
+double Unit::fertility () const
 {
    return m_fertility;
 }
 
-unsigned Unit::belligerance () const
+double Unit::belligerance () const
 {
    return m_belligerance;
 }

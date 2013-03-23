@@ -7,6 +7,9 @@
 
 #include "pixel.h"
 
+#include "environment.h"
+#include "unit.h"
+
 using namespace FourFs;
 
 Pixel::Pixel(unsigned index)
@@ -30,14 +33,29 @@ bool Pixel::isBorder() const
    return m_border;
 }
 
-bool Pixel::isEmpty() const
+Environment & Pixel::environment()
+{
+   return * m_environment;
+}
+
+const Environment & Pixel::environment() const
+{
+   return * m_environment;
+}
+
+bool Pixel::isUnitsEmpty() const
 {
    return m_units.empty();
 }
 
-bool Pixel::isUnique() const
+bool Pixel::isUnitsUnique() const
 {
    return m_units.size() <= 1;
+}
+
+unsigned Pixel::nOfUnits() const
+{
+   return m_units.size();
 }
 
 void Pixel::addUnit(Unit & unit)
@@ -63,9 +81,12 @@ bool Pixel::removeUnit(const Unit & unit)
    return found;
 }
 
-// TODO clear
+void Pixel::clearUnits()
+{
+   m_units.clear();
+}
 
-unitsList Pixel::units()
+unitsList & Pixel::units()
 {
    return m_units;
 }

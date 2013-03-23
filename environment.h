@@ -8,6 +8,10 @@
 #ifndef fourFs_ENVIRONMENT_H_
 #define fourFs_ENVIRONMENT_H_
 
+#include <list>
+
+#include "utilities.hpp"
+
 namespace FourFs
 {
 
@@ -17,10 +21,18 @@ public:
    explicit Environment();
    ~Environment();
 
+   double vivibility();
+   void addPixel(Pixel & pixel);
+   bool removePixel(Pixel & pixel);
+   void clearPixels();
+   pixelsConstIterator pixelsBegin() const;
+   pixelsConstIterator pixelsEnd() const;
+
 protected:
 
 private:
-   // TODO m_pixels [&]
+   double m_vivibility;
+   pixelsList m_pixels;
 };
 
 } /* namespace FourFs */

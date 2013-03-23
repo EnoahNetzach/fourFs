@@ -11,11 +11,41 @@ using namespace FourFs;
 
 State::State()
 {
-   // TODO Auto-generated constructor stub
-
 }
 
 State::~State()
 {
-   // TODO Auto-generated destructor stub
+}
+
+void State::addUnit(Unit & unit)
+{
+   m_units.push_back(& unit);
+}
+
+bool State::removeUnit(const Unit & unit)
+{
+   bool found = false;
+   unitsIterator it;
+
+   for (it = m_units.begin(); it != m_units.end(); ++it)
+   {
+      if ((* it) == & unit)
+      {
+         found = true;
+         m_units.erase(it);
+         break;
+      }
+   }
+
+   return found;
+}
+
+void State::clearUnits()
+{
+   m_units.clear();
+}
+
+unitsList & State::units()
+{
+   return m_units;
 }

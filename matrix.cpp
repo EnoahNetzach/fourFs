@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <iostream>
 
+#include <boost/foreach.hpp>
+
+#include "environment.h"
 #include "unit.h"
 
 using namespace FourFs;
@@ -26,7 +29,18 @@ Matrix::Matrix(unsigned width, unsigned height)
 
 Matrix::~Matrix()
 {
-   // TODO Auto-generated destructor stub
+   // clear every reference to pixels
+   BOOST_FOREACH(Pixel * pixel, m_pixels)
+   {
+      // clear environments
+      pixel->environment().clearPixels();
+
+      // clear units
+      BOOST_FOREACH(Unit * unit, pixel->units())
+      {
+         unit->clearPixels();
+      }
+   }
 }
 
 unsigned Matrix::indexFromPosition(unsigned x, unsigned y) const
@@ -100,18 +114,16 @@ void Matrix::print() const
    {
       for (unsigned x = 0; x < m_width; x++)
       {
+         Pixel & pixel = * m_pixels.at(indexFromPosition(x, y));
+
          char c;
-         if (m_pixels.at(indexFromPosition(x, y))->isEmpty())
+         if (pixel.isUnitsEmpty())
          {
-            c = '.';
-         }
-         else if (m_pixels.at(indexFromPosition(x, y))->isUnique())
-         {
-            c = '+';
+            c = 'á';
          }
          else
          {
-            c = 'o';
+            c = 48 + pixel.nOfUnits();
          }
          std::cout << c << " ";
       }

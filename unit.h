@@ -10,13 +10,10 @@
 
 #include <list>
 
-#include "matrix.h"
+#include "utilities.hpp"
 
 namespace FourFs
 {
-
-class Pixel;
-class State;
 
 class Unit
 {
@@ -26,9 +23,9 @@ public:
 
    static unsigned radius();
    static unsigned fieldOfView();
-   unsigned longevity() const;
-   unsigned fertility() const;
-   unsigned belligerance() const;
+   double longevity() const;
+   double fertility() const;
+   double belligerance() const;
    void addPixel(Pixel & pixel);
    bool removePixel(Pixel & pixel);
    void clearPixels();
@@ -45,7 +42,6 @@ private:
    double m_belligerance;
    pixelsList m_pixels;
    State * m_state;
-
 };
 
 } /* namespace FourFs */

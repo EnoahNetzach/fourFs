@@ -15,6 +15,7 @@
 namespace FourFs
 {
 
+class Environment;
 class Matrix;
 class Pixel;
 class State;
