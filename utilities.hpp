@@ -3,12 +3,13 @@
  *
  *  Created on: Mar 22, 2013
  *      Author: Enoah Netzach
+ *
+ *   Description:
+ *
  */
 
 #ifndef fourFs_UTILITIES_HPP_
 #define fourFs_UTILITIES_HPP_
-
-// just some utilities
 
 #include <list>
 
