@@ -74,9 +74,9 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y)
 {
    pixelsList pixels;
 
-   for (unsigned x1 = std::max(0, int(x) - 1); x1 <= std::min(int(m_width), int(x) + 1); x1++)
+   for (int x1 = std::max(0, int(x) - 1); x1 <= std::min(int(m_width), int(x) + 1); x1++)
    {
-      for (unsigned y1 = std::max(0, int(y) - 1); y1 <= std::min(int(m_height), int(y) + 1); y1++)
+      for (int y1 = std::max(0, int(y) - 1); y1 <= std::min(int(m_height), int(y) + 1); y1++)
       {
          pixels.push_back(& pixelAtPosition(x1, y1));
       }
@@ -85,13 +85,16 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y)
    return pixels;
 }
 
+/*
+ * debug pourpose
+ */
 void Matrix::print() const
 {
    for (unsigned y = 0; y < m_height; y++)
    {
       for (unsigned x = 0; x < m_width; x++)
       {
-
+         std::cout << (m_pixels.at(indexFromPosition(x, y))->isEmpty() ? ". " : "+ ");
       }
       std::cout << "\n";
    }

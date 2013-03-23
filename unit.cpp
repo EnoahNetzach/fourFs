@@ -14,7 +14,6 @@ using namespace FourFs;
 
 Unit::Unit()
 {
-   // TODO Auto-generated constructor stub
 }
 
 Unit::~Unit()
@@ -37,12 +36,12 @@ unsigned Unit::belligerance () const
    return m_belligerance;
 }
 
-void Unit::addPixel(const Pixel & pixel)
+void Unit::addPixel(Pixel & pixel)
 {
    m_pixels.push_back(& pixel);
 }
 
-bool Unit::removePixel(const Pixel & pixel)
+bool Unit::removePixel(Pixel & pixel)
 {
    bool found = false;
    pixelsIterator it;

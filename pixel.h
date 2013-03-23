@@ -25,7 +25,8 @@ public:
 
    unsigned index() const;
    bool isBorder() const;
-   void addUnit(const Unit & unit);
+   bool isEmpty() const;
+   void addUnit(Unit & unit);
    bool removeUnit(const Unit & unit);
    unitsList units();
 

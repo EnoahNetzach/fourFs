@@ -8,6 +8,8 @@
 #ifndef fourFs_UTILITIES_HPP_
 #define fourFs_UTILITIES_HPP_
 
+// just some utilities
+
 #include <list>
 
 namespace FourFs
@@ -18,11 +20,11 @@ class Pixel;
 class State;
 class Unit;
 
-typedef std::list< const Pixel * > pixelsList;
+typedef std::list< Pixel * > pixelsList;
 typedef pixelsList::iterator pixelsIterator;
 typedef pixelsList::const_iterator pixelsConstIterator;
 
-typedef std::list< const Unit * > unitsList;
+typedef std::list< Unit * > unitsList;
 typedef unitsList::iterator unitsIterator;
 typedef unitsList::const_iterator unitsConstIterator;
 

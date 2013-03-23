@@ -27,8 +27,8 @@ public:
    unsigned longevity() const;
    unsigned fertility() const;
    unsigned belligerance() const;
-   void addPixel(const Pixel & pixel);
-   bool removePixel(const Pixel & pixel);
+   void addPixel(Pixel & pixel);
+   bool removePixel(Pixel & pixel);
    void clearPixels();
    pixelsConstIterator pixelsBegin() const;
    pixelsConstIterator pixelsEnd() const;

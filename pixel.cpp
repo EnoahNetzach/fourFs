@@ -30,7 +30,12 @@ bool Pixel::isBorder() const
    return m_border;
 }
 
-void Pixel::addUnit(const Unit & unit)
+bool Pixel::isEmpty() const
+{
+   return m_units.empty();
+}
+
+void Pixel::addUnit(Unit & unit)
 {
    m_units.push_back(& unit);
 }
@@ -52,6 +57,8 @@ bool Pixel::removeUnit(const Unit & unit)
 
    return found;
 }
+
+// TODO clear
 
 unitsList Pixel::units()
 {

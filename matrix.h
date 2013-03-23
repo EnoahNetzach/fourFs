@@ -34,6 +34,7 @@ public:
    void print() const;
 
 protected:
+   int a;
 
 private:
    unsigned m_height;
