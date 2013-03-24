@@ -6,6 +6,7 @@
  */
 
 #include "terrain.h"
+#include "pixel.h"
 
 #include <iostream>
 
@@ -51,7 +52,7 @@ void Terrain::show() const
          char c;
          if (pixel.isUnitsEmpty())
          {
-            c = 'á';
+            c = 183;
          }
          else
          {

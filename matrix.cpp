@@ -13,6 +13,7 @@
 #include <boost/foreach.hpp>
 
 #include "environment.h"
+#include "pixel.h"
 #include "unit.h"
 
 using namespace FourFs;
@@ -86,30 +87,30 @@ const Pixel & Matrix::pixelAtPosition(unsigned x, unsigned y) const
    return pixelAtIndex(indexFromPosition(x, y));
 }
 
-pixelsList Matrix::pixelsAroundIndex(unsigned index)
+pixelsList Matrix::pixelsAroundIndex(unsigned index, unsigned radius)
 {
    std::pair< unsigned, unsigned > pos = positionFromIndex(index);
 
-   return pixelsAroundPosition(pos.first, pos.second);
+   return pixelsAroundPosition(pos.first, pos.second, radius);
 }
 
-const constPixelsList Matrix::pixelsAroundIndex(unsigned index) const
+const constPixelsList Matrix::pixelsAroundIndex(unsigned index, unsigned radius) const
 {
    std::pair< unsigned, unsigned > pos = positionFromIndex(index);
 
-   return pixelsAroundPosition(pos.first, pos.second);
+   return pixelsAroundPosition(pos.first, pos.second, radius);
 }
 
-pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y)
+pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius)
 {
    pixelsList pixels;
 
-   for (int x1 = std::max(0, int(x) - int(Unit::radius()));
-        x1 <= std::min(int(m_width), int(x) + int(Unit::radius()));
+   for (int x1 = std::max(0, int(x) - int(radius));
+        x1 <= std::min(int(m_width), int(x) + int(radius));
         x1++)
    {
-      for (int y1 = std::max(0, int(y) - int(Unit::radius()));
-           y1 <= std::min(int(m_height), int(y) + int(Unit::radius()));
+      for (int y1 = std::max(0, int(y) - int(radius));
+           y1 <= std::min(int(m_height), int(y) + int(radius));
            y1++)
       {
          pixels.push_back(& pixelAtPosition(x1, y1));
@@ -119,16 +120,16 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y)
    return pixels;
 }
 
-const constPixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y) const
+const constPixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const
 {
    constPixelsList pixels;
 
-   for (int x1 = std::max(0, int(x) - int(Unit::radius()));
-        x1 <= std::min(int(m_width), int(x) + int(Unit::radius()));
+   for (int x1 = std::max(0, int(x) - int(radius));
+        x1 <= std::min(int(m_width), int(x) + int(radius));
         x1++)
    {
-      for (int y1 = std::max(0, int(y) - int(Unit::radius()));
-           y1 <= std::min(int(m_height), int(y) + int(Unit::radius()));
+      for (int y1 = std::max(0, int(y) - int(radius));
+           y1 <= std::min(int(m_height), int(y) + int(radius));
            y1++)
       {
          pixels.push_back(& pixelAtPosition(x1, y1));

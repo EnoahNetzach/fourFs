@@ -10,7 +10,6 @@
 
 #include <vector>
 
-#include "pixel.h"
 #include "utilities.hpp"
 
 namespace FourFs
@@ -30,12 +29,12 @@ public:
    unsigned width() const;
    Pixel & pixelAtIndex(unsigned index);
    const Pixel & pixelAtIndex(unsigned index) const;
-   pixelsList pixelsAroundIndex(unsigned index);
-   const constPixelsList pixelsAroundIndex(unsigned index) const;
    Pixel & pixelAtPosition(unsigned x, unsigned y);
    const Pixel & pixelAtPosition(unsigned x, unsigned y) const;
-   pixelsList pixelsAroundPosition(unsigned x, unsigned y);
-   const constPixelsList pixelsAroundPosition(unsigned x, unsigned y) const;
+   pixelsList pixelsAroundIndex(unsigned index, unsigned radius);
+   const constPixelsList pixelsAroundIndex(unsigned index, unsigned radius) const;
+   pixelsList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius);
+   const constPixelsList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const;
 
 protected:
 

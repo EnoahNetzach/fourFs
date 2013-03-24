@@ -23,10 +23,10 @@ int main(int argc, char * argv[])
 
    Unit unit1, unit2, unit3, unit4;
 
-   pixelsList area1 = matrix.pixelsAroundPosition(42, 2);
-   pixelsList area2 = matrix.pixelsAroundPosition(43, 3);
-   pixelsList area3 = matrix.pixelsAroundPosition(41, 3);
-   pixelsList area4 = matrix.pixelsAroundPosition(41, 4);
+   pixelsList area1 = matrix.pixelsAroundPosition(42, 2, 1);
+   pixelsList area2 = matrix.pixelsAroundPosition(43, 3, 1);
+   pixelsList area3 = matrix.pixelsAroundPosition(41, 3, 1);
+   pixelsList area4 = matrix.pixelsAroundPosition(41, 4, 1);
 
    pixelsIterator it;
    for (it = area1.begin(); it != area1.end(); ++it)
