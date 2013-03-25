@@ -22,32 +22,30 @@ namespace FourFs
 {
 
 class Environment;
-class Matrix;
-class Pixel;
-class State;
-class Terrain;
-class Unit;
-
 typedef boost::shared_ptr< Environment > sharedEnvironment;
 typedef boost::shared_ptr< const Environment > sharedConstEnvironment;
 
+class Matrix;
+
+class Pixel;
 typedef boost::shared_ptr< Pixel > sharedPixel;
 typedef boost::shared_ptr< const Pixel > sharedConstPixel;
-
 typedef std::list< sharedPixel > pixelsList;
 typedef pixelsList::iterator pixelsIterator;
 typedef pixelsList::const_iterator pixelsConstIterator;
-
 typedef std::list< sharedConstPixel > constPixelsList;
 typedef constPixelsList::iterator constPixelsIterator;
 typedef constPixelsList::const_iterator constPixelsConstIterator;
 
+class State;
 typedef boost::shared_ptr< State > sharedState;
 typedef boost::shared_ptr< const State > sharedConstState;
 
+class Terrain;
+
+class Unit;
 typedef boost::shared_ptr< Unit > sharedUnit;
 typedef boost::shared_ptr< const Unit > sharedConstUnit;
-
 typedef std::list< sharedUnit > unitsList;
 typedef unitsList::iterator unitsIterator;
 typedef unitsList::const_iterator unitsConstIterator;
