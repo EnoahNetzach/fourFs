@@ -26,22 +26,22 @@ public:
    const double & longevity() const;
    const double & fertility() const;
    const double & belligerance() const;
-   void addPixel(Pixel & pixel);
-   bool removePixel(Pixel & pixel);
+   void addPixel(sharedPixel pixel);
+   bool removePixel(sharedPixel pixel);
    void clearPixels();
    pixelsConstIterator pixelsBegin() const;
    pixelsConstIterator pixelsEnd() const;
-   State & state();
-   const State & state() const;
+   sharedState state();
+   sharedConstState state() const;
 
 protected:
 
 private:
-   double m_longevity;
-   double m_fertility;
    double m_belligerance;
+   double m_fertility;
+   double m_longevity;
    pixelsList m_pixels;
-   State * m_state;
+   sharedState m_state;
 };
 
 } /* namespace FourFs */

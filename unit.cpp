@@ -7,6 +7,8 @@
 
 #include "unit.h"
 
+#include <iostream>
+
 #include "pixel.h"
 #include "state.h"
 
@@ -24,6 +26,9 @@ unsigned Unit::fieldOfView()
 }
 
 Unit::Unit()
+   : m_belligerance(0)
+   , m_fertility(0)
+   , m_longevity(0)
 {
 }
 
@@ -46,19 +51,19 @@ const double & Unit::belligerance () const
    return m_belligerance;
 }
 
-void Unit::addPixel(Pixel & pixel)
+void Unit::addPixel(sharedPixel pixel)
 {
-   m_pixels.push_back(& pixel);
+   m_pixels.push_back(pixel);
 }
 
-bool Unit::removePixel(Pixel & pixel)
+bool Unit::removePixel(sharedPixel pixel)
 {
    bool found = false;
    pixelsIterator it;
 
    for (it = m_pixels.begin(); it != m_pixels.end(); ++it)
    {
-      if ((* it) == & pixel)
+      if ((* it) == pixel)
       {
          found = true;
          m_pixels.erase(it);
@@ -84,12 +89,12 @@ pixelsConstIterator Unit::pixelsEnd() const
    return m_pixels.end();
 }
 
-State & Unit::state()
+sharedState Unit::state()
 {
-   return * m_state;
+   return m_state;
 }
 
-const State & Unit::state() const
+sharedConstState Unit::state() const
 {
-   return * m_state;
+   return m_state;
 }

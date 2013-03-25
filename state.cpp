@@ -17,19 +17,19 @@ State::~State()
 {
 }
 
-void State::addUnit(Unit & unit)
+void State::addUnit(sharedUnit unit)
 {
-   m_units.push_back(& unit);
+   m_units.push_back(unit);
 }
 
-bool State::removeUnit(const Unit & unit)
+bool State::removeUnit(sharedConstUnit unit)
 {
    bool found = false;
    unitsIterator it;
 
    for (it = m_units.begin(); it != m_units.end(); ++it)
    {
-      if ((* it) == & unit)
+      if ((* it) == unit)
       {
          found = true;
          m_units.erase(it);

@@ -7,21 +7,22 @@
 
 #include "pixel.h"
 
+#include <iostream>
+
 #include "environment.h"
 #include "unit.h"
 
 using namespace FourFs;
 
-Pixel::Pixel(unsigned index)
+Pixel::Pixel(unsigned index, bool border)
    : m_index(index)
    , m_height(0)
+   , m_border(border)
 {
-
 }
 
 Pixel::~Pixel()
 {
-   // TODO Auto-generated destructor stub
 }
 
 unsigned Pixel::index () const
@@ -44,14 +45,14 @@ bool Pixel::isBorder() const
    return m_border;
 }
 
-Environment & Pixel::environment()
+sharedEnvironment Pixel::environment()
 {
-   return * m_environment;
+   return m_environment;
 }
 
-const Environment & Pixel::environment() const
+sharedConstEnvironment Pixel::environment() const
 {
-   return * m_environment;
+   return m_environment;
 }
 
 bool Pixel::isUnitsEmpty() const
@@ -69,19 +70,19 @@ unsigned Pixel::nOfUnits() const
    return m_units.size();
 }
 
-void Pixel::addUnit(Unit & unit)
+void Pixel::addUnit(sharedUnit unit)
 {
-   m_units.push_back(& unit);
+   m_units.push_back(unit);
 }
 
-bool Pixel::removeUnit(const Unit & unit)
+bool Pixel::removeUnit(sharedConstUnit unit)
 {
    bool found = false;
    unitsIterator it;
 
    for (it = m_units.begin(); it != m_units.end(); ++it)
    {
-      if ((* it) == & unit)
+      if ((* it) == unit)
       {
          found = true;
          m_units.erase(it);

@@ -24,24 +24,28 @@ Matrix::Matrix(unsigned width, unsigned height)
 {
    for (unsigned i = 0; i < m_width * m_height; i++)
    {
-      m_pixels.push_back(new Pixel(i));
+      m_pixels.push_back(sharedPixel(new Pixel(i)));
    }
 }
 
 Matrix::~Matrix()
 {
    // clear every reference to pixels
-   BOOST_FOREACH(Pixel * pixel, m_pixels)
+   BOOST_FOREACH(sharedPixel pixel, m_pixels)
    {
       // clear environments
-      pixel->environment().clearPixels();
+      if (pixel->environment() != 0)
+      {
+         pixel->environment().get()->clearPixels();
+      }
 
       // clear units
-      BOOST_FOREACH(Unit * unit, pixel->units())
+      BOOST_FOREACH(sharedUnit unit, pixel->units())
       {
-         unit->clearPixels();
+         if (unit != 0) unit.get()->clearPixels();
       }
    }
+
 }
 
 unsigned Matrix::indexFromPosition(unsigned x, unsigned y) const
@@ -72,22 +76,22 @@ unsigned Matrix::size() const
    return m_width * m_height;
 }
 
-Pixel & Matrix::pixelAtIndex(unsigned index)
+sharedPixel Matrix::pixelAtIndex(unsigned index)
 {
-   return * m_pixels.at(index);
+   return m_pixels.at(index);
 }
 
-const Pixel & Matrix::pixelAtIndex(unsigned index) const
+sharedConstPixel Matrix::pixelAtIndex(unsigned index) const
 {
-   return * m_pixels.at(index);
+   return m_pixels.at(index);
 }
 
-Pixel & Matrix::pixelAtPosition(unsigned x, unsigned y)
+sharedPixel Matrix::pixelAtPosition(unsigned x, unsigned y)
 {
    return pixelAtIndex(indexFromPosition(x, y));
 }
 
-const Pixel & Matrix::pixelAtPosition(unsigned x, unsigned y) const
+sharedConstPixel Matrix::pixelAtPosition(unsigned x, unsigned y) const
 {
    return pixelAtIndex(indexFromPosition(x, y));
 }
@@ -118,7 +122,7 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius)
            y1 <= std::min(int(m_height) - 1, int(y) + int(radius));
            y1++)
       {
-         pixels.push_back(& pixelAtPosition(x1, y1));
+         pixels.push_back(pixelAtPosition(x1, y1));
       }
    }
 
@@ -137,7 +141,7 @@ const constPixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsig
            y1 <= std::min(int(m_height) - 1, int(y) + int(radius));
            y1++)
       {
-         pixels.push_back(& pixelAtPosition(x1, y1));
+         pixels.push_back(pixelAtPosition(x1, y1));
       }
    }
 

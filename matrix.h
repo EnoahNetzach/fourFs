@@ -28,10 +28,10 @@ public:
    unsigned height() const;
    unsigned width() const;
    unsigned size() const;
-   Pixel & pixelAtIndex(unsigned index);
-   const Pixel & pixelAtIndex(unsigned index) const;
-   Pixel & pixelAtPosition(unsigned x, unsigned y);
-   const Pixel & pixelAtPosition(unsigned x, unsigned y) const;
+   sharedPixel pixelAtIndex(unsigned index);
+   sharedConstPixel pixelAtIndex(unsigned index) const;
+   sharedPixel pixelAtPosition(unsigned x, unsigned y);
+   sharedConstPixel pixelAtPosition(unsigned x, unsigned y) const;
    pixelsList pixelsAroundIndex(unsigned index, unsigned radius);
    const constPixelsList pixelsAroundIndex(unsigned index, unsigned radius) const;
    pixelsList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius);
@@ -42,7 +42,7 @@ protected:
 private:
    unsigned m_height;
    unsigned m_width;
-   std::vector< Pixel * > m_pixels;
+   std::vector< sharedPixel > m_pixels;
 };
 
 } /* namespace FourFs */

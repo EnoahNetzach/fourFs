@@ -22,8 +22,8 @@ public:
    ~Environment();
 
    double vivibility();
-   void addPixel(Pixel & pixel);
-   bool removePixel(Pixel & pixel);
+   void addPixel(sharedPixel pixel);
+   bool removePixel(sharedPixel pixel);
    void clearPixels();
    pixelsConstIterator pixelsBegin() const;
    pixelsConstIterator pixelsEnd() const;

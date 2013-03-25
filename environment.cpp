@@ -24,19 +24,19 @@ double Environment::vivibility()
 }
 
 
-void Environment::addPixel(Pixel & pixel)
+void Environment::addPixel(sharedPixel pixel)
 {
-   m_pixels.push_back(& pixel);
+   m_pixels.push_back(pixel);
 }
 
-bool Environment::removePixel(Pixel & pixel)
+bool Environment::removePixel(sharedPixel pixel)
 {
    bool found = false;
    pixelsIterator it;
 
    for (it = m_pixels.begin(); it != m_pixels.end(); ++it)
    {
-      if ((* it) == & pixel)
+      if ((* it) == pixel)
       {
          found = true;
          m_pixels.erase(it);

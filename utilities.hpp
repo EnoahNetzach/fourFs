@@ -14,6 +14,7 @@
 #include <list>
 
 #include <boost/random/random_device.hpp>
+#include <boost/shared_ptr.hpp>
 
 static boost::random_device rng;
 
@@ -27,15 +28,27 @@ class State;
 class Terrain;
 class Unit;
 
-typedef std::list< Pixel * > pixelsList;
+typedef boost::shared_ptr< Environment > sharedEnvironment;
+typedef boost::shared_ptr< const Environment > sharedConstEnvironment;
+
+typedef boost::shared_ptr< Pixel > sharedPixel;
+typedef boost::shared_ptr< const Pixel > sharedConstPixel;
+
+typedef std::list< sharedPixel > pixelsList;
 typedef pixelsList::iterator pixelsIterator;
 typedef pixelsList::const_iterator pixelsConstIterator;
 
-typedef std::list< const Pixel * > constPixelsList;
+typedef std::list< sharedConstPixel > constPixelsList;
 typedef constPixelsList::iterator constPixelsIterator;
 typedef constPixelsList::const_iterator constPixelsConstIterator;
 
-typedef std::list< Unit * > unitsList;
+typedef boost::shared_ptr< State > sharedState;
+typedef boost::shared_ptr< const State > sharedConstState;
+
+typedef boost::shared_ptr< Unit > sharedUnit;
+typedef boost::shared_ptr< const Unit > sharedConstUnit;
+
+typedef std::list< sharedUnit > unitsList;
 typedef unitsList::iterator unitsIterator;
 typedef unitsList::const_iterator unitsConstIterator;
 

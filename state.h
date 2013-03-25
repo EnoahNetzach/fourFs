@@ -19,8 +19,8 @@ public:
    explicit State();
    ~State();
 
-   void addUnit(Unit & unit);
-   bool removeUnit(const Unit & unit);
+   void addUnit(sharedUnit unit);
+   bool removeUnit(sharedConstUnit unit);
    void clearUnits();
    unitsList & units();
 
