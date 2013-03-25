@@ -17,73 +17,33 @@
 
 using namespace FourFs;
 
-Terrain::Terrain(unsigned width, unsigned height)
+/*
+ * range ~2.5
+ *
+ * frequency 10
+ *
+ * amplitude ~0.3
+ *
+ * pace 4
+ *
+ * square 4
+ *
+ * smooth 3
+ */
+Terrain::Terrain(unsigned width, unsigned height, double range,
+                 unsigned frequency, double amplitude, unsigned pace,
+                 unsigned square, unsigned smooth)
    : m_matrix(width, height)
 {
-   /*
-   boost::random::uniform_int_distribution<> indexDist(0, m_matrix.size() - 1);
-   boost::random::uniform_real_distribution<> realDist1(0, 0.60);
-   boost::random::uniform_real_distribution<> realDist2(- 0.25, 0.25);
+   int f = frequency;
+   int p = int(pace);
 
-   double indexes1 [m_matrix.size()];
-   double indexes2 [m_matrix.size()];
-   for (unsigned i = 0; i < m_matrix.size(); ++i)
-   {
-      indexes1[i] = i;
-      indexes2[i] = i;
-   }
-   for (unsigned i = 0; i < m_matrix.size(); ++i)
-   {
-      unsigned index;
-      double temp;
-
-      index = indexDist(rng);
-      temp = indexes1[i];
-      indexes1[i] = indexes1[index];
-      indexes1[index] = temp;
-
-      index = indexDist(rng);
-      temp = indexes2[i];
-      indexes2[i] = indexes2[index];
-      indexes2[index] = temp;
-   }
-
-   // generate the mesh
-   for (unsigned i = 0; i < m_matrix.size(); ++i)
-   {
-      Pixel & pixel = m_matrix.pixelAtIndex(i);
-
-      pixel.vivibility() = realDist1(rng);
-   }
-   double mean = 0;
-   for (unsigned i = 0; i < m_matrix.size(); ++i)
-   {
-      Pixel & pixel = m_matrix.pixelAtIndex(indexes1[i]);
-
-      pixel.vivibility() = 0;
-
-      constPixelsList square = m_matrix.pixelsAroundIndex(indexes2[i], 1);
-      BOOST_FOREACH(const Pixel * p, square)
-      {
-         pixel.vivibility() += p->vivibility();
-      }
-      pixel.vivibility() /= square.size();
-      pixel.vivibility() += realDist2(rng);
-
-      if (pixel.vivibility() < 0) pixel.vivibility() = 0;
-      if (pixel.vivibility() > 1) pixel.vivibility() = 1;
-
-      mean += pixel.vivibility();
-   }
-   std::cout << mean / m_matrix.size() << std::endl;
-   /*/
-   unsigned epochs = m_matrix.size() * 3;
-   boost::random::uniform_int_distribution<> intDist(1, 10);
-   boost::random::uniform_real_distribution<> realDist(- 0.25, 0.25);
+   unsigned epochs = m_matrix.size() * range;
+   boost::random::uniform_int_distribution<> intDist(1, f);
+   boost::random::uniform_real_distribution<> realDist(- amplitude, amplitude);
 
    int x = m_matrix.width() / 2;
    int y = m_matrix.height() / 2;
-   int pace = 2;
    for (unsigned i = 0; i < epochs; ++i)
    {
       m_matrix.pixelAtPosition(x, y).height() += realDist(rng);
@@ -92,36 +52,36 @@ Terrain::Terrain(unsigned width, unsigned height)
       switch (num)
       {
       case 1:
-         x = std::min(int(m_matrix.width()) - 1, x + pace);
+         x = std::min(int(m_matrix.width()) - 1, x + p);
          break;
       case 2:
-         x = std::max(0, x - pace);
+         x = std::max(0, x - p);
          break;
       case 3:
-         y = std::min(int(m_matrix.height()) - 1, y + pace);
+         y = std::min(int(m_matrix.height()) - 1, y + p);
          break;
       case 4:
-         y = std::max(0, y - pace);
+         y = std::max(0, y - p);
          break;
       case 5:
-         x = std::min(int(m_matrix.width()) - 1, x + pace);
-         y = std::min(int(m_matrix.height()) - 1, y + pace);
+         x = std::min(int(m_matrix.width()) - 1, x + p);
+         y = std::min(int(m_matrix.height()) - 1, y + p);
          break;
       case 6:
-         x = std::min(int(m_matrix.width()) - 1, x + pace);
-         y = std::max(0, y - pace);
+         x = std::min(int(m_matrix.width()) - 1, x + p);
+         y = std::max(0, y - p);
          break;
       case 7:
-         x = std::max(0, x - pace);
-         y = std::min(int(m_matrix.height()) - 1, y + pace);
+         x = std::max(0, x - p);
+         y = std::min(int(m_matrix.height()) - 1, y + p);
          break;
       case 8:
-         x = std::max(0, x - pace);
-         y = std::max(0, y - pace);
+         x = std::max(0, x - p);
+         y = std::max(0, y - p);
          break;
       default:
-         pixelsList square = m_matrix.pixelsAroundPosition(x, y, 4);
-         BOOST_FOREACH(Pixel * pixel, square)
+         pixelsList pixelSquare = m_matrix.pixelsAroundPosition(x, y, square);
+         BOOST_FOREACH(Pixel * pixel, pixelSquare)
          {
             pixel->height() += realDist(rng);
          }
@@ -136,19 +96,18 @@ Terrain::Terrain(unsigned width, unsigned height)
 
       pixel.height() = 0;
 
-      pixelsList square = m_matrix.pixelsAroundIndex(i, 3);
-      BOOST_FOREACH(const Pixel * p, square)
+      pixelsList pixelSquare = m_matrix.pixelsAroundIndex(i, smooth);
+      BOOST_FOREACH(const Pixel * p, pixelSquare)
       {
          pixel.height() += p->height();
       }
-      pixel.height() /= square.size();
+      pixel.height() /= pixelSquare.size();
 
       if (pixel.height() < 0) pixel.height() = 0;
       if (pixel.height() > 1) pixel.height() = 1;
    }
    std::cout << "After smoothing:\n" << std::flush;
    show();
-   //*/
 }
 
 Terrain::~Terrain()

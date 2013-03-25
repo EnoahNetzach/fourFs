@@ -16,8 +16,22 @@ namespace FourFs
 
 class Terrain
 {
-public:
-   Terrain(unsigned width, unsigned height);
+public:/*
+ * range ~2.5
+ *
+ * frequency 10
+ *
+ * amplitude ~0.3
+ *
+ * pace 4
+ *
+ * square 4
+ *
+ * smooth 3
+ */
+   Terrain(unsigned width, unsigned height, double range = 2.5,
+           unsigned frequency = 10, double amplitude = 0.3, unsigned pace = 4,
+           unsigned square = 4, unsigned smooth = 3);
    ~Terrain();
 
    unsigned height() const;
