@@ -94,14 +94,14 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
    {
       Pixel & pixel = m_matrix.pixelAtIndex(i);
 
-      pixel.height() = 0;
+      double height = 0;
 
       pixelsList pixelSquare = m_matrix.pixelsAroundIndex(i, smooth);
       BOOST_FOREACH(const Pixel * p, pixelSquare)
       {
-         pixel.height() += p->height();
+         height += p->height();
       }
-      pixel.height() /= pixelSquare.size();
+      pixel.height() = height / pixelSquare.size();
 
       if (pixel.height() < 0) pixel.height() = 0;
       if (pixel.height() > 1) pixel.height() = 1;

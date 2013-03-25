@@ -29,9 +29,9 @@ public:/*
  *
  * smooth 3
  */
-   Terrain(unsigned width, unsigned height, double range = 2.5,
-           unsigned frequency = 10, double amplitude = 0.3, unsigned pace = 4,
-           unsigned square = 4, unsigned smooth = 3);
+   Terrain(unsigned width, unsigned height, double range = 3,
+           unsigned frequency = 10, double amplitude = 1, unsigned pace = 10,
+           unsigned square = 3, unsigned smooth = 4);
    ~Terrain();
 
    unsigned height() const;
