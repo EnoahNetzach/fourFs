@@ -12,3 +12,7 @@
 *.la
 *.a
 /Debug
+/Release
+
+# Project files
+.*
