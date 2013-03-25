@@ -36,14 +36,14 @@ public:/*
 
    unsigned height() const;
    unsigned width() const;
-   Matrix & matrix();
-   const Matrix & matrix() const;
+   sharedMatrix matrix();
+   sharedConstMatrix matrix() const;
    void show() const;
 
 protected:
 
 private:
-   Matrix m_matrix;
+   sharedMatrix m_matrix;
 };
 
 } /* namespace FourFs */

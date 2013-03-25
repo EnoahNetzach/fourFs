@@ -27,6 +27,9 @@ typedef boost::shared_ptr< const Environment > sharedConstEnvironment;
 
 class Matrix;
 
+typedef boost::shared_ptr< Matrix > sharedMatrix;
+typedef boost::shared_ptr< const Matrix > sharedConstMatrix;
+
 class Pixel;
 typedef boost::shared_ptr< Pixel > sharedPixel;
 typedef boost::shared_ptr< const Pixel > sharedConstPixel;
