@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-#include "matrix.h"
+#include "matrix.get()->h"
 #include "pixel.h"
 #include "state.h"
 #include "terrain.h"
@@ -18,18 +18,41 @@ using namespace FourFs;
 
 int main(int argc, char * argv[])
 {
-   Terrain terrain(100, 50);
-   Matrix & matrix = terrain.matrix();
+   unsigned width;
+   unsigned height;
+
+   { // Program options
+      namespace po = boost::program_options;
+
+      po::options_description desc("Allowed options");
+      desc.add_options()
+           ("help,h", "produce help message")
+		   ("width", po::value< unsigned >(& width), "set the map width");
+		   ("height", po::value< unsigned >(& height), "set the map height");
+
+      po::variables_map vm;
+      po::store(po::parse_command_line(argc, argv, desc), vm);
+	  po::notify(vm);
+
+      if (vm.count("help"))
+	  {
+	     std::cout << desc << std::endl;
+         return 1;
+      }
+   }
+	
+   Terrain terrain(width, height);
+   sharedMatrix matrix = terrain.matrix();
 
    sharedUnit unit1(new Unit);
    sharedUnit unit2(new Unit);
    sharedUnit unit3(new Unit);
    sharedUnit unit4(new Unit);
 
-   pixelsList area1 = matrix.pixelsAroundPosition(12, 2, 1);
-   pixelsList area2 = matrix.pixelsAroundPosition(13, 3, 1);
-   pixelsList area3 = matrix.pixelsAroundPosition(11, 2, 1);
-   pixelsList area4 = matrix.pixelsAroundPosition(11, 4, 1);
+   pixelsList area1 = matrix.get()->pixelsAroundPosition(12, 2, 1);
+   pixelsList area2 = matrix.get()->pixelsAroundPosition(13, 3, 1);
+   pixelsList area3 = matrix.get()->pixelsAroundPosition(11, 2, 1);
+   pixelsList area4 = matrix.get()->pixelsAroundPosition(11, 4, 1);
 
    pixelsIterator it;
    for (it = area1.begin(); it != area1.end(); ++it)

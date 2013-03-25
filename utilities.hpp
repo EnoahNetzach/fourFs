@@ -31,7 +31,10 @@ class Unit;
 typedef boost::shared_ptr< Environment > sharedEnvironment;
 typedef boost::shared_ptr< const Environment > sharedConstEnvironment;
 
-typedef boost::shared_ptr< Pixel > sharedPixel;
+typedef boost::shared_ptr< Matrix > sharedMatrix;
+typedef boost::shared_ptr< const Matrix > sharedConstMatrix;
+
+ypedef boost::shared_ptr< Pixel > sharedPixel;
 typedef boost::shared_ptr< const Pixel > sharedConstPixel;
 
 typedef std::list< sharedPixel > pixelsList;
