@@ -14,6 +14,7 @@ using namespace FourFs;
 
 Pixel::Pixel(unsigned index)
    : m_index(index)
+   , m_height(0)
 {
 
 }
@@ -28,14 +29,14 @@ unsigned Pixel::index () const
    return m_index;
 }
 
-double & Pixel::vivibility()
+double & Pixel::height()
 {
-   return m_vivibility;
+   return m_height;
 }
 
-const double & Pixel::vivibility() const
+const double & Pixel::height() const
 {
-   return m_vivibility;
+   return m_height;
 }
 
 bool Pixel::isBorder() const

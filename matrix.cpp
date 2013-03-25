@@ -67,6 +67,11 @@ unsigned Matrix::width() const
    return m_width;
 }
 
+unsigned Matrix::size() const
+{
+   return m_width * m_height;
+}
+
 Pixel & Matrix::pixelAtIndex(unsigned index)
 {
    return * m_pixels.at(index);
@@ -106,11 +111,11 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius)
    pixelsList pixels;
 
    for (int x1 = std::max(0, int(x) - int(radius));
-        x1 <= std::min(int(m_width), int(x) + int(radius));
+        x1 <= std::min(int(m_width) - 1, int(x) + int(radius));
         x1++)
    {
       for (int y1 = std::max(0, int(y) - int(radius));
-           y1 <= std::min(int(m_height), int(y) + int(radius));
+           y1 <= std::min(int(m_height) - 1, int(y) + int(radius));
            y1++)
       {
          pixels.push_back(& pixelAtPosition(x1, y1));
@@ -125,11 +130,11 @@ const constPixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsig
    constPixelsList pixels;
 
    for (int x1 = std::max(0, int(x) - int(radius));
-        x1 <= std::min(int(m_width), int(x) + int(radius));
+        x1 <= std::min(int(m_width) - 1, int(x) + int(radius));
         x1++)
    {
       for (int y1 = std::max(0, int(y) - int(radius));
-           y1 <= std::min(int(m_height), int(y) + int(radius));
+           y1 <= std::min(int(m_height) - 1, int(y) + int(radius));
            y1++)
       {
          pixels.push_back(& pixelAtPosition(x1, y1));

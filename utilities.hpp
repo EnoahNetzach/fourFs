@@ -13,6 +13,10 @@
 
 #include <list>
 
+#include <boost/random/random_device.hpp>
+
+static boost::random_device rng;
+
 namespace FourFs
 {
 

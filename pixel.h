@@ -19,11 +19,9 @@ public:
    explicit Pixel(unsigned index);
    ~Pixel();
 
-   unsigned test;
-
    unsigned index() const;
-   double & vivibility();
-   const double & vivibility() const;
+   double & height();
+   const double & height() const;
    bool isBorder() const;
    Environment & environment();
    const Environment & environment() const;
@@ -39,7 +37,7 @@ protected:
 
 private:
    unsigned m_index;
-   double m_vivibility;
+   double m_height;
    bool m_border;
    Environment * m_environment;
    unitsList m_units;

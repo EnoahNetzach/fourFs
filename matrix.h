@@ -27,6 +27,7 @@ public:
    std::pair< unsigned, unsigned > positionFromIndex(unsigned index) const;
    unsigned height() const;
    unsigned width() const;
+   unsigned size() const;
    Pixel & pixelAtIndex(unsigned index);
    const Pixel & pixelAtIndex(unsigned index) const;
    Pixel & pixelAtPosition(unsigned x, unsigned y);

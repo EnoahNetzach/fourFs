@@ -18,15 +18,15 @@ using namespace FourFs;
 
 int main(int argc, char * argv[])
 {
-   Terrain terrain(50, 19);
+   Terrain terrain(100, 50);
    Matrix & matrix = terrain.matrix();
 
    Unit unit1, unit2, unit3, unit4;
 
-   pixelsList area1 = matrix.pixelsAroundPosition(42, 2, 1);
-   pixelsList area2 = matrix.pixelsAroundPosition(43, 3, 1);
-   pixelsList area3 = matrix.pixelsAroundPosition(41, 3, 1);
-   pixelsList area4 = matrix.pixelsAroundPosition(41, 4, 1);
+   pixelsList area1 = matrix.pixelsAroundPosition(12, 2, 1);
+   pixelsList area2 = matrix.pixelsAroundPosition(13, 3, 1);
+   pixelsList area3 = matrix.pixelsAroundPosition(11, 3, 1);
+   pixelsList area4 = matrix.pixelsAroundPosition(11, 4, 1);
 
    pixelsIterator it;
    for (it = area1.begin(); it != area1.end(); ++it)
@@ -50,7 +50,7 @@ int main(int argc, char * argv[])
       (* it)->addUnit(unit4);
    }
 
-   terrain.show();
+   //terrain.show();
 
 	return 0;
 }
