@@ -8,8 +8,6 @@
 #ifndef fourFs_ENVIRONMENT_H_
 #define fourFs_ENVIRONMENT_H_
 
-#include <list>
-
 #include "utilities.hpp"
 
 namespace FourFs

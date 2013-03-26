@@ -38,7 +38,8 @@ public:/*
    unsigned width() const;
    sharedMatrix matrix();
    sharedConstMatrix matrix() const;
-   void show() const;
+   void showMap() const;
+   void showUnits() const;
 
 protected:
 
