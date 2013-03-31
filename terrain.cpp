@@ -134,31 +134,8 @@ sharedConstMatrix Terrain::matrix() const
    return m_matrix;
 }
 
-void Terrain::show() const
+void Terrain::showMap() const
 {
-   /*for (unsigned y = 0; y < m_matrix.get()->height(); y++)
-   {
-      for (unsigned x = 0; x < m_matrix.get()->width(); x++)
-      {
-         const Pixel & pixel = m_matrix.get()->pixelAtPosition(x, y);
-
-         char c;
-         if (pixel.isUnitsEmpty())
-         {
-            c = 'á';
-         }
-         else
-         {
-            c = 48 + pixel.nOfUnits();
-         }
-         std::cout << c << " ";
-      }
-      std::cout << "\n";
-   }
-   std::cout << std::endl;
-
-   std::cout << std::string(m_matrix.get()->width(), '=') << "\n" << std::endl;*/
-
    for (unsigned y = 0; y < m_matrix.get()->height(); y++)
    {
       for (unsigned x = 0; x < m_matrix.get()->width(); x++)
@@ -214,3 +191,30 @@ void Terrain::show() const
    }
    std::cout << std::endl;
 }
+
+void Terrain::showUnits() const
+{
+   for (unsigned y = 0; y < m_matrix.get()->height(); y++)
+   {
+      for (unsigned x = 0; x < m_matrix.get()->width(); x++)
+      {
+         const Pixel & pixel = m_matrix.get()->pixelAtPosition(x, y);
+
+         char c;
+         if (pixel.isUnitsEmpty())
+         {
+            c = 'á';
+         }
+         else
+         {
+            c = 48 + pixel.nOfUnits();
+         }
+         std::cout << c << " ";
+      }
+      std::cout << "\n";
+   }
+   std::cout << std::endl;
+
+   std::cout << std::string(m_matrix.get()->width(), '=') << "\n" << std::endl;
+}
+
