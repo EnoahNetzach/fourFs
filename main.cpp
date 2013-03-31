@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <boost/program_options.hpp>
+#include <boost/timer/timer.hpp>
 
 #include "matrix.h"
 #include "pixel.h"
@@ -20,14 +21,19 @@ using namespace FourFs;
 
 int main(int argc, char * argv[])
 {
-   unsigned width;
-   unsigned height;
-   double range = 3;
-   unsigned frequency = 10;
-   double amplitude = 1;
-   unsigned pace = 10;
-   unsigned square = 3;
-   unsigned smooth = 4;
+   // GLOBAL variables
+   bool execTime = false;
+
+   // MAP variables
+   unsigned mapWidth;
+   unsigned mapHeight;
+   double mapRange;
+   unsigned mapFrequency;
+   double mapAmplitude;
+   unsigned mapPace;
+   unsigned mapSquare;
+   unsigned mapSmooth;
+   bool mapTime;
 
    { // Program options
       namespace po = boost::program_options;
@@ -35,27 +41,32 @@ int main(int argc, char * argv[])
       po::options_description genericOptions("Generic options");
       genericOptions.add_options()
                  ("help,h", "produce help message")
+                 ("time,t", po::value< bool >(& execTime)->default_value(false),
+                       "print execution time")
+                 ("verbose", "produce verbose messages (overrides all)")
                  ("version,v", "print version string");
       po::options_description mapOptions("Map options");
       mapOptions.add_options()
-                 ("map-width", po::value< unsigned >(& width)->default_value(100),
-                       "set the width")
-                 ("map-height", po::value< unsigned >(& height)->default_value(70),
+                 ("map-amplitude", po::value< double >(& mapAmplitude)->default_value(1),
+                       "set the mapAmplitude of the random generated mapHeight for each pixel")
+                 ("map-frequency", po::value< unsigned >(& mapFrequency)->default_value(10),
+                       "set the mapFrequency of changing a pixel mapHeight")
+                 ("map-height", po::value< unsigned >(& mapHeight)->default_value(70),
                        "set the height")
                  ("map-length,l", po::value< unsigned >(),
                        "set <width> and <height> (produces a square map)")
-                 ("map-range", po::value< double >(& range)->default_value(3),
-                       "set the number of iterations used")
-                 ("map-frequency", po::value< unsigned >(& frequency)->default_value(10),
-                       "set the frequency of changing a pixel height")
-                 ("map-amplitude", po::value< double >(& amplitude)->default_value(1),
-                       "set the amplitude of the random generated height for each pixel")
-                 ("map-pace", po::value< unsigned >(& pace)->default_value(10),
+                 ("map-pace", po::value< unsigned >(& mapPace)->default_value(10),
                        "set the pace between two selected pixels")
-                 ("map-square", po::value< unsigned >(& square)->default_value(3),
+                 ("map-range", po::value< double >(& mapRange)->default_value(3),
+                       "set the number of iterations used")
+                 ("map-smooth", po::value< unsigned >(& mapSmooth)->default_value(4),
+                       "set the square radius of pixels used for smoothing")
+                 ("map-square", po::value< unsigned >(& mapSquare)->default_value(3),
                        "set the square radius of pixels changed")
-                 ("map-smooth", po::value< unsigned >(& smooth)->default_value(4),
-                       "set the square radius of pixels used for smoothing");
+                 ("map-time", po::value< bool >(& mapTime)->default_value(false),
+                       "print map creation time")
+                 ("map-width", po::value< unsigned >(& mapWidth)->default_value(100),
+                       "set the width");
 
       po::options_description cmdlineOptions;
       cmdlineOptions.add(genericOptions).add(mapOptions);
@@ -64,20 +75,32 @@ int main(int argc, char * argv[])
       po::store(po::parse_command_line(argc, argv, cmdlineOptions), vm);
       po::notify(vm);
 
+      // GLOBAL options
       if (vm.count("help"))
       {
          std::cout << cmdlineOptions << std::endl;
          return 1;
       }
 
+      // MAP options
       if (vm.count("map-length"))
       {
-         width = vm["map-length"].as< unsigned >();
-         height = vm["map-length"].as< unsigned >();
+         mapWidth = vm["map-length"].as< unsigned >();
+         mapHeight = vm["map-length"].as< unsigned >();
+      }
+
+      // verbose option overrides all
+      if (vm.count("verbose"))
+      {
+         execTime = true;
+         mapTime = true;
       }
    }
 
-   Terrain terrain(width, height, range, frequency, amplitude, pace, square, smooth);
+   boost::timer::cpu_timer timer;
+   timer.start();
+
+   Terrain terrain(mapWidth, mapHeight, mapRange, mapFrequency, mapAmplitude, mapPace, mapSquare, mapSmooth, mapTime);
    sharedMatrix matrix = terrain.matrix();
 
    sharedUnit unit1(new Unit);
@@ -113,6 +136,11 @@ int main(int argc, char * argv[])
    }
 
    //terrain.show();
+   if (execTime)
+   {
+      std::string format = "Execution time:\n> %ws wall, %us user + %ss system = %ts CPU (%p%)";
+      std::cout << timer.format(boost::timer::default_places, format) << std::endl;
+   }
 
 	return 0;
 }

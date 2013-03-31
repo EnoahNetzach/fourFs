@@ -14,27 +14,18 @@
 
 #include <boost/foreach.hpp>
 #include <boost/random.hpp>
+#include <boost/timer/timer.hpp>
 
 using namespace FourFs;
 
-/*
- * range ~2.5
- *
- * frequency 10
- *
- * amplitude ~0.3
- *
- * pace 4
- *
- * square 4
- *
- * smooth 3
- */
 Terrain::Terrain(unsigned width, unsigned height, double range,
                  unsigned frequency, double amplitude, unsigned pace,
-                 unsigned square, unsigned smooth)
+                 unsigned square, unsigned smooth, bool time)
    : m_matrix(new Matrix(width, height))
 {
+   boost::timer::cpu_timer timer;
+   timer.start();
+
    int f = frequency;
    int p = int(pace);
 
@@ -88,8 +79,12 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
          break;
       }
    }
+
+   timer.stop();
    std::cout << "Before smoothing:\n" << std::flush;
    showMap();
+   timer.resume();
+
    for (unsigned i = 0; i < m_matrix.get()->size(); ++i)
    {
       sharedPixel pixel = m_matrix.get()->pixelAtIndex(i);
@@ -106,8 +101,16 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
       if (pixel.get()->height() < 0) pixel.get()->height() = 0;
       if (pixel.get()->height() > 1) pixel.get()->height() = 1;
    }
+
+   timer.stop();
    std::cout << "After smoothing:\n" << std::flush;
    showMap();
+
+   if (time)
+   {
+      std::string format = "Map generation time:\n> %ws wall, %us user + %ss system = %ts CPU (%p%)";
+      std::cout << timer.format(boost::timer::default_places, format) << std::endl;
+   }
 }
 
 Terrain::~Terrain()
