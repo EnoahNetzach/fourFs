@@ -178,11 +178,11 @@ void Terrain::show() const
          }
          else if (height < 0.3)
          {
-            c = '*';
+            c = ':';
          }
          else if (height < 0.4)
          {
-            c = ':';
+            c = '*';
          }
          else if (height < 0.5)
          {
@@ -208,7 +208,7 @@ void Terrain::show() const
          {
             c = '@';
          }
-         std::cout << c << " ";
+         std::cout << c << c;
       }
       std::cout << "\n";
    }
