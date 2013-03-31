@@ -89,7 +89,7 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
       }
    }
    std::cout << "Before smoothing:\n" << std::flush;
-   show();
+   showMap();
    for (unsigned i = 0; i < m_matrix.get()->size(); ++i)
    {
       sharedPixel pixel = m_matrix.get()->pixelAtIndex(i);
@@ -107,7 +107,7 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
       if (pixel.get()->height() > 1) pixel.get()->height() = 1;
    }
    std::cout << "After smoothing:\n" << std::flush;
-   show();
+   showMap();
 }
 
 Terrain::~Terrain()
@@ -198,16 +198,16 @@ void Terrain::showUnits() const
    {
       for (unsigned x = 0; x < m_matrix.get()->width(); x++)
       {
-         const Pixel & pixel = m_matrix.get()->pixelAtPosition(x, y);
+         sharedConstPixel pixel = m_matrix.get()->pixelAtPosition(x, y);
 
          char c;
-         if (pixel.isUnitsEmpty())
+         if (pixel.get()->isUnitsEmpty())
          {
             c = 'á';
          }
          else
          {
-            c = 48 + pixel.nOfUnits();
+            c = 48 + pixel.get()->nOfUnits();
          }
          std::cout << c << " ";
       }
