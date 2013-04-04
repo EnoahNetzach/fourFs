@@ -24,7 +24,7 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
    : m_matrix(new Matrix(width, height))
 {
    boost::timer::cpu_timer timer;
-   timer.start();
+   if (time) timer.start();
 
    int f = frequency;
    int p = int(pace);
@@ -80,10 +80,10 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
       }
    }
 
-   timer.stop();
+   if (time) timer.stop();
    std::cout << "Before smoothing:\n" << std::flush;
    showMap();
-   timer.resume();
+   if (time) timer.resume();
 
    for (unsigned i = 0; i < m_matrix.get()->size(); ++i)
    {
@@ -102,12 +102,13 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
       if (pixel.get()->height() > 1) pixel.get()->height() = 1;
    }
 
-   timer.stop();
+   if (time) timer.stop();
    std::cout << "After smoothing:\n" << std::flush;
    showMap();
 
    if (time)
    {
+      timer.stop();
       std::string format = "Map generation time:\n> %ws wall, %us user + %ss system = %ts CPU (%p%)";
       std::cout << timer.format(boost::timer::default_places, format) << std::endl;
    }

@@ -4,7 +4,6 @@
  *  Created on: Mar 20, 2013
  *      Author: Enoah Netzach
  */
-//caccamadonna!!!
 
 #include "earth.h"
 

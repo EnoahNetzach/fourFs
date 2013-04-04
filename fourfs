@@ -1,0 +1,19 @@
+/*
+ * fourfs
+ *
+ *  Created on: Apr 4, 2013
+ *      Author: Enoah Netzach
+ */
+
+#ifndef fourFs_FOURFS_
+#define fourFs_FOURFS_
+
+#include "Logic/matrix.h"
+#include "Logic/pixel.h"
+#include "Logic/state.h"
+#include "Logic/map.h"
+#include "Logic/unit.h"
+#include "Logic/utilities.hpp"
+#include "View/mapviewer.h"
+
+#endif /* fourFs_FOURFS_ */
