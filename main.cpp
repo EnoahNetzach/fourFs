@@ -39,7 +39,7 @@ int main(int argc, char * argv[])
    view::Options viewFlags;
    bool viewTime = false;
 
-   { // Program options
+   { // Program options BEGIN
       namespace po = boost::program_options;
 
       po::options_description genericOptions("Generic options");
@@ -137,7 +137,7 @@ int main(int argc, char * argv[])
          mapTime = true;
          viewTime = true;
       }
-   }
+   } // Program options END
 
    boost::timer::cpu_timer timer;
    if (execTime) timer.start();
