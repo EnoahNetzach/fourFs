@@ -17,9 +17,10 @@ namespace view {
 
 class Interface_base : boost::noncopyable
 {
-   SINGLETON_DEF(Interface_base, protected)
-
 public:
+   Interface_base();
+   virtual ~Interface_base();
+	
    virtual void initialize();
    virtual bool good() const;
    virtual void showMap(const logic::Map & map) const;

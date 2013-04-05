@@ -16,32 +16,6 @@
 #include <boost/random/random_device.hpp>
 #include <boost/shared_ptr.hpp>
 
-#define SINGLETON_DEF(Class, access) \
-public: \
-   static Class * instance(); \
-   static void uninstance(); \
-access: \
-   Class(); \
-   ~Class(); \
-private: \
-   static Class * m_instance;
-
-#define SINGLETON_DEC(Class) \
-Class * Class::m_instance = 0; \
-Class * Class::instance() \
-{ \
-   if (m_instance == 0) \
-   { \
-      m_instance = new Class; \
-   } \
-   return m_instance; \
-} \
-void Class::uninstance() \
-{ \
-   delete m_instance; \
-   m_instance = 0; \
-}
-
 static boost::random_device rng;
 
 namespace fourFs {
@@ -93,7 +67,8 @@ static const Option terminal = _terminal;
 typedef int Options;
 
 class Interface_base;
-typedef std::list< Interface_base * > interfaceList;
+typedef boost::shared_ptr< Interface_base > sharedInterface;
+typedef std::list< sharedInterface > interfaceList;
 
 } /* namespace view */
 } /* namespace FourFs */

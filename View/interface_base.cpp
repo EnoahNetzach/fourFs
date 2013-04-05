@@ -13,8 +13,6 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-SINGLETON_DEC(Interface_base)
-
 Interface_base::Interface_base()
    : m_good(false)
 {

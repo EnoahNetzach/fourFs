@@ -24,10 +24,10 @@ MapViewer::MapViewer(const Map & map, Options op)
 {
    if (op & terminal)
    {
-      Interface_base * interface(TerminalInterface::instance());
-      interface->initialize();
+      sharedInterface interface(new TerminalInterface);
+      interface.get()->initialize();
 
-      if (interface->good())
+      if (interface.get()->good())
       {
          m_interfaces.push_back(interface);
       }
@@ -35,10 +35,10 @@ MapViewer::MapViewer(const Map & map, Options op)
 
    if (op & openGL)
    {
-      Interface_base * interface(OpenGLInterface::instance());
-      interface->initialize();
+      sharedInterface interface(new OpenGLInterface);
+      interface.get()->initialize();
 
-      if (interface->good())
+      if (interface.get()->good())
       {
          m_interfaces.push_back(interface);
       }
@@ -51,16 +51,16 @@ MapViewer::~MapViewer()
 
 void MapViewer::showMap() const
 {
-   BOOST_FOREACH(Interface_base * interface, m_interfaces)
+   BOOST_FOREACH(sharedInterface interface, m_interfaces)
    {
-      interface->showMap(m_map);
+      interface.get()->showMap(m_map);
    }
 }
 
 void MapViewer::showUnits() const
 {
-   BOOST_FOREACH(Interface_base * interface, m_interfaces)
+   BOOST_FOREACH(sharedInterface interface, m_interfaces)
    {
-      interface->showUnits(m_map);
+      interface.get()->showUnits(m_map);
    }
 }

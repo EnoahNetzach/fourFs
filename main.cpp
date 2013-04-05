@@ -36,7 +36,7 @@ int main(int argc, char * argv[])
    unsigned nOfUnits;
 
    // VIEW options
-   view::Options viewFlags;
+   view::Options viewFlags = 0;
    bool viewTime = false;
 
    { // Program options BEGIN
@@ -45,9 +45,10 @@ int main(int argc, char * argv[])
       po::options_description genericOptions("Generic options");
       genericOptions.add_options()
             ("help,h", "produce help message")
+            ("silent,s", "suppress all messages")
             ("time,t", "print execution time")
-            ("verbose", "produce verbose messages (overrides all)")
-            ("version,v", "print version string");
+            ("verbose,v", "produce verbose messages")
+            ("version,V", "print version string");
       po::options_description mapOptions("Map options");
       mapOptions.add_options()
             ("map-amplitude", po::value< double >(& mapAmplitude)->default_value(1),

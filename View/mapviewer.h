@@ -18,7 +18,6 @@ namespace view {
 class MapViewer
 {
 public:
-
    MapViewer(const logic::Map & map, Options op);
    ~MapViewer();
 

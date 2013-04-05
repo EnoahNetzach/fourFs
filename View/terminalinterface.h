@@ -16,9 +16,10 @@ namespace view {
 
 class TerminalInterface: virtual public Interface_base
 {
-   SINGLETON_DEF(TerminalInterface, protected)
-
 public:
+   TerminalInterface();
+   ~TerminalInterface();
+	
    void initialize();
    bool good() const;
    void showMap(const logic::Map & map) const;

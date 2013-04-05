@@ -16,8 +16,6 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-SINGLETON_DEC(TerminalInterface)
-
 TerminalInterface::TerminalInterface()
 {
 }

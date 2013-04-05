@@ -15,11 +15,12 @@
 namespace fourFs {
 namespace view {
 
-class OpenGLInterface: public Interface_base
+class OpenGLInterface : public Interface_base
 {
-   SINGLETON_DEF(OpenGLInterface, protected)
-
 public:
+   OpenGLInterface();
+   ~OpenGLInterface();
+	
    void initialize();
    bool good() const;
    void showMap(const logic::Map & map) const;
