@@ -10,8 +10,8 @@
 
 #include "environment.h"
 
-namespace FourFs
-{
+namespace fourFs {
+namespace logic {
 
 class Earth : public virtual Environment
 {
@@ -24,6 +24,7 @@ protected:
 private:
 };
 
-} /* namespace FourFs */
+} /* namespace logic */
+} /* namespace fourFs */
 
 #endif /* fourFs_EARTH_H_ */

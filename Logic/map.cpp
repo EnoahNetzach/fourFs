@@ -5,7 +5,7 @@
  *      Author: Enoah Netzach
  */
 
-#include "terrain.h"
+#include "map.h"
 #include "pixel.h"
 
 #include <algorithm>
@@ -16,9 +16,10 @@
 #include <boost/random.hpp>
 #include <boost/timer/timer.hpp>
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
-Terrain::Terrain(unsigned width, unsigned height, double range,
+Map::Map(unsigned width, unsigned height, double range,
                  unsigned frequency, double amplitude, unsigned pace,
                  unsigned square, unsigned smooth, bool time)
    : m_matrix(new Matrix(width, height))
@@ -80,11 +81,6 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
       }
    }
 
-   if (time) timer.stop();
-   std::cout << "Before smoothing:\n" << std::flush;
-   showMap();
-   if (time) timer.resume();
-
    for (unsigned i = 0; i < m_matrix.get()->size(); ++i)
    {
       sharedPixel pixel = m_matrix.get()->pixelAtIndex(i);
@@ -102,10 +98,6 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
       if (pixel.get()->height() > 1) pixel.get()->height() = 1;
    }
 
-   if (time) timer.stop();
-   std::cout << "After smoothing:\n" << std::flush;
-   showMap();
-
    if (time)
    {
       timer.stop();
@@ -114,111 +106,26 @@ Terrain::Terrain(unsigned width, unsigned height, double range,
    }
 }
 
-Terrain::~Terrain()
+Map::~Map()
 {
 }
 
-unsigned Terrain::height() const
+unsigned Map::height() const
 {
    return m_matrix.get()->height();
 }
 
-unsigned Terrain::width() const
+unsigned Map::width() const
 {
    return m_matrix.get()->width();
 }
 
-sharedMatrix Terrain::matrix()
+sharedMatrix Map::matrix()
 {
    return m_matrix;
 }
 
-sharedConstMatrix Terrain::matrix() const
+sharedConstMatrix Map::matrix() const
 {
    return m_matrix;
 }
-
-void Terrain::showMap() const
-{
-   for (unsigned y = 0; y < m_matrix.get()->height(); y++)
-   {
-      for (unsigned x = 0; x < m_matrix.get()->width(); x++)
-      {
-         sharedConstPixel pixel = m_matrix.get()->pixelAtPosition(x, y);
-
-         double height = pixel.get()->height();
-
-         char c;
-         if (height < 0.1)
-         {
-            c = ' ';
-         }
-         else if (height < 0.2)
-         {
-            c = '.';
-         }
-         else if (height < 0.3)
-         {
-            c = ':';
-         }
-         else if (height < 0.4)
-         {
-            c = '*';
-         }
-         else if (height < 0.5)
-         {
-            c = 'o';
-         }
-         else if (height < 0.6)
-         {
-            c = 'g';
-         }
-         else if (height < 0.7)
-         {
-            c = '&';
-         }
-         else if (height < 0.8)
-         {
-            c = '8';
-         }
-         else if (height < 0.9)
-         {
-            c = '#';
-         }
-         else
-         {
-            c = '@';
-         }
-         std::cout << c << c;
-      }
-      std::cout << "\n";
-   }
-   std::cout << std::endl;
-}
-
-void Terrain::showUnits() const
-{
-   for (unsigned y = 0; y < m_matrix.get()->height(); y++)
-   {
-      for (unsigned x = 0; x < m_matrix.get()->width(); x++)
-      {
-         sharedConstPixel pixel = m_matrix.get()->pixelAtPosition(x, y);
-
-         char c;
-         if (pixel.get()->isUnitsEmpty())
-         {
-            c = 'á';
-         }
-         else
-         {
-            c = 48 + pixel.get()->nOfUnits();
-         }
-         std::cout << c << " ";
-      }
-      std::cout << "\n";
-   }
-   std::cout << std::endl;
-
-   std::cout << std::string(m_matrix.get()->width(), '=') << "\n" << std::endl;
-}
-

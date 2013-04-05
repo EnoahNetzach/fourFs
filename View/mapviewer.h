@@ -8,7 +8,9 @@
 #ifndef fourFs_MAPVIEWER_H_
 #define fourFs_MAPVIEWER_H_
 
-#include "../Logic/utilities.hpp"
+#include <list>
+
+#include "../utilities.hpp"
 
 namespace fourFs {
 namespace view {
@@ -16,10 +18,18 @@ namespace view {
 class MapViewer
 {
 public:
-   MapViewer(const logic::Map & map);
+
+   MapViewer(const logic::Map & map, Options op);
    ~MapViewer();
 
+   void showMap() const;
+   void showUnits() const;
 
+protected:
+
+private:
+   const logic::Map & m_map;
+   interfaceList m_interfaces;
 };
 
 } /* namespace view */

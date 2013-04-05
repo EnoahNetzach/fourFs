@@ -10,14 +10,14 @@
 
 #include <vector>
 
-#include "utilities.hpp"
+#include "../utilities.hpp"
 
-namespace FourFs
-{
+namespace fourFs {
+namespace logic {
 
 class Matrix
 {
-   friend class Terrain;
+   friend class Map;
 
 public:
    Matrix(unsigned width, unsigned height);
@@ -33,9 +33,9 @@ public:
    sharedPixel pixelAtPosition(unsigned x, unsigned y);
    sharedConstPixel pixelAtPosition(unsigned x, unsigned y) const;
    pixelsList pixelsAroundIndex(unsigned index, unsigned radius);
-   const constPixelsList pixelsAroundIndex(unsigned index, unsigned radius) const;
+   const constPixelList pixelsAroundIndex(unsigned index, unsigned radius) const;
    pixelsList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius);
-   const constPixelsList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const;
+   const constPixelList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const;
 
 protected:
 
@@ -45,6 +45,7 @@ private:
    std::vector< sharedPixel > m_pixels;
 };
 
-} /* namespace FourFs */
+} /* namespace logic */
+} /* namespace fourFs */
 
 #endif /* fourFs_MATRIX_H_ */
