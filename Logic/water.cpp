@@ -7,7 +7,8 @@
 
 #include "water.h"
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
 Water::Water()
 {

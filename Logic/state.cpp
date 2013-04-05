@@ -7,7 +7,8 @@
 
 #include "state.h"
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
 State::State()
 {
@@ -25,7 +26,7 @@ void State::addUnit(sharedUnit unit)
 bool State::removeUnit(sharedConstUnit unit)
 {
    bool found = false;
-   unitsIterator it;
+   unitIterator it;
 
    for (it = m_units.begin(); it != m_units.end(); ++it)
    {
@@ -45,7 +46,7 @@ void State::clearUnits()
    m_units.clear();
 }
 
-unitsList & State::units()
+unitList & State::units()
 {
    return m_units;
 }

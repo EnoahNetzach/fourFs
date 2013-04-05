@@ -12,7 +12,8 @@
 #include "pixel.h"
 #include "state.h"
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
 // STATIC members
 unsigned Unit::radius()
@@ -59,7 +60,7 @@ void Unit::addPixel(sharedPixel pixel)
 bool Unit::removePixel(sharedPixel pixel)
 {
    bool found = false;
-   pixelsIterator it;
+   pixelIterator it;
 
    for (it = m_pixels.begin(); it != m_pixels.end(); ++it)
    {
@@ -79,12 +80,12 @@ void Unit::clearPixels()
    m_pixels.clear();
 }
 
-pixelsConstIterator Unit::pixelsBegin() const
+pixelConstIterator Unit::pixelsBegin() const
 {
    return m_pixels.begin();
 }
 
-pixelsConstIterator Unit::pixelsEnd() const
+pixelConstIterator Unit::pixelsEnd() const
 {
    return m_pixels.end();
 }

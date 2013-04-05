@@ -8,10 +8,10 @@
 #ifndef fourFs_ENVIRONMENT_H_
 #define fourFs_ENVIRONMENT_H_
 
-#include "utilities.hpp"
+#include "../utilities.hpp"
 
-namespace FourFs
-{
+namespace fourFs {
+namespace logic {
 
 class Environment
 {
@@ -23,8 +23,8 @@ public:
    void addPixel(sharedPixel pixel);
    bool removePixel(sharedPixel pixel);
    void clearPixels();
-   pixelsConstIterator pixelsBegin() const;
-   pixelsConstIterator pixelsEnd() const;
+   pixelConstIterator pixelsBegin() const;
+   pixelConstIterator pixelsEnd() const;
 
 protected:
 
@@ -33,6 +33,7 @@ private:
    pixelsList m_pixels;
 };
 
-} /* namespace FourFs */
+} /* namespace logic */
+} /* namespace fourFs */
 
 #endif /* fourFs_ENVIRONMENT_H_ */

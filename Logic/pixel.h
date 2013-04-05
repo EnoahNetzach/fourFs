@@ -8,10 +8,10 @@
 #ifndef fourFs_PIXEL_H_
 #define fourFs_PIXEL_H_
 
-#include "utilities.hpp"
+#include "../utilities.hpp"
 
-namespace FourFs
-{
+namespace fourFs {
+namespace logic {
 
 class Pixel
 {
@@ -31,7 +31,7 @@ public:
    void addUnit(sharedUnit unit);
    bool removeUnit(sharedConstUnit unit);
    void clearUnits();
-   unitsList & units();
+   unitList & units();
 
 protected:
 
@@ -40,9 +40,10 @@ private:
    double m_height;
    bool m_border;
    sharedEnvironment m_environment;
-   unitsList m_units;
+   unitList m_units;
 };
 
+} /* namespace logic */
 } /* namespace FourFs */
 
 #endif /* fourFs_PIXEL_H_ */

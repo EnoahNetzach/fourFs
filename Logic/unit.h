@@ -8,10 +8,10 @@
 #ifndef fourFs_UNIT_H_
 #define fourFs_UNIT_H_
 
-#include "utilities.hpp"
+#include "../utilities.hpp"
 
-namespace FourFs
-{
+namespace fourFs {
+namespace logic {
 
 class Unit
 {
@@ -27,8 +27,8 @@ public:
    void addPixel(sharedPixel pixel);
    bool removePixel(sharedPixel pixel);
    void clearPixels();
-   pixelsConstIterator pixelsBegin() const;
-   pixelsConstIterator pixelsEnd() const;
+   pixelConstIterator pixelsBegin() const;
+   pixelConstIterator pixelsEnd() const;
    sharedState state();
    sharedConstState state() const;
 
@@ -42,6 +42,7 @@ private:
    sharedState m_state;
 };
 
+} /* namespace logic */
 } /* namespace FourFs */
 
 #endif /* fourFs_UNIT_H_ */

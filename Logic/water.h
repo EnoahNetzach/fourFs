@@ -10,8 +10,8 @@
 
 #include "environment.h"
 
-namespace FourFs
-{
+namespace fourFs {
+namespace logic {
 
 class Water : public virtual Environment
 {
@@ -24,6 +24,7 @@ protected:
 private:
 };
 
+} /* namespace logic */
 } /* namespace FourFs */
 
 #endif /* fourFs_WATER_H_ */

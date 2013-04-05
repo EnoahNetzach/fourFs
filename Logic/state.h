@@ -8,10 +8,10 @@
 #ifndef fourFs_STATE_H_
 #define fourFs_STATE_H_
 
-#include "utilities.hpp"
+#include "../utilities.hpp"
 
-namespace FourFs
-{
+namespace fourFs {
+namespace logic {
 
 class State
 {
@@ -22,14 +22,15 @@ public:
    void addUnit(sharedUnit unit);
    bool removeUnit(sharedConstUnit unit);
    void clearUnits();
-   unitsList & units();
+   unitList & units();
 
 protected:
 
 private:
-   unitsList m_units;
+   unitList m_units;
 };
 
+} /* namespace logic */
 } /* namespace FourFs */
 
 #endif /* fourFs_STATE_H_ */

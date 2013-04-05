@@ -12,7 +12,8 @@
 #include "environment.h"
 #include "unit.h"
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
 Pixel::Pixel(unsigned index, bool border)
    : m_index(index)
@@ -78,7 +79,7 @@ void Pixel::addUnit(sharedUnit unit)
 bool Pixel::removeUnit(sharedConstUnit unit)
 {
    bool found = false;
-   unitsIterator it;
+   unitIterator it;
 
    for (it = m_units.begin(); it != m_units.end(); ++it)
    {
@@ -98,7 +99,7 @@ void Pixel::clearUnits()
    m_units.clear();
 }
 
-unitsList & Pixel::units()
+unitList & Pixel::units()
 {
    return m_units;
 }

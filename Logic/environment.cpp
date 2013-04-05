@@ -7,7 +7,8 @@
 
 #include "environment.h"
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
 Environment::Environment()
    : m_vivibility(-1)
@@ -32,7 +33,7 @@ void Environment::addPixel(sharedPixel pixel)
 bool Environment::removePixel(sharedPixel pixel)
 {
    bool found = false;
-   pixelsIterator it;
+   pixelIterator it;
 
    for (it = m_pixels.begin(); it != m_pixels.end(); ++it)
    {
@@ -52,12 +53,12 @@ void Environment::clearPixels()
    m_pixels.clear();
 }
 
-pixelsConstIterator Environment::pixelsBegin() const
+pixelConstIterator Environment::pixelsBegin() const
 {
    return m_pixels.begin();
 }
 
-pixelsConstIterator Environment::pixelsEnd() const
+pixelConstIterator Environment::pixelsEnd() const
 {
    return m_pixels.end();
 }

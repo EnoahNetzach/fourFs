@@ -16,7 +16,8 @@
 #include "pixel.h"
 #include "unit.h"
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
 Matrix::Matrix(unsigned width, unsigned height)
    : m_height(height)
@@ -103,7 +104,7 @@ pixelsList Matrix::pixelsAroundIndex(unsigned index, unsigned radius)
    return pixelsAroundPosition(pos.first, pos.second, radius);
 }
 
-const constPixelsList Matrix::pixelsAroundIndex(unsigned index, unsigned radius) const
+const constPixelList Matrix::pixelsAroundIndex(unsigned index, unsigned radius) const
 {
    std::pair< unsigned, unsigned > pos = positionFromIndex(index);
 
@@ -129,9 +130,9 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius)
    return pixels;
 }
 
-const constPixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const
+const constPixelList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const
 {
-   constPixelsList pixels;
+   constPixelList pixels;
 
    for (int x1 = std::max(0, int(x) - int(radius));
         x1 <= std::min(int(m_width) - 1, int(x) + int(radius));

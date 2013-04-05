@@ -7,7 +7,8 @@
 
 #include "earth.h"
 
-using namespace FourFs;
+using namespace fourFs;
+using namespace logic;
 
 Earth::Earth()
 {
