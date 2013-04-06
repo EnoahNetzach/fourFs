@@ -15,18 +15,16 @@
 namespace fourFs {
 namespace view {
 
-class OpenGLInterface : public Interface_base
+class OpenGLInterface : virtual public Interface_base
 {
 public:
-   OpenGLInterface();
+   OpenGLInterface(bool time);
    ~OpenGLInterface();
-	
-   void initialize();
-   bool good() const;
-   void showMap(const logic::Map & map) const;
-   void showUnits(const logic::Map & map) const;
 
 protected:
+   void initializeImpl();
+   void showMapImpl(const logic::Map & map) const;
+   void showUnitsImpl(const logic::Map & map) const;
 
 private:
 };

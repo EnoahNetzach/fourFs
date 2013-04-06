@@ -18,18 +18,24 @@ namespace view {
 class Interface_base : boost::noncopyable
 {
 public:
-   Interface_base();
-   virtual ~Interface_base();
-	
-   virtual void initialize();
+   void initialize();
    virtual bool good() const;
-   virtual void showMap(const logic::Map & map) const;
-   virtual void showUnits(const logic::Map & map) const;
+   void showMap(const logic::Map & map) const;
+   void showUnits(const logic::Map & map) const;
 
 protected:
+   Interface_base(bool time, const char * name);
+   virtual ~Interface_base();
+
+   virtual void initializeImpl() = 0;
+   virtual void showMapImpl(const logic::Map & map) const = 0;
+   virtual void showUnitsImpl(const logic::Map & map) const = 0;
+
    bool m_good;
+   const char * m_name;
 
 private:
+   bool m_time;
 };
 
 } /* namespace view */

@@ -16,7 +16,8 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-TerminalInterface::TerminalInterface()
+TerminalInterface::TerminalInterface(bool time)
+   : Interface_base(time, "terminal")
 {
 }
 
@@ -24,20 +25,17 @@ TerminalInterface::~TerminalInterface()
 {
 }
 
-void TerminalInterface::initialize()
+void TerminalInterface::initializeImpl()
 {
    m_good = std::cout.good();
 }
 
-bool TerminalInterface::good() const
+void TerminalInterface::showMapImpl(const logic::Map & map) const
 {
-   return m_good;
-}
-
-void TerminalInterface::showMap(const logic::Map & map) const
-{
+   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << "\n";
    for (unsigned y = 0; y < map.matrix().get()->height(); y++)
    {
+      std::cout << "|";
       for (unsigned x = 0; x < map.matrix().get()->width(); x++)
       {
          sharedConstPixel pixel = map.matrix().get()->pixelAtPosition(x, y);
@@ -87,15 +85,17 @@ void TerminalInterface::showMap(const logic::Map & map) const
          }
          std::cout << c << c;
       }
-      std::cout << "\n";
+      std::cout << "|\n";
    }
-   std::cout << std::flush;
+   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << std::endl;
 }
 
-void TerminalInterface::showUnits(const logic::Map & map) const
+void TerminalInterface::showUnitsImpl(const logic::Map & map) const
 {
+   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << "\n";
    for (unsigned y = 0; y < map.matrix().get()->height(); y++)
    {
+      std::cout << "|";
       for (unsigned x = 0; x < map.matrix().get()->width(); x++)
       {
          sharedConstPixel pixel = map.matrix().get()->pixelAtPosition(x, y);
@@ -111,7 +111,7 @@ void TerminalInterface::showUnits(const logic::Map & map) const
          }
          std::cout << " " << c;
       }
-      std::cout << "\n";
+      std::cout << "|\n";
    }
-   std::cout << std::flush;
+   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << std::endl;
 }

@@ -101,8 +101,7 @@ Map::Map(unsigned width, unsigned height, double range,
    if (time)
    {
       timer.stop();
-      std::string format = "Map generation time:\n> %ws wall, %us user + %ss system = %ts CPU (%p%)";
-      std::cout << timer.format(boost::timer::default_places, format) << std::endl;
+      std::cout << timer.format(boost::timer::default_places, timerFormat("Map generation")) << std::endl;
    }
 }
 

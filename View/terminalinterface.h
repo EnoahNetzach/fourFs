@@ -17,19 +17,18 @@ namespace view {
 class TerminalInterface: virtual public Interface_base
 {
 public:
-   TerminalInterface();
+   TerminalInterface(bool time);
    ~TerminalInterface();
-	
-   void initialize();
-   bool good() const;
-   void showMap(const logic::Map & map) const;
-   void showUnits(const logic::Map & map) const;
 
 protected:
+   void initializeImpl();
+   void showMapImpl(const logic::Map & map) const;
+   void showUnitsImpl(const logic::Map & map) const;
 
 private:
 };
 
 } /* namespace view */
 } /* namespace fourFs */
+
 #endif /* fourFs_TERMINAL_H_ */

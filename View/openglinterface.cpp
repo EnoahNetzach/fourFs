@@ -13,7 +13,8 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-OpenGLInterface::OpenGLInterface()
+OpenGLInterface::OpenGLInterface(bool time)
+   : Interface_base(time, "openGL")
 {
 }
 
@@ -21,22 +22,17 @@ OpenGLInterface::~OpenGLInterface()
 {
 }
 
-void OpenGLInterface::initialize()
+void OpenGLInterface::initializeImpl()
 {
    m_good = true;
 }
 
-bool OpenGLInterface::good() const
-{
-   return m_good;
-}
-
-void OpenGLInterface::showMap(const logic::Map & map) const
+void OpenGLInterface::showMapImpl(const logic::Map & map) const
 {
    std::cout << "An openGL fabulous show here!" << std::endl;
 }
 
-void OpenGLInterface::showUnits(const logic::Map & map) const
+void OpenGLInterface::showUnitsImpl(const logic::Map & map) const
 {
    std::cout << "An openGL fabulous show here!" << std::endl;
 }

@@ -19,12 +19,12 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-MapViewer::MapViewer(const Map & map, Options op)
+MapViewer::MapViewer(const Map & map, Options op, bool time)
    : m_map(map)
 {
    if (op & terminal)
    {
-      sharedInterface interface(new TerminalInterface);
+      sharedInterface interface(new TerminalInterface(time));
       interface.get()->initialize();
 
       if (interface.get()->good())
@@ -35,7 +35,7 @@ MapViewer::MapViewer(const Map & map, Options op)
 
    if (op & openGL)
    {
-      sharedInterface interface(new OpenGLInterface);
+      sharedInterface interface(new OpenGLInterface(time));
       interface.get()->initialize();
 
       if (interface.get()->good())

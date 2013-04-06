@@ -143,6 +143,8 @@ int main(int argc, char * argv[])
    boost::timer::cpu_timer timer;
    if (execTime) timer.start();
 
+   // execution loop
+
    logic::Map map(mapWidth, mapHeight, mapRange, mapFrequency,
                   mapAmplitude, mapPace, mapSquare, mapSmooth, mapTime);
    logic::sharedMatrix matrix = map.matrix();
@@ -179,18 +181,15 @@ int main(int argc, char * argv[])
       (* it)->addUnit(unit4);
    }
 
-   view::MapViewer mapViewer(map, viewFlags);
+   view::MapViewer mapViewer(map, viewFlags, viewTime);
    mapViewer.showMap();
-   if (viewFlags & view::terminal) std::cout << std::endl;
    mapViewer.showUnits();
 
    //terrain.show();
    if (execTime)
    {
       timer.stop();
-      std::cout << "\n" << std::string(mapWidth * 2, '=') << "\n" << std::endl;
-      std::string format = "Execution time:\n> %ws wall, %us user + %ss system = %ts CPU (%p%)";
-      std::cout << timer.format(boost::timer::default_places, format) << std::endl;
+      std::cout << timer.format(boost::timer::default_places, timerFormat("Execution")) << std::endl;
    }
 
 	return 0;

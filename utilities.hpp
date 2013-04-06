@@ -11,7 +11,9 @@
 #ifndef fourFs_UTILITIES_HPP_
 #define fourFs_UTILITIES_HPP_
 
+#include <iostream>
 #include <list>
+#include <string>
 
 #include <boost/random/random_device.hpp>
 #include <boost/shared_ptr.hpp>
@@ -19,6 +21,13 @@
 static boost::random_device rng;
 
 namespace fourFs {
+inline const char * timerFormat(const char * name)
+{
+   std::string format = name;
+   format += " time: %ws wall, %us user + %ss system = %ts CPU (%p%)";
+   return format.c_str();
+}
+
 namespace logic {
 
 class Environment;
