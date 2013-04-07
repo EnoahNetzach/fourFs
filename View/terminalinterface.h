@@ -22,7 +22,7 @@ public:
 
 protected:
    void initializeImpl();
-   void showMapImpl(const logic::Map & map) const;
+   void showImpl(logic::sharedConstMatrix matrix);
    void showUnitsImpl(const logic::Map & map) const;
 
 private:

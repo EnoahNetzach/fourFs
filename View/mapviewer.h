@@ -21,8 +21,7 @@ public:
    MapViewer(const logic::Map & map, Options op, bool time);
    ~MapViewer();
 
-   void showMap() const;
-   void showUnits() const;
+   void show();
 
 protected:
 

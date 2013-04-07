@@ -20,6 +20,7 @@ OpenGLInterface::OpenGLInterface(bool time)
 
 OpenGLInterface::~OpenGLInterface()
 {
+   m_runLoopThread.interrupt();
 }
 
 void OpenGLInterface::initializeImpl()
@@ -27,12 +28,17 @@ void OpenGLInterface::initializeImpl()
    m_good = true;
 }
 
-void OpenGLInterface::showMapImpl(const logic::Map & map) const
+void OpenGLInterface::showImpl(sharedConstMatrix map)
 {
    std::cout << "An openGL fabulous show here!" << std::endl;
+
+   m_runLoopThread = boost::thread(& OpenGLInterface::runLoop, this);
 }
 
-void OpenGLInterface::showUnitsImpl(const logic::Map & map) const
+void OpenGLInterface::runLoop()
 {
-   std::cout << "An openGL fabulous show here!" << std::endl;
+   while (true)
+   {
+      // ...
+   }
 }

@@ -8,9 +8,10 @@
 #ifndef fourFs_OPENGLINTERFACE_H_
 #define fourFs_OPENGLINTERFACE_H_
 
-#include "interface_base.h"
+#include <boost/thread.hpp>
 
 #include "../utilities.hpp"
+#include "interface_base.h"
 
 namespace fourFs {
 namespace view {
@@ -23,10 +24,12 @@ public:
 
 protected:
    void initializeImpl();
-   void showMapImpl(const logic::Map & map) const;
-   void showUnitsImpl(const logic::Map & map) const;
+   void showImpl(logic::sharedConstMatrix map);
 
 private:
+   void runLoop();
+
+   boost::thread m_runLoopThread;
 };
 
 } /* namespace view */

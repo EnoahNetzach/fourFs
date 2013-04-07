@@ -49,18 +49,10 @@ MapViewer::~MapViewer()
 {
 }
 
-void MapViewer::showMap() const
+void MapViewer::show()
 {
    BOOST_FOREACH(sharedInterface interface, m_interfaces)
    {
-      interface.get()->showMap(m_map);
-   }
-}
-
-void MapViewer::showUnits() const
-{
-   BOOST_FOREACH(sharedInterface interface, m_interfaces)
-   {
-      interface.get()->showUnits(m_map);
+      interface.get()->show(m_map);
    }
 }

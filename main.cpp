@@ -182,8 +182,7 @@ int main(int argc, char * argv[])
    }
 
    view::MapViewer mapViewer(map, viewFlags, viewTime);
-   mapViewer.showMap();
-   mapViewer.showUnits();
+   mapViewer.show();
 
    //terrain.show();
    if (execTime)

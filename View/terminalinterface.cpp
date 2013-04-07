@@ -30,15 +30,15 @@ void TerminalInterface::initializeImpl()
    m_good = std::cout.good();
 }
 
-void TerminalInterface::showMapImpl(const logic::Map & map) const
+void TerminalInterface::showImpl(sharedConstMatrix matrix)
 {
-   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << "\n";
-   for (unsigned y = 0; y < map.matrix().get()->height(); y++)
+   std::cout << std::string(matrix.get()->width() * 2 + 2, '-') << "\n";
+   for (unsigned y = 0; y < matrix.get()->height(); y++)
    {
       std::cout << "|";
-      for (unsigned x = 0; x < map.matrix().get()->width(); x++)
+      for (unsigned x = 0; x < matrix.get()->width(); x++)
       {
-         sharedConstPixel pixel = map.matrix().get()->pixelAtPosition(x, y);
+         sharedConstPixel pixel = matrix.get()->pixelAtPosition(x, y);
 
          double height = pixel.get()->height();
 
@@ -87,7 +87,7 @@ void TerminalInterface::showMapImpl(const logic::Map & map) const
       }
       std::cout << "|\n";
    }
-   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << std::endl;
+   std::cout << std::string(matrix.get()->width() * 2 + 2, '-') << std::endl;
 }
 
 void TerminalInterface::showUnitsImpl(const logic::Map & map) const
