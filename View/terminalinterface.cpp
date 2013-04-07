@@ -32,73 +32,89 @@ void TerminalInterface::initializeImpl()
 
 void TerminalInterface::showImpl(sharedConstMatrix matrix)
 {
-   std::cout << std::string(matrix.get()->width() * 2 + 2, '-') << "\n";
+   std::cout << "What would you like to show? (Map, Units, Quit) " << std::flush;
+   std::string input;
+
+   while (std::cin.peek() != '\n')
+   {
+      std::cin >> input;
+
+      if (input == "m")
+      {
+         showMap(matrix);
+      }
+      else if (input == "u")
+      {
+         showUnits(matrix);
+      }
+      else if (input == "q")
+      {
+         break;
+      }
+   }
+}
+
+void TerminalInterface::showMap(sharedConstMatrix matrix)
+{
+   std::cout << std::string(matrix.get()->width() * 2 + 2, '_') << std::endl;
    for (unsigned y = 0; y < matrix.get()->height(); y++)
    {
       std::cout << "|";
       for (unsigned x = 0; x < matrix.get()->width(); x++)
       {
          sharedConstPixel pixel = matrix.get()->pixelAtPosition(x, y);
-
          double height = pixel.get()->height();
 
          char c;
-         if (height < 0.1)
+         switch(int(height * 10))
          {
+         case 0:
             c = ' ';
-         }
-         else if (height < 0.2)
-         {
+            break;
+         case 1:
             c = '.';
-         }
-         else if (height < 0.3)
-         {
+            break;
+         case 2:
             c = ':';
-         }
-         else if (height < 0.4)
-         {
+            break;
+         case 3:
             c = '*';
-         }
-         else if (height < 0.5)
-         {
+            break;
+         case 4:
             c = 'o';
-         }
-         else if (height < 0.6)
-         {
+            break;
+         case 5:
             c = 'g';
-         }
-         else if (height < 0.7)
-         {
+            break;
+         case 6:
             c = '&';
-         }
-         else if (height < 0.8)
-         {
+            break;
+         case 7:
             c = '8';
-         }
-         else if (height < 0.9)
-         {
+            break;
+         case 8:
             c = '#';
-         }
-         else
-         {
+            break;
+         default:
             c = '@';
+            break;
          }
          std::cout << c << c;
       }
-      std::cout << "|\n";
+      std::cout << "|" << std::endl;
    }
-   std::cout << std::string(matrix.get()->width() * 2 + 2, '-') << std::endl;
+   std::cout << std::string(matrix.get()->width() * 2 + 2, '^') << std::endl;
 }
 
-void TerminalInterface::showUnitsImpl(const logic::Map & map) const
+void TerminalInterface::showUnits(sharedConstMatrix matrix)
 {
-   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << "\n";
-   for (unsigned y = 0; y < map.matrix().get()->height(); y++)
+   std::cout << std::string(matrix.get()->width() * 2 + 2, '_') << "\n";
+   for (unsigned y = 0; y < matrix.get()->height(); y++)
    {
       std::cout << "|";
-      for (unsigned x = 0; x < map.matrix().get()->width(); x++)
+      for (unsigned x = 0; x < matrix.get()->width(); x++)
       {
-         sharedConstPixel pixel = map.matrix().get()->pixelAtPosition(x, y);
+         sharedConstPixel pixel = matrix.get()->pixelAtPosition(x, y);
 
          char c;
          if (pixel.get()->isUnitsEmpty())
@@ -113,5 +129,5 @@ void TerminalInterface::showUnitsImpl(const logic::Map & map) const
       }
       std::cout << "|\n";
    }
-   std::cout << std::string(map.matrix().get()->width() * 2 + 2, '-') << std::endl;
+   std::cout << std::string(matrix.get()->width() * 2 + 2, '^') << std::endl;
 }

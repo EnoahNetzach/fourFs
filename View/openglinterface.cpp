@@ -42,5 +42,3 @@ void OpenGLInterface::runLoop()
       // ...
    }
 }
-
-//Devin sei bellissima (test)
