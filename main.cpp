@@ -18,7 +18,7 @@ using namespace fourFs;
 int main(int argc, char * argv[])
 {
    // GLOBAL variables
-   bool execTime = false;
+   bool execTime = false; //prova
 
    // MAP variables
    unsigned mapWidth;

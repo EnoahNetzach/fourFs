@@ -36,3 +36,5 @@ void OpenGLInterface::showUnitsImpl(const logic::Map & map) const
 {
    std::cout << "An openGL fabulous show here!" << std::endl;
 }
+
+//Devin sei bellissima (test)
