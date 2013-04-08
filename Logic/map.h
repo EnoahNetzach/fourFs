@@ -16,6 +16,8 @@ namespace logic {
 
 class Map
 {
+   friend class analysis::SerializeMap;
+
 public:
    Map(unsigned width, unsigned height, double range = 3,
            unsigned frequency = 10, double amplitude = 1, unsigned pace = 10,

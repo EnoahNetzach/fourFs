@@ -9,7 +9,6 @@
 #define fourFs_PIXEL_H_
 
 #include "../utilities.hpp"
-#include "../Analysis/pixel_serialization.h"
 
 namespace fourFs {
 namespace logic {

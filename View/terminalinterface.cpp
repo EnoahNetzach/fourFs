@@ -35,7 +35,7 @@ void TerminalInterface::showImpl(sharedConstMatrix matrix)
    std::cout << "What would you like to show? (Map, Units, Quit) " << std::flush;
    std::string input;
 
-   while (std::cin.peek() != '\n')
+   do
    {
       std::cin >> input;
 
@@ -51,7 +51,9 @@ void TerminalInterface::showImpl(sharedConstMatrix matrix)
       {
          break;
       }
-   }
+   } while (std::cin.peek() != '\n');
+
+   std::cin.clear();
 }
 
 void TerminalInterface::showMap(sharedConstMatrix matrix)

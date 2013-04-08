@@ -28,6 +28,17 @@ inline const char * timerFormat(const char * name)
    return format.c_str();
 }
 
+namespace analysis {
+
+class SerializeEnvironment;
+class SerializeMatrix;
+class SerializePixel;
+class SerializeState;
+class SerializeMap;
+class SerializeUnit;
+
+} /* namespace analysis */
+
 namespace logic {
 
 class Environment;
