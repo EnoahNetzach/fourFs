@@ -25,9 +25,9 @@ MapViewer::MapViewer(const Map & map, Options op, bool time)
    if (op & terminal)
    {
       sharedInterface interface(new TerminalInterface(time));
-      interface.get()->initialize();
+      interface->initialize();
 
-      if (interface.get()->good())
+      if (interface->good())
       {
          m_interfaces.push_back(interface);
       }
@@ -36,9 +36,9 @@ MapViewer::MapViewer(const Map & map, Options op, bool time)
    if (op & openGL)
    {
       sharedInterface interface(new OpenGLInterface(time));
-      interface.get()->initialize();
+      interface->initialize();
 
-      if (interface.get()->good())
+      if (interface->good())
       {
          m_interfaces.push_back(interface);
       }
@@ -53,6 +53,6 @@ void MapViewer::show()
 {
    BOOST_FOREACH(sharedInterface interface, m_interfaces)
    {
-      interface.get()->show(m_map);
+      interface->show(m_map);
    }
 }

@@ -56,14 +56,14 @@ void TerminalInterface::showImpl(sharedConstMatrix matrix)
 
 void TerminalInterface::showMap(sharedConstMatrix matrix)
 {
-   std::cout << std::string(matrix.get()->width() * 2 + 2, '_') << std::endl;
-   for (unsigned y = 0; y < matrix.get()->height(); y++)
+   std::cout << std::string(matrix->width() * 2 + 2, '_') << std::endl;
+   for (unsigned y = 0; y < matrix->height(); y++)
    {
       std::cout << "|";
-      for (unsigned x = 0; x < matrix.get()->width(); x++)
+      for (unsigned x = 0; x < matrix->width(); x++)
       {
-         sharedConstPixel pixel = matrix.get()->pixelAtPosition(x, y);
-         double height = pixel.get()->height();
+         sharedConstPixel pixel = matrix->pixelAtPosition(x, y);
+         double height = pixel->height();
 
          char c;
          switch(int(height * 10))
@@ -103,31 +103,31 @@ void TerminalInterface::showMap(sharedConstMatrix matrix)
       }
       std::cout << "|" << std::endl;
    }
-   std::cout << std::string(matrix.get()->width() * 2 + 2, '^') << std::endl;
+   std::cout << std::string(matrix->width() * 2 + 2, '^') << std::endl;
 }
 
 void TerminalInterface::showUnits(sharedConstMatrix matrix)
 {
-   std::cout << std::string(matrix.get()->width() * 2 + 2, '_') << "\n";
-   for (unsigned y = 0; y < matrix.get()->height(); y++)
+   std::cout << std::string(matrix->width() * 2 + 2, '_') << "\n";
+   for (unsigned y = 0; y < matrix->height(); y++)
    {
       std::cout << "|";
-      for (unsigned x = 0; x < matrix.get()->width(); x++)
+      for (unsigned x = 0; x < matrix->width(); x++)
       {
-         sharedConstPixel pixel = matrix.get()->pixelAtPosition(x, y);
+         sharedConstPixel pixel = matrix->pixelAtPosition(x, y);
 
          char c;
-         if (pixel.get()->isUnitsEmpty())
+         if (pixel->isUnitsEmpty())
          {
             c = '.';
          }
          else
          {
-            c = 48 + pixel.get()->nOfUnits();
+            c = 48 + pixel->nOfUnits();
          }
          std::cout << " " << c;
       }
       std::cout << "|\n";
    }
-   std::cout << std::string(matrix.get()->width() * 2 + 2, '^') << std::endl;
+   std::cout << std::string(matrix->width() * 2 + 2, '^') << std::endl;
 }

@@ -9,12 +9,15 @@
 #define fourFs_PIXEL_H_
 
 #include "../utilities.hpp"
+#include "../Analysis/pixel_serialization.h"
 
 namespace fourFs {
 namespace logic {
 
 class Pixel
 {
+   friend class analysis::SerializePixel;
+
 public:
    explicit Pixel(unsigned index, bool border = false);
    ~Pixel();
@@ -44,6 +47,6 @@ private:
 };
 
 } /* namespace logic */
-} /* namespace FourFs */
+} /* namespace fourFs */
 
 #endif /* fourFs_PIXEL_H_ */

@@ -37,13 +37,13 @@ Matrix::~Matrix()
       // clear environments
       if (pixel->environment() != 0)
       {
-         pixel->environment().get()->clearPixels();
+         pixel->environment()->clearPixels();
       }
 
       // clear units
       BOOST_FOREACH(sharedUnit unit, pixel->units())
       {
-         if (unit != 0) unit.get()->clearPixels();
+         if (unit != 0) unit->clearPixels();
       }
    }
 
