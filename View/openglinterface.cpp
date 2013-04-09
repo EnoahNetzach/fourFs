@@ -27,6 +27,11 @@ OpenGLInterface::OpenGLInterface(bool time)
    window_height = 768;
 }
 
+void OpenGLInterface::showImpl(logic::sharedConstMatrix matrix)
+{
+
+}
+
 OpenGLInterface::~OpenGLInterface()
 {
 }

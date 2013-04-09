@@ -13,6 +13,7 @@
 #include "Analysis/matrix_serialization.hpp"
 #include "Analysis/pixel_serialization.hpp"
 #include "Analysis/unit_serialization.hpp"
+#include "Analysis/serializer.h"
 #include "Logic/map.h"
 #include "Logic/matrix.h"
 #include "Logic/pixel.h"
