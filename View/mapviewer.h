@@ -21,7 +21,7 @@ public:
    MapViewer(const logic::Map & map, Options op, bool time);
    ~MapViewer();
 
-   void show();
+   void show() const;
 
 protected:
 

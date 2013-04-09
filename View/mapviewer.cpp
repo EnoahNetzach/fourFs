@@ -49,7 +49,7 @@ MapViewer::~MapViewer()
 {
 }
 
-void MapViewer::show()
+void MapViewer::show() const
 {
    BOOST_FOREACH(sharedInterface interface, m_interfaces)
    {

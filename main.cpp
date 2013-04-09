@@ -10,8 +10,14 @@
 
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+
 #include <boost/program_options.hpp>
 #include <boost/timer/timer.hpp>
+
+#include "Analysis/map_serialization.hpp"
+#include "Analysis/matrix_serialization.hpp"
+#include "Analysis/pixel_serialization.hpp"
+#include "Analysis/unit_serialization.hpp"
 
 #include "fourfs"
 
@@ -186,43 +192,19 @@ int main(int argc, char * argv[])
    view::MapViewer mapViewer(map, viewFlags, viewTime);
    mapViewer.show();
 
-   //terrain.show();
+   analysis::Serializer serializer(argv[0]);
+   serializer.save(map);
+
+   logic::Map mapLoaded = serializer.load();
+
+   view::MapViewer mapLoadedViewer(mapLoaded, viewFlags, viewTime);
+   mapLoadedViewer.show();
+
    if (execTime)
    {
       timer.stop();
       std::cout << timer.format(boost::timer::default_places, timerFormat("Execution")) << std::endl;
    }
 
-   // create and open a character archive for output
-   std::ofstream ofs("filename");
-
-   // save data to archive
-   {
-      std::cout << "[SAVE]" << std::endl;
-
-      boost::archive::text_oarchive oa(ofs);
-      // write class instance to archive
-      oa << map;
-      // archive and stream closed when destructors are called
-   }
-
-   // ... some time later restore the class instance to its orginal state
-   logic::Map mapLoaded(0, 0);
-   {
-      std::cout << "[LOAD]" << std::endl;
-      // create and open an archive for input
-      std::ifstream ifs("filename");
-      boost::archive::text_iarchive ia(ifs);
-      // read class state from archive
-      ia >> mapLoaded;
-      // archive and stream closed when destructors are called
-   }
-
-   view::MapViewer mapLoadedViewer(mapLoaded, viewFlags, viewTime);
-   mapLoadedViewer.show();
-
-   //t1.print();
-   //t2.print();
-
-	return 0;
+   return 0;
 }

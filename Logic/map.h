@@ -19,6 +19,7 @@ class Map
    friend class analysis::SerializeMap;
 
 public:
+   Map();
    Map(unsigned width, unsigned height, double range = 3,
            unsigned frequency = 10, double amplitude = 1, unsigned pace = 10,
            unsigned square = 3, unsigned smooth = 4, bool time = false);

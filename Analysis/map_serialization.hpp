@@ -49,11 +49,11 @@ void serialize(Archive & ar, Map & map, unsigned v)
    ar & sp;
 }
 
-template< class Archive >
-void load_construct_data(Archive & /*ar*/, Map * map, unsigned /*v*/)
-{
-   ::new(map) Map(0, 0);
-}
+//template< class Archive >
+//void load_construct_data(Archive & /*ar*/, Map * map, unsigned /*v*/)
+//{
+//   ::new(map) Map(0, 0);
+//}
 
 } /* namespace boost */
 } /* namespace serialization */

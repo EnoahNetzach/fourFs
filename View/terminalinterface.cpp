@@ -32,7 +32,7 @@ void TerminalInterface::initializeImpl()
 
 void TerminalInterface::showImpl(sharedConstMatrix matrix)
 {
-   std::cout << "What would you like to show? (Map, Units, Quit) " << std::flush;
+   std::cout << "[Term interface] What would you like to show? (Map, Units, Quit) " << std::flush;
    std::string input;
 
    do

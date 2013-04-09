@@ -23,7 +23,8 @@ static boost::random_device rng;
 namespace fourFs {
 inline const char * timerFormat(const char * name)
 {
-   std::string format = name;
+   std::string format = "[Timer] ";
+   format += name;
    format += " time: %ws wall, %us user + %ss system = %ts CPU (%p%)";
    return format.c_str();
 }
@@ -46,7 +47,6 @@ typedef boost::shared_ptr< Environment > sharedEnvironment;
 typedef boost::shared_ptr< const Environment > sharedConstEnvironment;
 
 class Matrix;
-
 typedef boost::shared_ptr< Matrix > sharedMatrix;
 typedef boost::shared_ptr< const Matrix > sharedConstMatrix;
 

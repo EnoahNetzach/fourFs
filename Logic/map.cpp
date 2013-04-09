@@ -19,6 +19,10 @@
 using namespace fourFs;
 using namespace logic;
 
+Map::Map()
+{
+}
+
 Map::Map(unsigned width, unsigned height, double range,
                  unsigned frequency, double amplitude, unsigned pace,
                  unsigned square, unsigned smooth, bool time)
