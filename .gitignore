@@ -16,3 +16,5 @@
 
 # Project files
 .*
+compile
+*.4fs
