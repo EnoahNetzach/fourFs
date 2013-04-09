@@ -20,16 +20,14 @@ class Interface_base : boost::noncopyable
 public:
    void initialize();
    virtual bool good() const;
-   void showMap(const logic::Map & map) const;
-   void showUnits(const logic::Map & map) const;
+   void show(const logic::Map & map);
 
 protected:
    Interface_base(bool time, const char * name);
    virtual ~Interface_base();
 
    virtual void initializeImpl() = 0;
-   virtual void showMapImpl(const logic::Map & map) const = 0;
-   virtual void showUnitsImpl(const logic::Map & map) const = 0;
+   virtual void showImpl(logic::sharedConstMatrix matrix) = 0;
 
    bool m_good;
    const char * m_name;

@@ -22,10 +22,11 @@ public:
 
 protected:
    void initializeImpl();
-   void showMapImpl(const logic::Map & map) const;
-   void showUnitsImpl(const logic::Map & map) const;
+   void showImpl(logic::sharedConstMatrix matrix);
 
 private:
+   void showMap(logic::sharedConstMatrix map);
+   void showUnits(logic::sharedConstMatrix map);
 };
 
 } /* namespace view */

@@ -15,6 +15,8 @@ namespace logic {
 
 class Pixel
 {
+   friend class analysis::SerializePixel;
+
 public:
    explicit Pixel(unsigned index, bool border = false);
    ~Pixel();
@@ -44,6 +46,6 @@ private:
 };
 
 } /* namespace logic */
-} /* namespace FourFs */
+} /* namespace fourFs */
 
 #endif /* fourFs_PIXEL_H_ */

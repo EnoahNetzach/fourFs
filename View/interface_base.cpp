@@ -51,12 +51,12 @@ bool Interface_base::good() const
    return m_good;
 }
 
-void Interface_base::showMap(const logic::Map & map) const
+void Interface_base::show(const logic::Map & map)
 {
    boost::timer::cpu_timer timer;
    if (m_time) timer.start();
 
-   showMapImpl(map);
+   showImpl(map.matrix());
 
    if (m_time)
    {
@@ -64,23 +64,6 @@ void Interface_base::showMap(const logic::Map & map) const
       std::string format = "View ";
       format += m_name;
       format +" show map";
-      std::cout << timer.format(boost::timer::default_places, timerFormat(format.c_str())) << std::endl;
-   }
-}
-
-void Interface_base::showUnits(const logic::Map & map) const
-{
-   boost::timer::cpu_timer timer;
-   if (m_time) timer.start();
-
-   showUnitsImpl(map);
-
-   if (m_time)
-   {
-      timer.stop();
-      std::string format = "View ";
-      format += m_name;
-      format +" show units";
       std::cout << timer.format(boost::timer::default_places, timerFormat(format.c_str())) << std::endl;
    }
 }
