@@ -34,7 +34,6 @@ protected:
 
    void initializeImpl();
    bool initializeWindow();
-   void showImpl(logic::sharedConstMatrix matrix);
    void showMapImpl(const logic::Map & map) const;
    void showUnitsImpl(const logic::Map & map) const;
    void OpenGlMainLoop(void) const;
