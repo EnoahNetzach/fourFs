@@ -36,7 +36,6 @@ int main(int argc, char * argv[])
 
    // VIEW options
    view::Options viewFlags = 0;
-   bool viewTime = false;
 
    { // Program options BEGIN
       namespace po = boost::program_options;
@@ -133,9 +132,7 @@ int main(int argc, char * argv[])
       // verbose option overrides all
       if (vm.count("verbose"))
       {
-         execTime = true;
-         mapTime = true;
-         viewTime = true;
+         Logger::verbose(true);
       }
    } // Program options END
 
@@ -145,7 +142,7 @@ int main(int argc, char * argv[])
    // execution loop
 
    logic::Map map(mapWidth, mapHeight, mapRange, mapFrequency,
-                  mapAmplitude, mapPace, mapSquare, mapSmooth, mapTime);
+                  mapAmplitude, mapPace, mapSquare, mapSmooth);
    logic::sharedMatrix matrix = map.matrix();
 
    logic::sharedUnit unit1(new logic::Unit);
@@ -182,25 +179,24 @@ int main(int argc, char * argv[])
 
    if (! map.empty())
    {
-      view::MapViewer mapViewer(map, viewFlags, viewTime);
+      view::MapViewer mapViewer(map, viewFlags);
       mapViewer.show();
    }
 
-//   analysis::Serializer serializer;
    analysis::serialization::save(map);
 
    logic::Map mapLoaded = analysis::serialization::load();
 
    if (! mapLoaded.empty())
    {
-      view::MapViewer mapLoadedViewer(mapLoaded, viewFlags, viewTime);
+      view::MapViewer mapLoadedViewer(mapLoaded, viewFlags);
       mapLoadedViewer.show();
    }
 
-   if (execTime)
+   if (Logger::verbose())
    {
       timer.stop();
-      std::cout << timer.format(boost::timer::default_places, timerFormat("Execution")) << std::endl;
+      Logger() << timer.format(boost::timer::default_places, timerFormat("Execution")) << "\n";
    }
 
    return 0;

@@ -17,7 +17,7 @@ namespace view {
 class TerminalInterface: virtual public Interface_base
 {
 public:
-   TerminalInterface(bool time);
+   TerminalInterface();
    ~TerminalInterface();
 
 protected:

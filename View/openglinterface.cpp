@@ -13,8 +13,8 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-OpenGLInterface::OpenGLInterface(bool time)
-   : Interface_base(time, "openGL")
+OpenGLInterface::OpenGLInterface()
+   : Interface_base("openGL")
 {
 }
 

@@ -18,6 +18,8 @@
 #include <boost/random/random_device.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include "logger.h"
+
 static boost::random_device rng;
 
 namespace fourFs {

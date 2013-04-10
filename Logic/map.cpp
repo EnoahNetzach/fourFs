@@ -6,7 +6,6 @@
  */
 
 #include "map.h"
-#include "pixel.h"
 
 #include <algorithm>
 #include <iostream>
@@ -16,20 +15,23 @@
 #include <boost/random.hpp>
 #include <boost/timer/timer.hpp>
 
+#include "pixel.h"
+
 using namespace fourFs;
 using namespace logic;
 
 Map::Map()
+   : m_matrix(new Matrix(0, 0))
 {
 }
 
 Map::Map(unsigned width, unsigned height, double range,
                  unsigned frequency, double amplitude, unsigned pace,
-                 unsigned square, unsigned smooth, bool time)
+                 unsigned square, unsigned smooth)
    : m_matrix(new Matrix(width, height))
 {
    boost::timer::cpu_timer timer;
-   if (time) timer.start();
+   if (Logger::verbose()) timer.start();
 
    int f = frequency;
    int p = int(pace);
@@ -102,10 +104,10 @@ Map::Map(unsigned width, unsigned height, double range,
       if (pixel->height() > 1) pixel->height() = 1;
    }
 
-   if (time)
+   if (Logger::verbose())
    {
       timer.stop();
-      std::cout << timer.format(boost::timer::default_places, timerFormat("Map generation")) << std::endl;
+      Logger() << timer.format(boost::timer::default_places, timerFormat("Map generation")) << "\n";
    }
 }
 

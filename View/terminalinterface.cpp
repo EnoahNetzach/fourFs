@@ -16,8 +16,8 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-TerminalInterface::TerminalInterface(bool time)
-   : Interface_base(time, "terminal")
+TerminalInterface::TerminalInterface()
+   : Interface_base("terminal")
 {
 }
 
@@ -58,7 +58,7 @@ void TerminalInterface::showImpl(sharedConstMatrix matrix)
 
 void TerminalInterface::showMap(sharedConstMatrix matrix)
 {
-   std::cout << std::string(matrix->width() * 2 + 2, '_') << std::endl;
+   std::cout << "_MAP" << std::string(matrix->width() * 2 - 2, '_') << "\n";
    for (unsigned y = 0; y < matrix->height(); y++)
    {
       std::cout << "|";
@@ -110,7 +110,7 @@ void TerminalInterface::showMap(sharedConstMatrix matrix)
 
 void TerminalInterface::showUnits(sharedConstMatrix matrix)
 {
-   std::cout << std::string(matrix->width() * 2 + 2, '_') << "\n";
+   std::cout << "_UNITS" << std::string(matrix->width() * 2 - 4, '_') << "\n";
    for (unsigned y = 0; y < matrix->height(); y++)
    {
       std::cout << "|";

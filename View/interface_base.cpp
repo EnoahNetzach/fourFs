@@ -18,10 +18,9 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-Interface_base::Interface_base(bool time, const char * name)
+Interface_base::Interface_base(const char * name)
    : m_good(false)
    , m_name(name)
-   , m_time(time)
 {
 }
 
@@ -32,17 +31,17 @@ Interface_base::~Interface_base()
 void Interface_base::initialize()
 {
    boost::timer::cpu_timer timer;
-   if (m_time) timer.start();
+   if (Logger::verbose()) timer.start();
 
    initializeImpl();
 
-   if (m_time)
+   if (Logger::verbose())
    {
       timer.stop();
       std::string format = "View ";
       format += m_name;
       format += " initialization";
-      std::cout << timer.format(boost::timer::default_places, timerFormat(format.c_str())) << std::endl;
+      Logger() << timer.format(boost::timer::default_places, timerFormat(format.c_str())) << "\n";
    }
 }
 
@@ -54,16 +53,16 @@ bool Interface_base::good() const
 void Interface_base::show(const logic::Map & map)
 {
    boost::timer::cpu_timer timer;
-   if (m_time) timer.start();
+   if (Logger::verbose()) timer.start();
 
    showImpl(map.matrix());
 
-   if (m_time)
+   if (Logger::verbose())
    {
       timer.stop();
       std::string format = "View ";
       format += m_name;
       format +" show map";
-      std::cout << timer.format(boost::timer::default_places, timerFormat(format.c_str())) << std::endl;
+      Logger() << timer.format(boost::timer::default_places, timerFormat(format.c_str())) << "\n";
    }
 }

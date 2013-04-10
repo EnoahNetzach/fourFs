@@ -23,7 +23,7 @@ public:
    void show(const logic::Map & map);
 
 protected:
-   Interface_base(bool time, const char * name);
+   Interface_base(const char * name);
    virtual ~Interface_base();
 
    virtual void initializeImpl() = 0;

@@ -10,6 +10,7 @@
 
 #include "utilities.hpp"
 #include "Analysis/serialization.h"
+#include "logger.h"
 #include "Logic/map.h"
 #include "Logic/matrix.h"
 #include "Logic/pixel.h"

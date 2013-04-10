@@ -19,7 +19,7 @@ namespace view {
 class OpenGLInterface : virtual public Interface_base
 {
 public:
-   OpenGLInterface(bool time);
+   OpenGLInterface();
    ~OpenGLInterface();
 
 protected:
