@@ -15,7 +15,7 @@ namespace logic {
 
 class Pixel
 {
-   friend class analysis::SerializePixel;
+   friend class analysis::serialization::SerializePixel;
 
 public:
    explicit Pixel(unsigned index, bool border = false);

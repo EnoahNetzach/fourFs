@@ -123,6 +123,11 @@ unsigned Map::width() const
    return m_matrix->width();
 }
 
+bool Map::empty() const
+{
+   return m_matrix->size() == 0;
+}
+
 sharedMatrix Map::matrix()
 {
    return m_matrix;

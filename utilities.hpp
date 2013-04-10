@@ -21,6 +21,7 @@
 static boost::random_device rng;
 
 namespace fourFs {
+
 inline const char * timerFormat(const char * name)
 {
    std::string format = "[Timer] ";
@@ -30,6 +31,7 @@ inline const char * timerFormat(const char * name)
 }
 
 namespace analysis {
+namespace serialization {
 
 class SerializeEnvironment;
 class SerializeMatrix;
@@ -38,6 +40,7 @@ class SerializeState;
 class SerializeMap;
 class SerializeUnit;
 
+} /* namespace serialization */
 } /* namespace analysis */
 
 namespace logic {
@@ -74,7 +77,6 @@ typedef unitList::iterator unitIterator;
 typedef unitList::const_iterator unitConstIterator;
 
 } /* namespace logic */
-
 namespace view {
 
 typedef enum

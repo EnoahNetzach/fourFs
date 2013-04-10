@@ -15,6 +15,7 @@
 
 namespace fourFs {
 namespace analysis {
+namespace serialization {
 
 class SerializeMap
 {
@@ -31,20 +32,18 @@ private:
    logic::Map & m_map;
 };
 
+
+} /* namespace serialization */
 } /* namespace analysis */
 } /* namespace fourFs */
 
 namespace boost {
 namespace serialization {
 
-using namespace fourFs;
-using namespace analysis;
-using namespace logic;
-
 template< class Archive >
-void serialize(Archive & ar, Map & map, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Map & map, unsigned v)
 {
-   SerializeMap sp(map);
+   fourFs::analysis::serialization::SerializeMap sp(map);
 
    ar & sp;
 }
@@ -54,7 +53,6 @@ void serialize(Archive & ar, Map & map, unsigned v)
 //{
 //   ::new(map) Map(0, 0);
 //}
-
 } /* namespace boost */
 } /* namespace serialization */
 

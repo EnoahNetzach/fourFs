@@ -9,7 +9,7 @@
 #define fourFs_FOURFS_
 
 #include "utilities.hpp"
-#include "Analysis/serializer.h"
+#include "Analysis/serialization.h"
 #include "Logic/map.h"
 #include "Logic/matrix.h"
 #include "Logic/pixel.h"

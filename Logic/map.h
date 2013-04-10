@@ -16,7 +16,7 @@ namespace logic {
 
 class Map
 {
-   friend class analysis::SerializeMap;
+   friend class analysis::serialization::SerializeMap;
 
 public:
    Map();
@@ -27,6 +27,7 @@ public:
 
    unsigned height() const;
    unsigned width() const;
+   bool empty() const;
    sharedMatrix matrix();
    sharedConstMatrix matrix() const;
 

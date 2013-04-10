@@ -18,7 +18,7 @@ namespace logic {
 class Matrix
 {
    friend class Map;
-   friend class analysis::SerializeMatrix;
+   friend class analysis::serialization::SerializeMatrix;
 
 public:
    Matrix(unsigned width, unsigned height);

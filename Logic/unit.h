@@ -15,7 +15,7 @@ namespace logic {
 
 class Unit
 {
-   friend class analysis::SerializeUnit;
+   friend class analysis::serialization::SerializeUnit;
 
 public:
    explicit Unit();

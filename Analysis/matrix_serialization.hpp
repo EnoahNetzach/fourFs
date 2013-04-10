@@ -14,11 +14,12 @@
 
 namespace fourFs {
 namespace analysis {
+namespace serialization {
 
 class SerializeMatrix
 {
 public:
-   SerializeMatrix(logic::Matrix & matrix) : m_matrix(matrix) {}
+   inline SerializeMatrix(logic::Matrix & matrix) : m_matrix(matrix) {}
 
    template< class Archive >
    void serialize(Archive & ar, unsigned v)
@@ -32,28 +33,25 @@ private:
    logic::Matrix & m_matrix;
 };
 
+} /* namespace serialization */
 } /* namespace analysis */
 } /* namespace fourFs */
 
 namespace boost {
 namespace serialization {
 
-using namespace fourFs;
-using namespace analysis;
-using namespace logic;
-
 template< class Archive >
-void serialize(Archive & ar, Matrix & matrix, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Matrix & matrix, unsigned v)
 {
-   SerializeMatrix sp(matrix);
+   fourFs::analysis::serialization::SerializeMatrix sp(matrix);
 
    ar & sp;
 }
 
 template< class Archive >
-void load_construct_data(Archive & /*ar*/, Matrix * matrix, unsigned /*v*/)
+inline void load_construct_data(Archive & /*ar*/, fourFs::logic::Matrix * matrix, unsigned /*v*/)
 {
-   ::new(matrix) Matrix(0, 0);
+   ::new(matrix) fourFs::logic::Matrix(0, 0);
 }
 
 } /* namespace boost */

@@ -16,6 +16,7 @@
 
 namespace fourFs {
 namespace analysis {
+namespace serialization {
 
 class SerializePixel
 {
@@ -36,28 +37,25 @@ private:
    logic::Pixel & m_pixel;
 };
 
+} /* namespace serialization */
 } /* namespace analysis */
 } /* namespace fourFs */
 
 namespace boost {
 namespace serialization {
 
-using namespace fourFs;
-using namespace analysis;
-using namespace logic;
-
 template< class Archive >
-void serialize(Archive & ar, Pixel & pixel, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Pixel & pixel, unsigned v)
 {
-   SerializePixel sp(pixel);
+   fourFs::analysis::serialization::SerializePixel sp(pixel);
 
    ar & sp;
 }
 
 template< class Archive >
-void load_construct_data(Archive & /*ar*/, Pixel * pixel, unsigned /*v*/)
+inline void load_construct_data(Archive & /*ar*/, fourFs::logic:: Pixel * pixel, unsigned /*v*/)
 {
-   ::new(pixel) Pixel(0);
+   ::new(pixel) fourFs::logic::Pixel(0);
 }
 
 } /* namespace boost */

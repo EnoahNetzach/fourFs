@@ -16,6 +16,7 @@
 
 namespace fourFs {
 namespace analysis {
+namespace serialization {
 
 class SerializeUnit
 {
@@ -36,20 +37,17 @@ private:
    logic::Unit & m_unit;
 };
 
+} /* namespace serialization */
 } /* namespace analysis */
 } /* namespace fourFs */
 
 namespace boost {
 namespace serialization {
 
-using namespace fourFs;
-using namespace analysis;
-using namespace logic;
-
 template< class Archive >
-void serialize(Archive & ar, Unit & unit, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Unit & unit, unsigned v)
 {
-   SerializeUnit sp(unit);
+   fourFs::analysis::serialization::SerializeUnit sp(unit);
 
    ar & sp;
 }

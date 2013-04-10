@@ -6,18 +6,9 @@
  */
 
 #include <iostream>
-#include <fstream>
-
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
 
 #include <boost/program_options.hpp>
 #include <boost/timer/timer.hpp>
-
-#include "Analysis/map_serialization.hpp"
-#include "Analysis/matrix_serialization.hpp"
-#include "Analysis/pixel_serialization.hpp"
-#include "Analysis/unit_serialization.hpp"
 
 #include "fourfs"
 
@@ -75,7 +66,7 @@ int main(int argc, char * argv[])
                   "set the square radius of pixels used for smoothing")
             ("map-square", po::value< unsigned >(& mapSquare)->default_value(3),
                   "set the square radius of pixels changed")
-            ("map-time", "print map creation time")
+            ("map-time,T", "print map creation time")
             ("map-width", po::value< unsigned >(& mapWidth)->default_value(100),
                   "set the width");
       po::options_description simulationOptions("Simulation options");
@@ -86,10 +77,10 @@ int main(int argc, char * argv[])
                   "set the number of units to be used (might change during execution)");
       po::options_description viewOptions("View options");
       viewOptions.add_options()
-            ("openGL", "show images with openGL")
-            ("view-terminal", "show images in terminal")
-            ("view-none", "suppress images showing")
-            ("view-time", "print each view computation time");
+            ("view-openGL,A", "show images with openGL")
+            ("view-terminal,B", "show images in terminal")
+            ("view-none,C", "suppress images showing")
+            ("view-time,Y", "print each view computation time");
 
       po::options_description cmdlineOptions;
       cmdlineOptions.add(genericOptions).add(mapOptions).add(simulationOptions).add(viewOptions);
@@ -189,16 +180,22 @@ int main(int argc, char * argv[])
       (* it)->addUnit(unit4);
    }
 
-   view::MapViewer mapViewer(map, viewFlags, viewTime);
-   mapViewer.show();
+   if (! map.empty())
+   {
+      view::MapViewer mapViewer(map, viewFlags, viewTime);
+      mapViewer.show();
+   }
 
-   analysis::Serializer serializer(argv[0]);
-   serializer.save(map);
+//   analysis::Serializer serializer;
+   analysis::serialization::save(map);
 
-   logic::Map mapLoaded = serializer.load();
+   logic::Map mapLoaded = analysis::serialization::load();
 
-   view::MapViewer mapLoadedViewer(mapLoaded, viewFlags, viewTime);
-   mapLoadedViewer.show();
+   if (! mapLoaded.empty())
+   {
+      view::MapViewer mapLoadedViewer(mapLoaded, viewFlags, viewTime);
+      mapLoadedViewer.show();
+   }
 
    if (execTime)
    {
