@@ -72,17 +72,17 @@ void Simulation::run()
    if (good()) m_loopThread = boost::thread(& Simulation::loop, this);
 }
 
-void Simulation::newUnits(unsigned num)
+void Simulation::addUnits(unsigned num)
 {
    if (m_map->empty()) return;
-
-   // lock m_mutex ::RAII::
-   boost::lock_guard< boost::mutex > guard(m_mutex);
 
    sharedMatrix matrix = m_map->matrix();
 
    boost::random::uniform_int_distribution<> xDist(0, matrix->width() - 1);
    boost::random::uniform_int_distribution<> yDist(0, matrix->height() - 1);
+
+   // lock m_mutex ::RAII::
+   boost::lock_guard< boost::mutex > guard(m_mutex);
 
    for (unsigned i = 0; i < num; i++)
    {
@@ -99,6 +99,38 @@ void Simulation::newUnits(unsigned num)
    }
 
    // m_mutex unlocked here in ~guard()
+}
+void Simulation::deleteUnits(unsigned num)
+{
+   // lock m_mutex ::RAII::
+   boost::lock_guard< boost::mutex > guard(m_mutex);
+
+   if (num == 0)
+   {
+      m_units.clear();
+   }
+   else
+   {
+      for (unsigned i = 0; i < num; i++)
+      {
+         if (m_units.size() == 0) break;
+         m_units.pop_front();
+      }
+   }
+
+   // m_mutex unlocked here in ~guard()
+}
+
+void Simulation::resizeUnits(unsigned num)
+{
+   if (m_units.size() > num)
+   {
+      deleteUnits(m_units.size() - num);
+   }
+   else if (m_units.size() < num)
+   {
+      addUnits(num - m_units.size());
+   }
 }
 
 void Simulation::loop()

@@ -142,7 +142,7 @@ int main(int argc, char * argv[])
    logic::Simulation simulation;
    simulation.newMap(mapWidth, mapHeight, mapRange, mapFrequency,
                      mapAmplitude, mapPace, mapSquare, mapSmooth);
-   simulation.newUnits(5);
+   simulation.addUnits(5);
 
    if (! simulation.map()->empty())
    {

@@ -30,7 +30,9 @@ public:
    void newMap(unsigned width, unsigned height, double range,
                unsigned frequency, double amplitude, unsigned pace,
                unsigned square, unsigned smooth);
-   void newUnits(unsigned num);
+   void addUnits(unsigned num);
+   void deleteUnits(unsigned num = 0);
+   void resizeUnits(unsigned num);
    void run();
 
 protected:
