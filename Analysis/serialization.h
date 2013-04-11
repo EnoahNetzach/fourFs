@@ -14,9 +14,9 @@ namespace fourFs {
 namespace analysis {
 namespace serialization {
 
-bool save(const logic::Map & map);
+bool save(logic::sharedConstMap map);
 
-logic::Map load();
+logic::sharedMap load();
 
 } /* namespace serialization */
 } /* namespace analysis */

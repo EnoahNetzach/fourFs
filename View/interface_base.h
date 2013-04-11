@@ -20,7 +20,7 @@ class Interface_base : boost::noncopyable
 public:
    void initialize();
    virtual bool good() const;
-   void show(const logic::Map & map);
+   void show(logic::sharedConstMap map);
 
 protected:
    Interface_base(const char * name);

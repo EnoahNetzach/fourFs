@@ -16,7 +16,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/utility.hpp>
 
-#include "../utilities.hpp"
 #include "map_serialization.hpp"
 #include "matrix_serialization.hpp"
 #include "pixel_serialization.hpp"
@@ -24,12 +23,12 @@
 
 using namespace fourFs;
 
-bool fourFs::analysis::serialization::save(const logic::Map & map)
+bool fourFs::analysis::serialization::save(logic::sharedConstMap map)
 {
    bool retValue = false;
 
    std::string input;
-   std::cout << "[Serializer] Save file? (y/n)" << std::flush;
+   std::cout << "[Serializer] Save file? (y/n) " << std::flush;
    std::cin >> input;
 
    if (input == "y")
@@ -60,9 +59,9 @@ bool fourFs::analysis::serialization::save(const logic::Map & map)
    return retValue;
 }
 
-logic::Map fourFs::analysis::serialization::load()
+logic::sharedMap analysis::serialization::load()
 {
-   logic::Map map;
+   logic::sharedMap map;
 
    std::string input = "";
 
@@ -88,9 +87,16 @@ logic::Map fourFs::analysis::serialization::load()
       std::ifstream ifs(filePath.string().c_str());
       boost::archive::text_iarchive ia(ifs);
       // read class state from archive
-      ia >> map;
+      try
+      {
+         ia >> map;
 
-      std::cout << "[Serializer] File load: " << filePath << "." << std::endl;
+         std::cout << "[Serializer] File load: " << filePath << "." << std::endl;
+      }
+      catch (...)
+      {
+         std::cout << "[Serializer] File " << filePath << " not load, some error occurred." << std::endl;
+      }
 
       break;
    }

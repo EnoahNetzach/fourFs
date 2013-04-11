@@ -12,6 +12,8 @@
 
 #include "fourfs"
 
+#include <boost/random/random_device.hpp>
+
 using namespace fourFs;
 
 int main(int argc, char * argv[])
@@ -44,7 +46,6 @@ int main(int argc, char * argv[])
       genericOptions.add_options()
             ("help,h", "produce help message")
             ("silent,s", "suppress all messages")
-            ("time,t", "print execution time")
             ("verbose,v", "produce verbose messages")
             ("version,V", "print version string");
       po::options_description mapOptions("Map options");
@@ -65,7 +66,6 @@ int main(int argc, char * argv[])
                   "set the square radius of pixels used for smoothing")
             ("map-square", po::value< unsigned >(& mapSquare)->default_value(3),
                   "set the square radius of pixels changed")
-            ("map-time,T", "print map creation time")
             ("map-width", po::value< unsigned >(& mapWidth)->default_value(100),
                   "set the width");
       po::options_description simulationOptions("Simulation options");
@@ -78,8 +78,7 @@ int main(int argc, char * argv[])
       viewOptions.add_options()
             ("view-openGL,A", "show images with openGL")
             ("view-terminal,B", "show images in terminal")
-            ("view-none,C", "suppress images showing")
-            ("view-time,Y", "print each view computation time");
+            ("view-none,C", "suppress images showing");
 
       po::options_description cmdlineOptions;
       cmdlineOptions.add(genericOptions).add(mapOptions).add(simulationOptions).add(viewOptions);
@@ -137,60 +136,28 @@ int main(int argc, char * argv[])
    } // Program options END
 
    boost::timer::cpu_timer timer;
-   if (execTime) timer.start();
+   if (Logger::verbose()) timer.start();
 
    // execution loop
+   logic::Simulation simulation;
+   simulation.newMap(mapWidth, mapHeight, mapRange, mapFrequency,
+                     mapAmplitude, mapPace, mapSquare, mapSmooth);
+   simulation.newUnits(5);
 
-   logic::Map map(mapWidth, mapHeight, mapRange, mapFrequency,
-                  mapAmplitude, mapPace, mapSquare, mapSmooth);
-   logic::sharedMatrix matrix = map.matrix();
-
-   logic::sharedUnit unit1(new logic::Unit);
-   logic::sharedUnit unit2(new logic::Unit);
-   logic::sharedUnit unit3(new logic::Unit);
-   logic::sharedUnit unit4(new logic::Unit);
-
-   logic::pixelsList area1 = matrix->pixelsAroundPosition(12, 2, 1);
-   logic::pixelsList area2 = matrix->pixelsAroundPosition(13, 3, 1);
-   logic::pixelsList area3 = matrix->pixelsAroundPosition(11, 2, 1);
-   logic::pixelsList area4 = matrix->pixelsAroundPosition(11, 4, 1);
-
-   logic::pixelIterator it;
-   for (it = area1.begin(); it != area1.end(); ++it)
+   if (! simulation.map()->empty())
    {
-      unit1->addPixel(* it);
-      (* it)->addUnit(unit1);
-   }
-   for (it = area2.begin(); it != area2.end(); ++it)
-   {
-      unit2->addPixel(* it);
-      (* it)->addUnit(unit2);
-   }
-   for (it = area3.begin(); it != area3.end(); ++it)
-   {
-      unit3->addPixel(* it);
-      (* it)->addUnit(unit3);
-   }
-   for (it = area4.begin(); it != area4.end(); ++it)
-   {
-      unit4->addPixel(* it);
-      (* it)->addUnit(unit4);
+      view::MapViewer mapViewer(viewFlags);
+      mapViewer.show(simulation.map());
    }
 
-   if (! map.empty())
+   analysis::serialization::save(simulation.map());
+
+   simulation.map() = logic::sharedMap(analysis::serialization::load());
+
+   if (! simulation.map()->empty())
    {
-      view::MapViewer mapViewer(map, viewFlags);
-      mapViewer.show();
-   }
-
-   analysis::serialization::save(map);
-
-   logic::Map mapLoaded = analysis::serialization::load();
-
-   if (! mapLoaded.empty())
-   {
-      view::MapViewer mapLoadedViewer(mapLoaded, viewFlags);
-      mapLoadedViewer.show();
+      view::MapViewer mapViewer(viewFlags);
+      mapViewer.show(simulation.map());
    }
 
    if (Logger::verbose())

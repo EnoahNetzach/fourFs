@@ -50,12 +50,12 @@ bool Interface_base::good() const
    return m_good;
 }
 
-void Interface_base::show(const logic::Map & map)
+void Interface_base::show(sharedConstMap map)
 {
    boost::timer::cpu_timer timer;
    if (Logger::verbose()) timer.start();
 
-   showImpl(map.matrix());
+   showImpl(map->matrix());
 
    if (Logger::verbose())
    {

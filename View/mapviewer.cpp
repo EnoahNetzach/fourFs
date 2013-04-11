@@ -19,8 +19,7 @@ using namespace fourFs;
 using namespace logic;
 using namespace view;
 
-MapViewer::MapViewer(const Map & map, Options op)
-   : m_map(map)
+MapViewer::MapViewer(Options op)
 {
    if (op & terminal)
    {
@@ -49,10 +48,10 @@ MapViewer::~MapViewer()
 {
 }
 
-void MapViewer::show() const
+void MapViewer::show(sharedConstMap map) const
 {
    BOOST_FOREACH(sharedInterface interface, m_interfaces)
    {
-      interface->show(m_map);
+      interface->show(map);
    }
 }

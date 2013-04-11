@@ -34,9 +34,9 @@ public:
    sharedPixel pixelAtPosition(unsigned x, unsigned y);
    sharedConstPixel pixelAtPosition(unsigned x, unsigned y) const;
    pixelsList pixelsAroundIndex(unsigned index, unsigned radius);
-   const constPixelList pixelsAroundIndex(unsigned index, unsigned radius) const;
+   constPixelList pixelsAroundIndex(unsigned index, unsigned radius) const;
    pixelsList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius);
-   const constPixelList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const;
+   constPixelList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const;
 
 protected:
 

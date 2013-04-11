@@ -19,6 +19,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "logger.h"
+#include "randomnumberbuffer.hpp"
 
 static boost::random_device rng;
 
@@ -70,6 +71,8 @@ typedef boost::shared_ptr< State > sharedState;
 typedef boost::shared_ptr< const State > sharedConstState;
 
 class Map;
+typedef boost::shared_ptr< Map > sharedMap;
+typedef boost::shared_ptr< const Map > sharedConstMap;
 
 class Unit;
 typedef boost::shared_ptr< Unit > sharedUnit;
@@ -77,6 +80,9 @@ typedef boost::shared_ptr< const Unit > sharedConstUnit;
 typedef std::list< sharedUnit > unitList;
 typedef unitList::iterator unitIterator;
 typedef unitList::const_iterator unitConstIterator;
+typedef std::list< sharedConstUnit > constUnitList;
+typedef constUnitList::iterator constUnitIterator;
+typedef constUnitList::const_iterator constUnitConstIterator;
 
 } /* namespace logic */
 namespace view {

@@ -18,15 +18,14 @@ namespace view {
 class MapViewer
 {
 public:
-   MapViewer(const logic::Map & map, Options op);
+   MapViewer(Options op);
    ~MapViewer();
 
-   void show() const;
+   void show(logic::sharedConstMap map) const;
 
 protected:
 
 private:
-   const logic::Map & m_map;
    interfaceList m_interfaces;
 };
 

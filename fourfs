@@ -14,6 +14,7 @@
 #include "Logic/map.h"
 #include "Logic/matrix.h"
 #include "Logic/pixel.h"
+#include "Logic/simulation.h"
 #include "Logic/state.h"
 #include "Logic/unit.h"
 #include "View/mapviewer.h"

@@ -104,7 +104,7 @@ pixelsList Matrix::pixelsAroundIndex(unsigned index, unsigned radius)
    return pixelsAroundPosition(pos.first, pos.second, radius);
 }
 
-const constPixelList Matrix::pixelsAroundIndex(unsigned index, unsigned radius) const
+constPixelList Matrix::pixelsAroundIndex(unsigned index, unsigned radius) const
 {
    std::pair< unsigned, unsigned > pos = positionFromIndex(index);
 
@@ -130,7 +130,7 @@ pixelsList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius)
    return pixels;
 }
 
-const constPixelList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const
+constPixelList Matrix::pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const
 {
    constPixelList pixels;
 
