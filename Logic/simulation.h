@@ -34,6 +34,9 @@ public:
    void deleteUnits(unsigned num = 0);
    void resizeUnits(unsigned num);
    void run();
+   void process_data(); //god function
+   void Simulation::pause();
+   void Simulation::resume();
 
 protected:
 
@@ -45,6 +48,9 @@ private:
    boost::mutex m_mutex;
    boost::mutex m_loopMutex;
    boost::thread m_loopThread;
+   boost::condition_variable m_cond;
+   bool m_isComputing;
+
 };
 
 } /* namespace logic */

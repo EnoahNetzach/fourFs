@@ -19,7 +19,7 @@
 #include <boost/random/random_device.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "randomnumberbuffer.hpp"
+#include "logger.h"
 
 static fourFs::RandomNumberBuffer< boost::random_device > rng;
 

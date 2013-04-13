@@ -142,6 +142,35 @@ class PointersPoll
 
    // execution loop
    logic::Simulation simulation;
+   simulation.run();
+
+//to refine
+   bool simulationIsPaused;
+   std::cout << "Do you want to pause computation?" << std::endl;
+   std::cout << "enter 1" << std::endl;
+   std::cin >> simulationIsPaused;
+
+   if(simulationIsPaused)
+   {
+	   simulation.pause();
+	   unsigned choice;
+	   std::cout << "What do you want to do now?" << std::endl;
+	   std::cout << "1. Serialise temp data" << std::endl;
+	   std::cout << "2. Erase temp data" << std::endl;
+	   std::cout << "3. Quit and erase temp data" << std::endl;
+	   std::cout << "4. What else?" << std::endl;
+	   std::cin >> choice;
+
+	   if(choice == 3 or choice == 4)
+	   {
+		   std::cout << "Are you serious? You're gonna lose all your work, you stupid dumbass. At least serialise" << std::endl;
+		   //do you want to serialise?
+		   //	no.
+		   //are you really sure?
+		   //	yes
+		   //ok, goodbye, dumbass.
+	   }
+   }
    simulation.newMap(mapWidth, mapHeight, mapRange, mapFrequency,
                      mapAmplitude, mapPace, mapSquare, mapSmooth);
    simulation.addUnits(50);
