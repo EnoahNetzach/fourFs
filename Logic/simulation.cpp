@@ -74,11 +74,6 @@ void Simulation::newMap(unsigned width, unsigned height, double range,
                              amplitude, pace, square, smooth));
 }
 
-void Simulation::run()
-{
-   if (good()) m_loopThread = boost::thread(& Simulation::loop, this);
-}
-
 void Simulation::addUnits(unsigned num)
 {
    if (m_map->empty()) return;
@@ -141,14 +136,9 @@ void Simulation::resizeUnits(unsigned num)
    }
 }
 
-void Simulation::loop()
+void Simulation::run()
 {
-	boost::unique_lock<boost::mutex> lock(m_mutex);
-	while(!m_isComputing)
-	{
-		m_cond.wait(lock);
-	}
-    process_data();
+   if (good()) m_loopThread = boost::thread(& Simulation::processData, this);
 }
 
 void Simulation::pause()
@@ -175,6 +165,6 @@ void Simulation::resume()
    return;
 }
 
-void Simulation::process_data() // main while cycle, (god function)
+void Simulation::processData() // main while cycle, (god function)
 {
 }

@@ -21,7 +21,7 @@
 
 #include "logger.h"
 
-static fourFs::RandomNumberBuffer< boost::random_device > rng;
+static boost::random_device rng;
 
 namespace fourFs {
 

@@ -34,14 +34,13 @@ public:
    void deleteUnits(unsigned num = 0);
    void resizeUnits(unsigned num);
    void run();
-   void process_data(); //god function
-   void Simulation::pause();
-   void Simulation::resume();
+   void pause();
+   void resume();
 
 protected:
 
 private:
-   void loop();
+   void processData(); //god function
 
    sharedMap m_map;
    unitList m_units;
