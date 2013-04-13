@@ -9,17 +9,22 @@
 
 #include <boost/foreach.hpp>
 #include <boost/scope_exit.hpp>
+#include <boost/random.hpp>
 
 #include "map.h"
 #include "pixel.h"
 #include "unit.h"
 
+
 using namespace fourFs;
 using namespace logic;
 
 Simulation::Simulation()
+   : m_isComputing(true)
 {
 }
+
+
 
 Simulation::~Simulation()
 {
@@ -135,5 +140,38 @@ void Simulation::resizeUnits(unsigned num)
 
 void Simulation::loop()
 {
+	boost::unique_lock<boost::mutex> lock(m_mutex);
+	while(!m_isComputing)
+	{
+		m_cond.wait(lock);
+	}
+    process_data();
+}
 
+void Simulation::pause()
+{
+   {
+	   boost::lock_guard< boost::mutex > guard(m_mutex);
+	   m_isComputing = false;
+
+   }
+   m_cond.notify_one();
+   std::cout << "Simulation paused." << std::endl;
+   return;
+}
+
+void Simulation::resume()
+{
+   {
+	   boost::lock_guard< boost::mutex > guard(m_mutex);
+	   m_isComputing = true;
+
+   }
+   m_cond.notify_one();
+   std::cout << "Simulation resumed." << std::endl;
+   return;
+}
+
+void Simulation::process_data() // main while cycle, (god function)
+{
 }

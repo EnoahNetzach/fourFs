@@ -19,7 +19,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "logger.h"
-#include "randomnumberbuffer.hpp"
+//#include "randomnumberbuffer.hpp"
 
 static boost::random_device rng;
 
