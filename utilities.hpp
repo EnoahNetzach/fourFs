@@ -15,13 +15,13 @@
 #include <list>
 #include <string>
 
+#include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "logger.h"
 #include "randomnumberbuffer.hpp"
 
-static boost::random_device rng;
+static fourFs::RandomNumberBuffer< boost::random_device > rng;
 
 namespace fourFs {
 

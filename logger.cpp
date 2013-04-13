@@ -12,7 +12,6 @@ using namespace fourFs;
 bool Logger::m_verbose = false;
 
 Logger::Logger()
-   : m_first(true)
 {
 }
 

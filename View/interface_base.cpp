@@ -12,6 +12,7 @@
 
 #include <boost/timer/timer.hpp>
 
+#include "../logger.h"
 #include "../Logic/map.h"
 
 using namespace fourFs;

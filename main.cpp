@@ -7,7 +7,9 @@
 
 #include <iostream>
 
+#include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
+#include <boost/smart_ptr.hpp>
 #include <boost/timer/timer.hpp>
 
 #include "fourfs"
@@ -16,7 +18,7 @@
 
 using namespace fourFs;
 
-int main(int argc, char * argv[])
+class PointersPoll
 {
    // GLOBAL variables
    bool execTime = false;
@@ -142,7 +144,7 @@ int main(int argc, char * argv[])
    logic::Simulation simulation;
    simulation.newMap(mapWidth, mapHeight, mapRange, mapFrequency,
                      mapAmplitude, mapPace, mapSquare, mapSmooth);
-   simulation.addUnits(5);
+   simulation.addUnits(50);
 
    if (! simulation.map()->empty())
    {

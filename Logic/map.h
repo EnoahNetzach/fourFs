@@ -8,7 +8,6 @@
 #ifndef fourFs_MAP_H_
 #define fourFs_MAP_H_
 
-#include "matrix.h"
 #include "../utilities.hpp"
 
 namespace fourFs {

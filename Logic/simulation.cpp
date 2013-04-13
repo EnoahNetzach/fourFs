@@ -8,9 +8,11 @@
 #include "simulation.h"
 
 #include <boost/foreach.hpp>
+#include <boost/random.hpp>
 #include <boost/scope_exit.hpp>
 
 #include "map.h"
+#include "matrix.h"
 #include "pixel.h"
 #include "unit.h"
 
@@ -100,6 +102,7 @@ void Simulation::addUnits(unsigned num)
 
    // m_mutex unlocked here in ~guard()
 }
+
 void Simulation::deleteUnits(unsigned num)
 {
    // lock m_mutex ::RAII::

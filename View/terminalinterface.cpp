@@ -9,7 +9,9 @@
 
 #include <iostream>
 
+#include "../logger.h"
 #include "../Logic/map.h"
+#include "../Logic/matrix.h"
 #include "../Logic/pixel.h"
 
 using namespace fourFs;

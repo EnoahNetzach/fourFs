@@ -33,7 +33,6 @@ protected:
    const char * m_name;
 
 private:
-   bool m_time;
 };
 
 } /* namespace view */

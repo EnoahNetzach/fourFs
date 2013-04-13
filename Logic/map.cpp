@@ -15,6 +15,8 @@
 #include <boost/random.hpp>
 #include <boost/timer/timer.hpp>
 
+#include "../logger.h"
+#include "matrix.h"
 #include "pixel.h"
 
 using namespace fourFs;

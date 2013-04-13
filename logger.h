@@ -26,14 +26,9 @@ public:
    {
       if (m_verbose)
       {
-         if (m_first)
-         {
-            std::clog << " - ";
-            m_first = false;
-         }
-
          std::clog << v;
       }
+
       return * this;
    }
 
@@ -41,8 +36,8 @@ protected:
 
 private:
    static bool m_verbose;
-   bool m_first;
 };
 
 } /* namespace fourFs */
+
 #endif /* fourFs_LOGGER_H_ */
