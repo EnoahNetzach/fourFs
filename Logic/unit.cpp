@@ -60,11 +60,11 @@ void Unit::addPixel(sharedPixel pixel)
 bool Unit::removePixel(sharedPixel pixel)
 {
    bool found = false;
-   pixelIterator it;
+   weakPixelIterator it;
 
    for (it = m_pixels.begin(); it != m_pixels.end(); ++it)
    {
-      if ((* it) == pixel)
+      if ((* it).lock() == pixel)
       {
          found = true;
          m_pixels.erase(it);
@@ -80,12 +80,12 @@ void Unit::clearPixels()
    m_pixels.clear();
 }
 
-pixelConstIterator Unit::pixelsBegin() const
+weakPixelConstIterator Unit::pixelsBegin() const
 {
    return m_pixels.begin();
 }
 
-pixelConstIterator Unit::pixelsEnd() const
+weakPixelConstIterator Unit::pixelsEnd() const
 {
    return m_pixels.end();
 }

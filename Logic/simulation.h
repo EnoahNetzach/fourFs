@@ -33,9 +33,10 @@ public:
    void addUnits(unsigned num);
    void deleteUnits(unsigned num = 0);
    void resizeUnits(unsigned num);
-   void run();
+   void start();
    void pause();
    void resume();
+   void stop();
 
 protected:
 

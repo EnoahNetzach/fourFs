@@ -7,9 +7,10 @@
 
 #include <iostream>
 
+#include <boost/chrono.hpp>
 #include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
-#include <boost/smart_ptr.hpp>
+#include <boost/thread.hpp>
 #include <boost/timer/timer.hpp>
 
 #include "fourfs"
@@ -154,7 +155,20 @@ int main(int argc, char * argv[])
 
    analysis::serialization::save(simulation.map());
 
-   simulation.map() = logic::sharedMap(analysis::serialization::load());
+   // user interaction begins here
+   boost::chrono::nanoseconds sec(10000000);
+   simulation.start();
+
+   boost::this_thread::sleep_for(sec);
+   simulation.pause();
+
+   boost::this_thread::sleep_for(sec);
+   simulation.resume();
+
+   boost::this_thread::sleep_for(sec);
+   simulation.stop();
+
+   simulation.map() = analysis::serialization::load();
 
    if (! simulation.map()->empty())
    {

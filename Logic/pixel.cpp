@@ -79,11 +79,11 @@ void Pixel::addUnit(sharedUnit unit)
 bool Pixel::removeUnit(sharedConstUnit unit)
 {
    bool found = false;
-   unitIterator it;
+   weakUnitIterator it;
 
    for (it = m_units.begin(); it != m_units.end(); ++it)
    {
-      if ((* it) == unit)
+      if ((* it).lock() == unit)
       {
          found = true;
          m_units.erase(it);
@@ -99,7 +99,7 @@ void Pixel::clearUnits()
    m_units.clear();
 }
 
-unitList & Pixel::units()
+weakUnitList & Pixel::units()
 {
    return m_units;
 }

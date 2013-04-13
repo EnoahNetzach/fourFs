@@ -21,6 +21,19 @@
 #include "pixel_serialization.hpp"
 #include "unit_serialization.hpp"
 
+namespace boost {
+namespace serialization {
+
+template< class Archive, typename Pointed >
+inline void serialize(Archive & ar, boost::weak_ptr< Pointed > wp, unsigned v)
+{
+   boost::shared_ptr< Pointed > sp = wp.lock();
+   ar & sp;
+}
+
+} /* namespace serialization */
+} /* namespace boost */
+
 using namespace fourFs;
 
 bool fourFs::analysis::serialization::save(logic::sharedConstMap map)

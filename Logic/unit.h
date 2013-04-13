@@ -29,8 +29,8 @@ public:
    void addPixel(sharedPixel pixel);
    bool removePixel(sharedPixel pixel);
    void clearPixels();
-   pixelConstIterator pixelsBegin() const;
-   pixelConstIterator pixelsEnd() const;
+   weakPixelConstIterator pixelsBegin() const;
+   weakPixelConstIterator pixelsEnd() const;
    sharedState state();
    sharedConstState state() const;
 
@@ -40,7 +40,7 @@ private:
    double m_belligerance;
    double m_fertility;
    double m_longevity;
-   pixelsList m_pixels;
+   weakPixelsList m_pixels;
    sharedState m_state;
 };
 

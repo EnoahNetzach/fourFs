@@ -33,7 +33,7 @@ public:
    void addUnit(sharedUnit unit);
    bool removeUnit(sharedConstUnit unit);
    void clearUnits();
-   unitList & units();
+   weakUnitList & units();
 
 protected:
 
@@ -42,7 +42,7 @@ private:
    double m_height;
    bool m_border;
    sharedEnvironment m_environment;
-   unitList m_units;
+   weakUnitList m_units;
 };
 
 } /* namespace logic */

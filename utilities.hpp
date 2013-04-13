@@ -18,6 +18,7 @@
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 #include "logger.h"
 
@@ -51,10 +52,14 @@ namespace logic {
 class Environment;
 typedef boost::shared_ptr< Environment > sharedEnvironment;
 typedef boost::shared_ptr< const Environment > sharedConstEnvironment;
+typedef boost::weak_ptr< Environment > weakEnvironment;
+typedef boost::weak_ptr< const Environment > weakConstEnvironment;
 
 class Matrix;
 typedef boost::shared_ptr< Matrix > sharedMatrix;
 typedef boost::shared_ptr< const Matrix > sharedConstMatrix;
+typedef boost::weak_ptr< Matrix > weakMatrix;
+typedef boost::weak_ptr< const Matrix > weakConstMatrix;
 
 class Pixel;
 typedef boost::shared_ptr< Pixel > sharedPixel;
@@ -65,6 +70,14 @@ typedef pixelsList::const_iterator pixelConstIterator;
 typedef std::list< sharedConstPixel > constPixelList;
 typedef constPixelList::iterator constPixelIterator;
 typedef constPixelList::const_iterator constPixelConstIterator;
+typedef boost::weak_ptr< Pixel > weakPixel;
+typedef boost::weak_ptr< const Pixel > weakConstPixel;
+typedef std::list< weakPixel > weakPixelsList;
+typedef weakPixelsList::iterator weakPixelIterator;
+typedef weakPixelsList::const_iterator weakPixelConstIterator;
+typedef std::list< weakConstPixel > constWeakPixelList;
+typedef constWeakPixelList::iterator constWeakPixelIterator;
+typedef constWeakPixelList::const_iterator constWeakPixelConstIterator;
 
 class State;
 typedef boost::shared_ptr< State > sharedState;
@@ -83,6 +96,14 @@ typedef unitList::const_iterator unitConstIterator;
 typedef std::list< sharedConstUnit > constUnitList;
 typedef constUnitList::iterator constUnitIterator;
 typedef constUnitList::const_iterator constUnitConstIterator;
+typedef boost::weak_ptr< Unit > weakUnit;
+typedef boost::weak_ptr< const Unit > weakConstUnit;
+typedef std::list< weakUnit > weakUnitList;
+typedef weakUnitList::iterator weakUnitIterator;
+typedef weakUnitList::const_iterator weakUnitConstIterator;
+typedef std::list< weakConstUnit > constWeakUnitList;
+typedef constWeakUnitList::iterator constWeakUnitIterator;
+typedef constWeakUnitList::const_iterator constWeakUnitConstIterator;
 
 } /* namespace logic */
 namespace view {

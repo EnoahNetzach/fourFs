@@ -7,6 +7,7 @@
 
 #include "simulation.h"
 
+#include <boost/chrono.hpp>
 #include <boost/foreach.hpp>
 #include <boost/random.hpp>
 #include <boost/scope_exit.hpp>
@@ -22,7 +23,7 @@ using namespace fourFs;
 using namespace logic;
 
 Simulation::Simulation()
-   : m_isComputing(true)
+   : m_isComputing(false)
 {
 }
 
@@ -30,8 +31,7 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
-   m_loopThread.interrupt();
-   m_loopThread.join();
+   stop();
 }
 
 bool Simulation::good() const
@@ -136,9 +136,15 @@ void Simulation::resizeUnits(unsigned num)
    }
 }
 
-void Simulation::run()
+void Simulation::start()
 {
-   if (good()) m_loopThread = boost::thread(& Simulation::processData, this);
+   if (good() && ! m_isComputing)
+   {
+      m_loopThread = boost::thread(& Simulation::processData, this);
+
+      boost::lock_guard< boost::mutex > guard(m_mutex);
+      m_isComputing = true;
+   }
 }
 
 void Simulation::pause()
@@ -146,25 +152,40 @@ void Simulation::pause()
    {
 	   boost::lock_guard< boost::mutex > guard(m_mutex);
 	   m_isComputing = false;
-
    }
    m_cond.notify_one();
-   std::cout << "Simulation paused." << std::endl;
-   return;
+   Logger() << "[Simulation] Paused.\n";
 }
 
 void Simulation::resume()
 {
    {
-	   boost::lock_guard< boost::mutex > guard(m_mutex);
-	   m_isComputing = true;
-
+      boost::lock_guard< boost::mutex > guard(m_mutex);
+      m_isComputing = true;
    }
    m_cond.notify_one();
-   std::cout << "Simulation resumed." << std::endl;
-   return;
+   Logger() << "[Simulation] Resumed.\n";
 }
+
+void Simulation::stop()
+{
+   m_loopThread.interrupt();
+   m_loopThread.join();
+   Logger() << "[Simulation] Stopped.\n";
+}
+
 
 void Simulation::processData() // main while cycle, (god function)
 {
+   Logger() << "[Simulation] Started.\n";
+   while (true)
+   {
+      std::cout << "OK" << std::endl;
+
+      boost::chrono::nanoseconds sec(10000000);
+
+      boost::this_thread::interruption_point();
+      boost::this_thread::sleep_for(sec);
+      boost::this_thread::interruption_point();
+   }
 }

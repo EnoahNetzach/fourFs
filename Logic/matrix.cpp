@@ -41,8 +41,9 @@ Matrix::~Matrix()
       }
 
       // clear units
-      BOOST_FOREACH(sharedUnit unit, pixel->units())
+      BOOST_FOREACH(weakUnit wunit, pixel->units())
       {
+         sharedUnit unit = wunit.lock();
          if (unit != 0) unit->clearPixels();
       }
    }
