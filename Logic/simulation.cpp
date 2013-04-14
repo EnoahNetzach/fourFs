@@ -23,7 +23,7 @@ using namespace fourFs;
 using namespace logic;
 
 Simulation::Simulation()
-   : m_isComputing(false)
+   : m_shouldCompute(false)
 {
 }
 
@@ -36,7 +36,7 @@ Simulation::~Simulation()
 
 bool Simulation::good() const
 {
-   return (! m_map->empty()) && (! m_units.empty());
+   return ((! m_map->empty()) && (! m_units.empty()));
 }
 
 sharedMap Simulation::map()
@@ -89,6 +89,7 @@ void Simulation::addUnits(unsigned num)
    for (unsigned i = 0; i < num; i++)
    {
       logic::sharedUnit unit(new logic::Unit);
+      m_units.push_back(unit);
 
       logic::pixelsList area = matrix->pixelsAroundPosition(xDist(rng), yDist(rng), 1);
 
@@ -98,6 +99,7 @@ void Simulation::addUnits(unsigned num)
          unit->addPixel(* it);
          (* it)->addUnit(unit);
       }
+
    }
 
    // m_mutex unlocked here in ~guard()
@@ -138,12 +140,12 @@ void Simulation::resizeUnits(unsigned num)
 
 void Simulation::start()
 {
-   if (good() && ! m_isComputing)
+   if (good() && ! m_shouldCompute)
    {
-      m_loopThread = boost::thread(& Simulation::processData, this);
+      m_loopThread = boost::thread(& Simulation::runLoop, this);
 
       boost::lock_guard< boost::mutex > guard(m_mutex);
-      m_isComputing = true;
+      m_shouldCompute = true;
    }
 }
 
@@ -151,7 +153,7 @@ void Simulation::pause()
 {
    {
 	   boost::lock_guard< boost::mutex > guard(m_mutex);
-	   m_isComputing = false;
+	   m_shouldCompute = false;
    }
    m_cond.notify_one();
    Logger() << "[Simulation] Paused.\n";
@@ -161,7 +163,7 @@ void Simulation::resume()
 {
    {
       boost::lock_guard< boost::mutex > guard(m_mutex);
-      m_isComputing = true;
+      m_shouldCompute = true;
    }
    m_cond.notify_one();
    Logger() << "[Simulation] Resumed.\n";
@@ -174,17 +176,22 @@ void Simulation::stop()
    Logger() << "[Simulation] Stopped.\n";
 }
 
-
-void Simulation::processData() // main while cycle, (god function)
+void Simulation::runLoop() // main while cycle, (god function)
 {
    Logger() << "[Simulation] Started.\n";
    while (true)
    {
+      boost::unique_lock<boost::mutex> lock(m_mutex);
+      while (! m_shouldCompute)
+      {
+         m_cond.wait(lock);
+      }
+      boost::this_thread::interruption_point();
+
       std::cout << "OK" << std::endl;
 
-      boost::chrono::nanoseconds sec(10000000);
+      boost::chrono::nanoseconds sec(2500000);
 
-      boost::this_thread::interruption_point();
       boost::this_thread::sleep_for(sec);
       boost::this_thread::interruption_point();
    }

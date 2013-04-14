@@ -147,7 +147,11 @@ int main(int argc, char * argv[])
                      mapAmplitude, mapPace, mapSquare, mapSmooth);
    simulation.addUnits(50);
 
-   if (! simulation.map()->empty())
+   std::cout << std::boolalpha << simulation.good() << std::endl;
+   std::cout << std::boolalpha << simulation.map()->empty() << std::endl;
+   std::cout << std::boolalpha << simulation.units().empty() << std::endl;
+
+   if (simulation.good())
    {
       view::MapViewer mapViewer(viewFlags);
       mapViewer.show(simulation.map());
@@ -170,7 +174,7 @@ int main(int argc, char * argv[])
 
    simulation.map() = analysis::serialization::load();
 
-   if (! simulation.map()->empty())
+   if (simulation.good())
    {
       view::MapViewer mapViewer(viewFlags);
       mapViewer.show(simulation.map());

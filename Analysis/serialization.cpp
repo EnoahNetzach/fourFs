@@ -92,7 +92,7 @@ logic::sharedMap analysis::serialization::load()
       if (! boost::filesystem::is_regular_file(filePath))
       {
          std::cout << "[Serializer] File " << filePath
-                   << " does not exists or is not a regular file." << std::flush;
+                   << " does not exists or is not a regular file." << std::endl;
          continue;
       }
 

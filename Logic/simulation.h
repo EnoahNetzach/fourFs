@@ -41,7 +41,7 @@ public:
 protected:
 
 private:
-   void processData(); //god function
+   void runLoop(); //god function
 
    sharedMap m_map;
    unitList m_units;
@@ -49,7 +49,7 @@ private:
    boost::mutex m_loopMutex;
    boost::thread m_loopThread;
    boost::condition_variable m_cond;
-   bool m_isComputing;
+   bool m_shouldCompute;
 
 };
 
