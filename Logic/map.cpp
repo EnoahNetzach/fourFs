@@ -98,7 +98,7 @@ Map::Map(unsigned width, unsigned height, double range,
       }
       pixel->height() = height / pixelSquare.size();
 
-      if (pixel->height() < 0) pixel->height() = 0;
+      if (pixel->height() < -1) pixel->height() = -1;
       if (pixel->height() > 1) pixel->height() = 1;
    }
 

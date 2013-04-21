@@ -99,11 +99,11 @@ void OpenGLInterface::showImpl(sharedConstMatrix map)
 {
    // everything needed to show a new window here!
 
-   loadMap(vertexbuffer, colorbuffer, VertexArrayID, map);
+   loadMap(vertexbuffer, colorbuffer, indexbuffer ,VertexArrayID, map);
 
    initializeShader();
 
-   runLoop(vertexbuffer, colorbuffer ,VertexArrayID);
+   runLoop(vertexbuffer, colorbuffer, indexbuffer, VertexArrayID);
 
    //m_runLoopThread = boost::thread(& OpenGLInterface::runLoop, this);
 
@@ -118,7 +118,7 @@ void OpenGLInterface::initializeShader(void)
    glUseProgram(programID);
 }
 
-void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint &VertexArrayID)
+void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint &indexbuffer, GLuint &VertexArrayID)
 {
    // the run loop!
    // Use boost mutex and boost interrupt points for code stability
@@ -155,8 +155,20 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
          (void*)0                          // array buffer offset
       );
 
+      // Index buffer
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
+
+      // Draw the triangles !
+      glDrawElements(
+         GL_TRIANGLES,                // mode
+         numberOfIndices,                  // count
+         GL_UNSIGNED_INT,                  // type
+         (void*)0                          // element array buffer offset
+      );
+
+
       // Draw!!
-      glDrawArrays(GL_POINTS, 0, numberOfBufferPoints);
+      //glDrawArrays(GL_POINTS, 0, numberOfBufferPoints);
 
       glDisableVertexAttribArray(0);
       glDisableVertexAttribArray(1);
@@ -175,7 +187,7 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
 }
 
 
-void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint &VertexArrayID, logic::sharedConstMatrix matrix)
+void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint &indexbuffer, GLuint &VertexArrayID, logic::sharedConstMatrix matrix)
 {
    glGenVertexArrays(1, &VertexArrayID);
    glBindVertexArray(VertexArrayID);
@@ -186,8 +198,6 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    std::vector<GLfloat> g_vertex_buffer_data;
 
    unsigned matrix_width = matrix->width(), matrix_height = matrix->height();
-
-   std::cout<<"matrix_width: "<<matrix_width<<"  matrix_height: "<<matrix_height<<std::endl;
 
    for(unsigned x=0; x<(matrix_width); ++x)
    {
@@ -200,8 +210,8 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
          appo_x += -0.5;
          appo_y += 0.5;
 
-         appo_x *= 2;
-         appo_y *= 2;
+         appo_x *= 2.05;
+         appo_y *= 2.05;
 
          g_vertex_buffer_data.push_back(appo_x);
          g_vertex_buffer_data.push_back(appo_y);
@@ -213,7 +223,7 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    numberOfBufferPoints = g_vertex_buffer_data.size();
 
    //DEBUG
-
+   /*
    for(unsigned i=0, n=0; i<numberOfBufferPoints; ++i, ++n)
    {
       std::cout<<n<<") x: "<<g_vertex_buffer_data[i];
@@ -222,11 +232,47 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
       ++i;
       std::cout<<" z: "<<g_vertex_buffer_data[i]<<std::endl;
    }
-
+   */
 
    // The following commands will talk about our 'vertexbuffer' buffer
    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
    glBufferData(GL_ARRAY_BUFFER, numberOfBufferPoints*sizeof(GLfloat), &g_vertex_buffer_data[0], GL_STATIC_DRAW);
+
+   //INITIALIZE UVS
+
+   std::vector<GLuint> g_index_buffer_data;
+
+   for(unsigned x=0; x<matrix_width - 1 ; ++x)
+   {
+      for(unsigned y=0; y<matrix_height - 1; ++y)
+      {
+         g_index_buffer_data.push_back(y + (x*matrix_height));
+         g_index_buffer_data.push_back(y+1 + (x*matrix_height));
+         g_index_buffer_data.push_back(y+matrix_height + (x*matrix_height));
+
+         g_index_buffer_data.push_back(y+matrix_height + (x*matrix_height));
+         g_index_buffer_data.push_back(y+matrix_height+1 + (x*matrix_height));
+         g_index_buffer_data.push_back(y+1 + (x*matrix_height));
+      }
+   }
+
+   numberOfIndices = g_index_buffer_data.size();
+
+   //DEBUG
+   /*
+
+   for(unsigned i=0, n=0; i<numberOfIndices; i+=3, ++n)
+   {
+
+      std::cout<<n<<") "<<g_index_buffer_data[i]<<" "<<g_index_buffer_data[i+1]<<" "<<g_index_buffer_data[i+2]<<std::endl;
+
+   }
+   */
+
+   // Generate a buffer for the indices
+   glGenBuffers(1, &indexbuffer);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(GLuint), &g_index_buffer_data[0] , GL_STATIC_DRAW);
 
    //INITIALIZE COLOR
 
@@ -234,9 +280,28 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
 
    for(unsigned i=0; i<numberOfBufferPoints; ++i)
    {
-      g_color_buffer_data.push_back(0.);
-      g_color_buffer_data.push_back(g_vertex_buffer_data[((i+1)*3)-1]);
-      g_color_buffer_data.push_back(0.);
+      float z_height = g_vertex_buffer_data[((i+1)*3)-1];
+
+      if (z_height > 0.90)
+      {
+         g_color_buffer_data.push_back(z_height);
+         g_color_buffer_data.push_back(z_height);
+         g_color_buffer_data.push_back(z_height);
+
+      }
+      else if(z_height < 0.90 && z_height > 0.0)
+      {
+         g_color_buffer_data.push_back(0.);
+         g_color_buffer_data.push_back(z_height+0.10); //std::max(1.-(z_height+0.10), 0.33) -> alternative
+         g_color_buffer_data.push_back(0);
+      }
+      else
+      {
+         g_color_buffer_data.push_back(0.);
+         g_color_buffer_data.push_back(0.);
+         g_color_buffer_data.push_back(std::max(1. - std::abs(z_height), 0.15));
+      }
+
    }
 
    //DEBUG

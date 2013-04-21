@@ -9,6 +9,7 @@
 #define fourFs_OPENGLINTERFACE_H_
 
 #include <boost/thread.hpp>
+#include <boost/random.hpp>
 
 #include "../utilities.hpp"
 #include "interface_base.h"
@@ -33,18 +34,18 @@ public:
 
 protected:
    bool initialized;
-   unsigned window_width, window_height, numberOfBufferPoints;
-   GLuint vertexbuffer, VertexArrayID, programID, colorbuffer;
+   unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices;
+   GLuint vertexbuffer, VertexArrayID, programID, colorbuffer, indexbuffer;
 
    std::string windowTitleDefault;
 
    void initializeImpl();
    void showImpl(logic::sharedConstMatrix map);
-   void loadMap(GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
+   void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
    void initializeShader(void);
 
 private:
-   void runLoop(GLuint &, GLuint &, GLuint &);
+   void runLoop(GLuint &, GLuint &, GLuint &, GLuint &);
 
    boost::thread m_runLoopThread;
 };
