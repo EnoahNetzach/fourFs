@@ -11,7 +11,6 @@
 #include <boost/foreach.hpp>
 #include <boost/random.hpp>
 #include <boost/scope_exit.hpp>
-#include <boost/random.hpp>
 
 #include "map.h"
 #include "matrix.h"
@@ -23,11 +22,10 @@ using namespace fourFs;
 using namespace logic;
 
 Simulation::Simulation()
-   : m_shouldCompute(false)
+   : m_isRunning(false)
+   , m_shouldCompute(false)
 {
 }
-
-
 
 Simulation::~Simulation()
 {
@@ -37,6 +35,21 @@ Simulation::~Simulation()
 bool Simulation::good() const
 {
    return ((! m_map->empty()) && (! m_units.empty()));
+}
+
+bool Simulation::isRunning() const
+{
+   return m_isRunning && m_shouldCompute;
+}
+
+bool Simulation::isPaused() const
+{
+   return m_isRunning && ! m_shouldCompute;
+}
+
+bool Simulation::isStopped() const
+{
+   return ! m_isRunning;
 }
 
 sharedMap Simulation::map()
@@ -140,7 +153,7 @@ void Simulation::resizeUnits(unsigned num)
 
 void Simulation::start()
 {
-   if (good() && ! m_shouldCompute)
+   if (good() && isStopped())
    {
       m_loopThread = boost::thread(& Simulation::runLoop, this);
 
@@ -151,48 +164,62 @@ void Simulation::start()
 
 void Simulation::pause()
 {
+   if (! isRunning()) return;
+
    {
 	   boost::lock_guard< boost::mutex > guard(m_mutex);
 	   m_shouldCompute = false;
    }
    m_cond.notify_one();
-   Logger() << "[Simulation] Paused.\n";
+   Logger() << "[Simulation] Pause.\n";
 }
 
 void Simulation::resume()
 {
+   if (! isPaused()) return;
+
    {
       boost::lock_guard< boost::mutex > guard(m_mutex);
       m_shouldCompute = true;
    }
    m_cond.notify_one();
-   Logger() << "[Simulation] Resumed.\n";
+   Logger() << "[Simulation] Resume.\n";
 }
 
 void Simulation::stop()
 {
+   if (isStopped()) return;
+
    m_loopThread.interrupt();
    m_loopThread.join();
-   Logger() << "[Simulation] Stopped.\n";
+   m_shouldCompute = true;
+   Logger() << "[Simulation] Stop.\n";
 }
 
 void Simulation::runLoop() // main while cycle, (god function)
 {
-   Logger() << "[Simulation] Started.\n";
+   m_isRunning = true;
+   BOOST_SCOPE_EXIT(& m_isRunning)
+   {
+      m_isRunning = false;
+   } BOOST_SCOPE_EXIT_END
+
+   Logger() << "[Simulation] Start.\n";
    while (true)
    {
       boost::unique_lock<boost::mutex> lock(m_mutex);
       while (! m_shouldCompute)
       {
+         std::cout << "idle" << std::endl;
          m_cond.wait(lock);
       }
       boost::this_thread::interruption_point();
 
-      std::cout << "OK" << std::endl;
-
       boost::chrono::nanoseconds sec(2500000);
 
       boost::this_thread::sleep_for(sec);
+
       boost::this_thread::interruption_point();
    }
+   Logger() << "[Simulation] End.\n";
 }

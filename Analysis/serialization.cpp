@@ -10,9 +10,13 @@
 #include <fstream>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/zlib.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/utility.hpp>
 
@@ -57,11 +61,15 @@ bool fourFs::analysis::serialization::save(logic::sharedConstMap map)
          i++;
       } while (boost::filesystem::exists(filePath));
 
-      // save
+      // compress & save
       std::ofstream ofs(filePath.string().c_str());
-      boost::archive::text_oarchive oa(ofs);
+      boost::iostreams::filtering_ostream f;
+      f.push(boost::iostreams::zlib_compressor());
+      f.push(ofs);
+      boost::archive::binary_oarchive oa(f);
       // write class instance to archive
       oa << map;
+      f.flush();
 
       if (boost::filesystem::is_regular_file(filePath)) retValue = true;
       std::cout << "[Serializer] File saved: " << filePath << "." << std::endl;
@@ -72,10 +80,8 @@ bool fourFs::analysis::serialization::save(logic::sharedConstMap map)
    return retValue;
 }
 
-logic::sharedMap analysis::serialization::load()
+void analysis::serialization::load(logic::sharedMap map)
 {
-   logic::sharedMap map;
-
    std::string input = "";
 
    boost::filesystem::path filePath;
@@ -96,9 +102,12 @@ logic::sharedMap analysis::serialization::load()
          continue;
       }
 
-      // load
+      // decompress & load
       std::ifstream ifs(filePath.string().c_str());
-      boost::archive::text_iarchive ia(ifs);
+      boost::iostreams::filtering_istream f;
+      f.push(boost::iostreams::zlib_decompressor());
+      f.push(ifs);
+      boost::archive::binary_iarchive ia(f);
       // read class state from archive
       try
       {
@@ -113,6 +122,4 @@ logic::sharedMap analysis::serialization::load()
 
       break;
    }
-
-   return map;
 }

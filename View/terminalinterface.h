@@ -8,6 +8,8 @@
 #ifndef fourFs_TERMINALINTERFACE_H_
 #define fourFs_TERMINALINTERFACE_H_
 
+#include <boost/thread.hpp>
+
 #include "../utilities.hpp"
 #include "interface_base.h"
 
@@ -23,6 +25,11 @@ public:
 protected:
    void initializeImpl();
    void showImpl(logic::sharedConstMatrix matrix);
+   void runLoop();
+
+   logic::weakConstMatrix m_matrix;
+   boost::thread m_loopThread;
+   boost::mutex m_mutex;
 
 private:
    void showMap(logic::sharedConstMatrix map);

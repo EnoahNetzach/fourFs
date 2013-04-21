@@ -14,9 +14,20 @@ namespace fourFs {
 namespace analysis {
 namespace serialization {
 
+/**
+ * Saves the current state of logic::Map to a file
+ *
+ * @param map
+ * @return
+ */
 bool save(logic::sharedConstMap map);
 
-logic::sharedMap load();
+/**
+ * Loads a saved logic::Map from a file
+ *
+ * @param map
+ */
+void load(logic::sharedMap map);
 
 } /* namespace serialization */
 } /* namespace analysis */

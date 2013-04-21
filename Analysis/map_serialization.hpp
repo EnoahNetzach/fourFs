@@ -41,7 +41,7 @@ namespace boost {
 namespace serialization {
 
 template< class Archive >
-inline void serialize(Archive & ar, fourFs::logic::Map & map, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Map & map, unsigned)
 {
    fourFs::analysis::serialization::SerializeMap sp(map);
 

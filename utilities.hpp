@@ -46,7 +46,24 @@ class SerializeUnit;
 
 } /* namespace serialization */
 } /* namespace analysis */
+namespace interfaces {
 
+typedef enum
+{
+   _openGL = 1L << 0,
+   _terminal = 1L << 1
+} Option;
+static const Option openGL = _openGL;
+static const Option terminal = _terminal;
+typedef int Options;
+
+class Interface;
+
+class Interface_base;
+typedef boost::shared_ptr< Interface_base > sharedInterface;
+typedef std::list< sharedInterface > interfaceList;
+
+} /* namespace interfaces */
 namespace logic {
 
 class Environment;
@@ -82,6 +99,8 @@ typedef constWeakPixelList::const_iterator constWeakPixelConstIterator;
 class State;
 typedef boost::shared_ptr< State > sharedState;
 typedef boost::shared_ptr< const State > sharedConstState;
+
+class Simulation;
 
 class Map;
 typedef boost::shared_ptr< Map > sharedMap;

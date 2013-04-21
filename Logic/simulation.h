@@ -23,6 +23,9 @@ public:
    ~Simulation();
 
    bool good() const;
+   bool isRunning() const;
+   bool isPaused() const;
+   bool isStopped() const;
    sharedMap map();
    sharedConstMap map() const;
    unitList units();
@@ -46,11 +49,10 @@ private:
    sharedMap m_map;
    unitList m_units;
    boost::mutex m_mutex;
-   boost::mutex m_loopMutex;
    boost::thread m_loopThread;
+   bool m_isRunning;
    boost::condition_variable m_cond;
    bool m_shouldCompute;
-
 };
 
 } /* namespace logic */

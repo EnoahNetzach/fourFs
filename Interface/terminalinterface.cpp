@@ -13,67 +13,55 @@
 #include "../Logic/map.h"
 #include "../Logic/matrix.h"
 #include "../Logic/pixel.h"
+#include "../Logic/simulation.h"
 
 using namespace fourFs;
 using namespace logic;
-using namespace view;
+using namespace interfaces;
 
-TerminalInterface::TerminalInterface()
-   : Interface_base("terminal")
+TerminalInterface::TerminalInterface(logic::Simulation & simulation)
+   : Interface_base("terminal", simulation)
 {
 }
 
-TerminalInterface::~TerminalInterface()
+void TerminalInterface::runImpl()
 {
-}
+   std::string input = "";
 
-void TerminalInterface::initializeImpl()
-{
-   m_good = std::cout.good();
-}
-
-void TerminalInterface::showImpl(sharedConstMatrix matrix)
-{
-   m_matrix = matrix;
-
-   if (good())
+   do
    {
-      m_loopThread = boost::thread(& TerminalInterface::runLoop, this);
-   }
-}
+      input.clear();
+      std::cout << "What would you like to do? (_s_how, _p_lay, p_a_use, s_t_op, _q_uit) " << std::flush;
+      std::cin >> input;
 
-void TerminalInterface::runLoop()
-{
-   bool shouldReturn = false;
-   while (! shouldReturn)
-   {
-      std::cout << "[Term interface] What would you like to show? (Map, Units, Quit) " << std::flush;
-      std::string input;
-
-      do
+      if (input == "s")
       {
+         input.clear();
+         std::cout << "[Term interface] What would you like to show? (_m_ap, _u_nits, _c_ancel) " << std::flush;
          std::cin >> input;
 
-         if (input == "m")
-         {
-            showMap(m_matrix.lock());
-         }
-         else if (input == "u")
-         {
-            showUnits(m_matrix.lock());
-         }
-         else if (input == "q")
-         {
-            shouldReturn = true;
-            break;
-         }
-      } while (std::cin.peek() != '\n');
+         if (input == "c") continue;
+         if (input == "m") callShowMap();
+         if (input == "u") callShowUnits();
+      }
+      if (input == "p")
+      {
+         if (m_simulation.isStopped()) m_simulation.start();
+      }
+      if (input == "a")
+      {
+         m_simulation.pause();
+      }
+      if (input == "t")
+      {
+         m_simulation.stop();
+      }
 
-      std::cin.clear();
-   }
+      boost::this_thread::interruption_point();
+   } while (input != "q");
 }
 
-void TerminalInterface::showMap(sharedConstMatrix matrix)
+void TerminalInterface::showMapImpl(sharedConstMatrix matrix) const
 {
    std::cout << "_MAP" << std::string(matrix->width() * 2 - 2, '_') << "\n";
    for (unsigned y = 0; y < matrix->height(); y++)
@@ -125,7 +113,7 @@ void TerminalInterface::showMap(sharedConstMatrix matrix)
    std::cout << std::string(matrix->width() * 2 + 2, '^') << std::endl;
 }
 
-void TerminalInterface::showUnits(sharedConstMatrix matrix)
+void TerminalInterface::showUnitsImpl(sharedConstMatrix matrix) const
 {
    std::cout << "_UNITS" << std::string(matrix->width() * 2 - 4, '_') << "\n";
    for (unsigned y = 0; y < matrix->height(); y++)

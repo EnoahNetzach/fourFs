@@ -147,16 +147,9 @@ int main(int argc, char * argv[])
                      mapAmplitude, mapPace, mapSquare, mapSmooth);
    simulation.addUnits(50);
 
-   std::cout << std::boolalpha << simulation.good() << std::endl;
-   std::cout << std::boolalpha << simulation.map()->empty() << std::endl;
-   std::cout << std::boolalpha << simulation.units().empty() << std::endl;
-
-   if (simulation.good())
-   {
-      view::MapViewer mapViewer(viewFlags);
-      mapViewer.show(simulation.map());
-   }
-
+   interfaces::Viewer viewer(simulation, viewFlags);
+   viewer.run();
+/*
    analysis::serialization::save(simulation.map());
 
    // user interaction begins here
@@ -172,13 +165,10 @@ int main(int argc, char * argv[])
    boost::this_thread::sleep_for(sec);
    simulation.stop();
 
-   simulation.map() = analysis::serialization::load();
+   //analysis::serialization::load(simulation.map());
+*/
 
-   if (simulation.good())
-   {
-      view::MapViewer mapViewer(viewFlags);
-      mapViewer.show(simulation.map());
-   }
+   viewer.join();
 
    if (Logger::verbose())
    {
