@@ -189,9 +189,6 @@ int main(int argc, char * argv[])
       (* it)->addUnit(unit4);
    }
 
-   view::MapViewer mapViewer(map, viewFlags, viewTime);
-   mapViewer.show();
-
    analysis::Serializer serializer(argv[0]);
    serializer.save(map);
 

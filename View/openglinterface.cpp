@@ -5,14 +5,12 @@
  *      Author: Enoah Netzach
  */
 
-#include "openglinterface.h"
-
-#include <iostream>
 #include <deque>
 
+#include "openglinterface.h"
 #include "../Logic/map.h"
 #include "../Logic/pixel.h"
-#include <common/shader.cpp>  // Include "LoadShaders"
+#include "load_shader.hpp"
 
 using namespace fourFs;
 using namespace logic;
@@ -176,6 +174,7 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
 
 }
 
+
 void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint &VertexArrayID, logic::sharedConstMatrix matrix)
 {
    glGenVertexArrays(1, &VertexArrayID);
@@ -196,8 +195,16 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
       {
          sharedConstPixel pixel = matrix->pixelAtPosition(x, y);
 
-         g_vertex_buffer_data.push_back( -((float)x/matrix_width) );
-         g_vertex_buffer_data.push_back( -((float)y/matrix_height) );
+         float appo_x = ((float)x/matrix_width), appo_y = -((float)y/matrix_height);
+
+         appo_x += -0.5;
+         appo_y += 0.5;
+
+         appo_x *= 2;
+         appo_y *= 2;
+
+         g_vertex_buffer_data.push_back(appo_x);
+         g_vertex_buffer_data.push_back(appo_y);
          g_vertex_buffer_data.push_back( pixel->height() );
 
       }
@@ -206,7 +213,7 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    numberOfBufferPoints = g_vertex_buffer_data.size();
 
    //DEBUG
-   /*
+
    for(unsigned i=0, n=0; i<numberOfBufferPoints; ++i, ++n)
    {
       std::cout<<n<<") x: "<<g_vertex_buffer_data[i];
@@ -215,7 +222,7 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
       ++i;
       std::cout<<" z: "<<g_vertex_buffer_data[i]<<std::endl;
    }
-   */
+
 
    // The following commands will talk about our 'vertexbuffer' buffer
    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -232,6 +239,8 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
       g_color_buffer_data.push_back(0.);
    }
 
+   //DEBUG
+   /*
    for(unsigned i=0, n=0; i<numberOfBufferPoints; ++i, ++n)
    {
       std::cout<<n<<")  ( "<<g_color_buffer_data[i]<< " - ";
@@ -240,6 +249,7 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
       ++i;
       std::cout<<g_color_buffer_data[i]<< " )"<<std::endl;
    }
+   */
 
    // Generate 1 buffer, put the resulting identifier in colorbuffer
    glGenBuffers(1, &colorbuffer);
@@ -249,3 +259,4 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    glBufferData(GL_ARRAY_BUFFER, numberOfBufferPoints*sizeof(GLfloat), &g_color_buffer_data[0], GL_STATIC_DRAW);
 
 }
+

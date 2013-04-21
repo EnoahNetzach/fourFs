@@ -16,6 +16,9 @@
 #include <GL/glew.h>          // Include GLEW
 #include <GL/glfw.h>          // Include GLFW
 
+#include <iostream>
+#include <fstream>
+
 namespace fourFs {
 namespace view {
 
