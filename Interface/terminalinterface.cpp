@@ -9,6 +9,9 @@
 
 #include <iostream>
 
+#include <boost/lexical_cast.hpp>
+
+#include "../Analysis/serialization.h"
 #include "../logger.h"
 #include "../Logic/map.h"
 #include "../Logic/matrix.h"
@@ -30,31 +33,203 @@ void TerminalInterface::runImpl()
 
    do
    {
+      std::cout << "[Term interface] What would you like to do?\n"
+                   "p=play/pause, r=resume, s=stop\n"
+                   "m=new map, u=resize units, o=change options\n"
+                   "v=save map, l=load map, w=show, i=info, q=quit\n> " << std::flush;
       input.clear();
-      std::cout << "What would you like to do? (_s_how, _p_lay, p_a_use, s_t_op, _q_uit) " << std::flush;
       std::cin >> input;
 
-      if (input == "s")
+      if (input == "p") // play/pause
       {
+         if (m_simulation.isRunning())
+         {
+            m_simulation.pause();
+         }
+         else
+         {
+            m_simulation.start();
+         }
+      }
+      if (input == "r") // resume
+      {
+         m_simulation.resume();
+      }
+      if (input == "s") // stop
+      {
+         m_simulation.stop();
+      }
+      if (input == "m") // new map
+      {
+         m_simulation.stop();
+         std::cout << "[Term interface] New map with:"
+                   << std::setprecision(7)
+                   << std::setw(25) << std::left << "\nwidth = " << m_simulation.width()
+                   << std::setw(25) << std::left << "\nheight = " << m_simulation.height()
+                   << std::setw(25) << std::left << "\nrange = " << m_simulation.range()
+                   << std::setw(25) << std::left << "\nfrequency" << m_simulation.frequency()
+                   << std::setw(25) << std::left << "\namplitude = " << m_simulation.amplitude()
+                   << std::setw(25) << std::left << "\npace" << m_simulation.pace()
+                   << std::setw(25) << std::left << "\nsquare = " << m_simulation.square()
+                   << std::setw(25) << std::left << "\nsmooth = " << m_simulation.smooth()
+                   << std::endl;
+         m_simulation.newMap();
+      }
+      if (input == "u") // resize units
+      {
+         std::cout << "[Term interface] Resize units (now " << m_simulation.units().size()
+                   << ") (c=cancel) " << std::flush;
          input.clear();
-         std::cout << "[Term interface] What would you like to show? (_m_ap, _u_nits, _c_ancel) " << std::flush;
+         std::cin >> input;
+
+         if (input == "c") continue;
+         m_simulation.resizeUnits(boost::lexical_cast< unsigned >(input));
+      }
+      if (input == "o") // change options
+      {
+         std::cout << "[Term interface] What would you like to change\n"
+                      "(w=width, h=height, l=length, r=range, f=frequency,\n"
+                      "a=amplitude, p=pace, s=square, m=smooth, c=cancel)\n> " << std::flush;
+         input.clear();
+         std::cin >> input;
+
+         if (input == "c") continue;
+         if (input == "w") // change options - width
+         {
+            std::cout << "[Term interface] Insert map width (now " << m_simulation.width()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.width() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "h") // change options - height
+         {
+            std::cout << "[Term interface] Insert map height (now " << m_simulation.height()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.height() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "l") // change options - length
+         {
+            std::cout << "[Term interface] Insert map length (now " << m_simulation.width()
+                      << " x " << m_simulation.height() << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.width() = boost::lexical_cast< unsigned >(input);
+            m_simulation.height() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "r") // change options - range
+         {
+            std::cout << "[Term interface] Insert map range (now " << m_simulation.range()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.range() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "f") // change options - frequency
+         {
+            std::cout << "[Term interface] Insert map frequency (now " << m_simulation.frequency()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.frequency() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "a") // change options - amplitude
+         {
+            std::cout << "[Term interface] Insert map amplitude (now " << m_simulation.amplitude()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.amplitude() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "p") // change options - pace
+         {
+            std::cout << "[Term interface] Insert map pace (now " << m_simulation.pace()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.pace() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "s") // change options - square
+         {
+            std::cout << "[Term interface] Insert map square (now " << m_simulation.square()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.square() = boost::lexical_cast< unsigned >(input);
+         }
+         if (input == "m") // change options - smooth
+         {
+            std::cout << "[Term interface] Insert map smooth (now " << m_simulation.smooth()
+                      << ") (c=cancel) " << std::flush;
+            input.clear();
+            std::cin >> input;
+
+            if (input == "c") continue;
+            m_simulation.smooth() = boost::lexical_cast< unsigned >(input);
+         }
+      }
+      if (input == "v") // save map
+      {
+         bool wasRunning = m_simulation.isRunning();
+         m_simulation.pause();
+         analysis::serialization::save(m_simulation);
+         if (wasRunning) m_simulation.start();
+      }
+      if (input == "l") // load map
+      {
+         m_simulation.stop();
+
+         try
+         {
+            analysis::serialization::load(m_simulation);
+         }
+         catch (...)
+         {
+            std::cerr << "Some error occured while loading the map." << std::endl;
+         }
+      }
+      if (input == "w") // show
+      {
+         std::cout << "[Term interface] What would you like to show? (m=map, u=units, c=cancel) " << std::flush;
+         input.clear();
          std::cin >> input;
 
          if (input == "c") continue;
          if (input == "m") callShowMap();
          if (input == "u") callShowUnits();
       }
-      if (input == "p")
+      if (input == "i") // info
       {
-         if (m_simulation.isStopped()) m_simulation.start();
-      }
-      if (input == "a")
-      {
-         m_simulation.pause();
-      }
-      if (input == "t")
-      {
-         m_simulation.stop();
+         std::cout << "[Term interface] Map with:"
+                   << std::setprecision(7)
+                   << std::setw(30) << std::left << "\nwidth = " << m_simulation.width()
+                   << std::setw(30) << std::left << "\nheight = " << m_simulation.height()
+                   << std::setw(30) << std::left << "\nrange = " << m_simulation.range()
+                   << std::setw(30) << std::left << "\nfrequency" << m_simulation.frequency()
+                   << std::setw(30) << std::left << "\namplitude = " << m_simulation.amplitude()
+                   << std::setw(30) << std::left << "\npace" << m_simulation.pace()
+                   << std::setw(30) << std::left << "\nsquare = " << m_simulation.square()
+                   << std::setw(30) << std::left << "\nsmooth = " << m_simulation.smooth()
+                   << std::setw(30) << std::left << "\nnumber of units = " << m_simulation.units().size()
+                   << std::endl;
       }
 
       boost::this_thread::interruption_point();

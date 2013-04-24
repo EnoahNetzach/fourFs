@@ -20,8 +20,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "logger.h"
-
 static boost::random_device rng;
 
 namespace fourFs {
@@ -40,6 +38,7 @@ namespace serialization {
 class SerializeEnvironment;
 class SerializeMatrix;
 class SerializePixel;
+class SerializeSimulation;
 class SerializeState;
 class SerializeMap;
 class SerializeUnit;

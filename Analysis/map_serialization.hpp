@@ -23,7 +23,7 @@ public:
    SerializeMap(logic::Map & map) : m_map(map) {}
 
    template< class Archive >
-   void serialize(Archive & ar, unsigned v)
+   void serialize(Archive & ar, unsigned /*v*/)
    {
       ar & m_map.m_matrix;
    }
@@ -41,7 +41,7 @@ namespace boost {
 namespace serialization {
 
 template< class Archive >
-inline void serialize(Archive & ar, fourFs::logic::Map & map, unsigned)
+inline void serialize(Archive & ar, fourFs::logic::Map & map, unsigned /*v*/)
 {
    fourFs::analysis::serialization::SerializeMap sp(map);
 

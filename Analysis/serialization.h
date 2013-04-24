@@ -20,14 +20,14 @@ namespace serialization {
  * @param map
  * @return
  */
-bool save(logic::sharedConstMap map);
+bool save(const logic::Simulation & simulation);
 
 /**
  * Loads a saved logic::Map from a file
  *
  * @param map
  */
-void load(logic::sharedMap map);
+void load(logic::Simulation & simulation);
 
 } /* namespace serialization */
 } /* namespace analysis */

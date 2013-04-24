@@ -24,7 +24,7 @@ public:
    SerializePixel(logic::Pixel & pixel) : m_pixel(pixel) {}
 
    template< class Archive >
-   void serialize(Archive & ar, unsigned v)
+   void serialize(Archive & ar, unsigned /*v*/)
    {
       ar & m_pixel.m_index;
       ar & m_pixel.m_height;
@@ -45,7 +45,7 @@ namespace boost {
 namespace serialization {
 
 template< class Archive >
-inline void serialize(Archive & ar, fourFs::logic::Pixel & pixel, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Pixel & pixel, unsigned /*v*/)
 {
    fourFs::analysis::serialization::SerializePixel sp(pixel);
 

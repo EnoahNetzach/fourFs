@@ -9,27 +9,72 @@
 
 #include <boost/chrono.hpp>
 #include <boost/foreach.hpp>
+#ifdef DEBUG
+//#include <boost/python.hpp>
+#endif // DEBUG
 #include <boost/random.hpp>
 #include <boost/scope_exit.hpp>
 
+#include "../logger.h"
+#ifndef DEBUG
+#include "functions.h"
+#endif // DEBUG
 #include "map.h"
 #include "matrix.h"
 #include "pixel.h"
 #include "unit.h"
 
-
 using namespace fourFs;
 using namespace logic;
 
 Simulation::Simulation()
-   : m_isRunning(false)
-   , m_shouldCompute(false)
+   : m_width(0)
+   , m_height(0)
+   , m_range(0)
+   , m_frequency(0)
+   , m_amplitude(0)
+   , m_pace(0)
+   , m_square(0)
+   , m_smooth(0)
+   , m_isRunning(false)
+   , m_shouldRun(false)
+{
+}
+
+Simulation::Simulation(const Simulation & simulation)
+   : m_width(simulation.m_width)
+   , m_height(simulation.m_height)
+   , m_range(simulation.m_range)
+   , m_frequency(simulation.m_frequency)
+   , m_amplitude(simulation.m_amplitude)
+   , m_pace(simulation.m_pace)
+   , m_square(simulation.m_square)
+   , m_smooth(simulation.m_smooth)
+   , m_map(simulation.m_map)
+   , m_units(simulation.m_units)
+   , m_isRunning(false)
+   , m_shouldRun(false)
 {
 }
 
 Simulation::~Simulation()
 {
    stop();
+}
+
+void Simulation::operator =(const Simulation & simulation)
+{
+   stop();
+   m_width = simulation.m_width;
+   m_height = simulation.m_height;
+   m_range = simulation.m_range;
+   m_frequency = simulation.m_frequency;
+   m_amplitude = simulation.m_amplitude;
+   m_pace = simulation.m_pace;
+   m_square = simulation.m_square;
+   m_smooth = simulation.m_smooth;
+   m_map = simulation.m_map;
+   m_units = simulation.m_units;
 }
 
 bool Simulation::good() const
@@ -39,17 +84,97 @@ bool Simulation::good() const
 
 bool Simulation::isRunning() const
 {
-   return m_isRunning && m_shouldCompute;
+   return m_isRunning && m_shouldRun;
 }
 
 bool Simulation::isPaused() const
 {
-   return m_isRunning && ! m_shouldCompute;
+   return m_isRunning && ! m_shouldRun;
 }
 
 bool Simulation::isStopped() const
 {
    return ! m_isRunning;
+}
+
+unsigned & Simulation::width()
+{
+   return m_width;
+}
+
+const unsigned & Simulation::width() const
+{
+   return m_width;
+}
+
+unsigned & Simulation::height()
+{
+   return m_height;
+}
+
+const unsigned & Simulation::height() const
+{
+   return m_height;
+}
+
+double & Simulation::range()
+{
+   return m_range;
+}
+
+const double & Simulation::range() const
+{
+   return m_range;
+}
+
+unsigned & Simulation::frequency()
+{
+   return m_frequency;
+}
+
+const unsigned & Simulation::frequency() const
+{
+   return m_frequency;
+}
+
+double & Simulation::amplitude()
+{
+   return m_amplitude;
+}
+
+const double & Simulation::amplitude() const
+{
+   return m_amplitude;
+}
+
+unsigned & Simulation::pace()
+{
+   return m_pace;
+}
+
+const unsigned & Simulation::pace() const
+{
+   return m_pace;
+}
+
+unsigned & Simulation::square()
+{
+   return m_square;
+}
+
+const unsigned & Simulation::square() const
+{
+   return m_square;
+}
+
+unsigned & Simulation::smooth()
+{
+   return m_smooth;
+}
+
+const unsigned & Simulation::smooth() const
+{
+   return m_smooth;
 }
 
 sharedMap Simulation::map()
@@ -79,12 +204,33 @@ constUnitList Simulation::units() const
    return units;
 }
 
+void Simulation::options(unsigned width, unsigned height, double range,
+                         unsigned frequency, double amplitude, unsigned pace,
+                         unsigned square, unsigned smooth)
+{
+   m_width = width;
+   m_height = height;
+   m_range = range;
+   m_frequency = frequency;
+   m_amplitude = amplitude;
+   m_pace = pace;
+   m_square = square;
+   m_smooth = smooth;
+}
+
+void Simulation::newMap()
+{
+   m_map = sharedMap(new Map(m_width, m_height, m_range, m_frequency,
+                             m_amplitude, m_pace, m_square, m_smooth));
+}
+
 void Simulation::newMap(unsigned width, unsigned height, double range,
                         unsigned frequency, double amplitude, unsigned pace,
                         unsigned square, unsigned smooth)
 {
-   m_map = sharedMap(new Map(width, height, range, frequency,
-                             amplitude, pace, square, smooth));
+   options(width, height, range, frequency, amplitude, pace, square, smooth);
+
+   newMap();
 }
 
 void Simulation::addUnits(unsigned num)
@@ -158,7 +304,7 @@ void Simulation::start()
       m_loopThread = boost::thread(& Simulation::runLoop, this);
 
       boost::lock_guard< boost::mutex > guard(m_mutex);
-      m_shouldCompute = true;
+      m_shouldRun = true;
    }
 }
 
@@ -168,10 +314,9 @@ void Simulation::pause()
 
    {
 	   boost::lock_guard< boost::mutex > guard(m_mutex);
-	   m_shouldCompute = false;
+	   m_shouldRun = false;
    }
    m_cond.notify_one();
-   Logger() << "[Simulation] Pause.\n";
 }
 
 void Simulation::resume()
@@ -180,10 +325,9 @@ void Simulation::resume()
 
    {
       boost::lock_guard< boost::mutex > guard(m_mutex);
-      m_shouldCompute = true;
+      m_shouldRun = true;
    }
    m_cond.notify_one();
-   Logger() << "[Simulation] Resume.\n";
 }
 
 void Simulation::stop()
@@ -192,8 +336,7 @@ void Simulation::stop()
 
    m_loopThread.interrupt();
    m_loopThread.join();
-   m_shouldCompute = true;
-   Logger() << "[Simulation] Stop.\n";
+   m_shouldRun = true;
 }
 
 void Simulation::runLoop() // main while cycle, (god function)
@@ -202,22 +345,24 @@ void Simulation::runLoop() // main while cycle, (god function)
    BOOST_SCOPE_EXIT(& m_isRunning)
    {
       m_isRunning = false;
+      Logger() << "[Simulation] Stop.\n";
    } BOOST_SCOPE_EXIT_END
 
    Logger() << "[Simulation] Start.\n";
    while (true)
    {
       boost::unique_lock<boost::mutex> lock(m_mutex);
-      while (! m_shouldCompute)
+      while (! m_shouldRun)
       {
-         std::cout << "idle" << std::endl;
+         Logger() << "[Simulation] Pause.\n";
          m_cond.wait(lock);
+         Logger() << "[Simulation] Resume.\n";
       }
       boost::this_thread::interruption_point();
 
-      boost::chrono::nanoseconds sec(2500000);
-
-      boost::this_thread::sleep_for(sec);
+      /*
+       * Real computing stuff here!
+       */
 
       boost::this_thread::interruption_point();
    }

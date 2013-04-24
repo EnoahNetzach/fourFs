@@ -21,7 +21,7 @@ public:
    static void verbose(bool v);
    static bool verbose();
 
-   template<typename T>
+   template< typename T >
    Logger & operator<<(const T & v)
    {
       if (m_verbose)

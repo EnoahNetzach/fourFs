@@ -149,24 +149,6 @@ int main(int argc, char * argv[])
 
    interfaces::Viewer viewer(simulation, viewFlags);
    viewer.run();
-/*
-   analysis::serialization::save(simulation.map());
-
-   // user interaction begins here
-   boost::chrono::nanoseconds sec(10000000);
-   simulation.start();
-
-   boost::this_thread::sleep_for(sec);
-   simulation.pause();
-
-   boost::this_thread::sleep_for(sec);
-   simulation.resume();
-
-   boost::this_thread::sleep_for(sec);
-   simulation.stop();
-
-   //analysis::serialization::load(simulation.map());
-*/
 
    viewer.join();
 

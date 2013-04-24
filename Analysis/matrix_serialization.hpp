@@ -22,7 +22,7 @@ public:
    inline SerializeMatrix(logic::Matrix & matrix) : m_matrix(matrix) {}
 
    template< class Archive >
-   void serialize(Archive & ar, unsigned v)
+   void serialize(Archive & ar, unsigned /*v*/)
    {
       ar & m_matrix.m_height;
       ar & m_matrix.m_width;
@@ -41,7 +41,7 @@ namespace boost {
 namespace serialization {
 
 template< class Archive >
-inline void serialize(Archive & ar, fourFs::logic::Matrix & matrix, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Matrix & matrix, unsigned /*v*/)
 {
    fourFs::analysis::serialization::SerializeMatrix sp(matrix);
 

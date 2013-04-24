@@ -24,7 +24,7 @@ public:
    SerializeUnit(logic::Unit & unit) : m_unit(unit) {}
 
    template< class Archive >
-   void serialize(Archive & ar, unsigned v)
+   void serialize(Archive & ar, unsigned /*v*/)
    {
       ar & m_unit.m_belligerance;
       ar & m_unit.m_fertility;
@@ -45,7 +45,7 @@ namespace boost {
 namespace serialization {
 
 template< class Archive >
-inline void serialize(Archive & ar, fourFs::logic::Unit & unit, unsigned v)
+inline void serialize(Archive & ar, fourFs::logic::Unit & unit, unsigned /*v*/)
 {
    fourFs::analysis::serialization::SerializeUnit sp(unit);
 
