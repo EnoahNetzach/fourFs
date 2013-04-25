@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 namespace fourFs {
 namespace view {
@@ -35,7 +36,7 @@ public:
 protected:
    bool initialized;
    unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices;
-   GLuint vertexbuffer, VertexArrayID, programID, colorbuffer, indexbuffer;
+   GLuint vertexbuffer, VertexArrayID, programID, colorbuffer, indexbuffer, frameCount;
 
    std::string windowTitleDefault;
 
@@ -43,6 +44,7 @@ protected:
    void showImpl(logic::sharedConstMatrix map);
    void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
    void initializeShader(void);
+   double fotogramsPerSecond(unsigned int &, double, double);
 
 private:
    void runLoop(GLuint &, GLuint &, GLuint &, GLuint &);

@@ -124,6 +124,8 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    // Use boost mutex and boost interrupt points for code stability
    // (refer to http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html).
 
+   double oldTime = 0;
+
    do
    {
       // Clear the screen
@@ -174,6 +176,9 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
       glDisableVertexAttribArray(1);
 
       glfwSwapBuffers();   // Swap buffers
+
+      ++frameCount;
+      oldTime = fotogramsPerSecond(frameCount, 1.0, oldTime);     //FPS counter
 
    }  while(glfwGetKey(GLFW_KEY_ESC) != GLFW_PRESS && glfwGetWindowParam(GLFW_OPENED));
 
@@ -323,5 +328,32 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
    glBufferData(GL_ARRAY_BUFFER, numberOfBufferPoints*sizeof(GLfloat), &g_color_buffer_data[0], GL_STATIC_DRAW);
 
+}
+
+double OpenGLInterface::fotogramsPerSecond(unsigned int &frameCount, double step, double oldTime){
+
+   double newTime = glfwGetTime();
+
+   if(frameCount == 0){
+      glfwSetTime(0.0);
+   }
+
+   if(std::abs(oldTime - newTime) > step)
+   {
+      unsigned int fps = frameCount/(newTime - oldTime);
+
+      std::stringstream oss;
+
+      oss << WINDOW_TITLE_DEFAULT <<" @"<< fps << " fps";
+
+      std::string newTitle (oss.str());
+
+      glfwSetWindowTitle(newTitle.c_str());
+
+      oldTime = newTime;
+      frameCount=0;
+   }
+
+   return oldTime;
 }
 
