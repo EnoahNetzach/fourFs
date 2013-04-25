@@ -65,15 +65,15 @@ bool fourFs::analysis::serialization::save(const logic::Simulation & simulation)
 
       // compress & save
       std::ofstream ofs(filePath.string().c_str());
-      boost::iostreams::filtering_ostream f;
-      f.push(boost::iostreams::zlib_compressor());
-      f.push(ofs);
+//      boost::iostreams::filtering_ostream f;
+//      f.push(boost::iostreams::zlib_compressor());
+//      f.push(ofs);
 //      boost::archive::binary_oarchive oa(f);
-      boost::archive::text_oarchive oa(f);
+      boost::archive::text_oarchive oa(ofs);
 
       // write class instance to archive
       oa << simulation;
-      f.flush();
+//      f.flush();
 
       ofs.close();
 
@@ -108,11 +108,11 @@ void analysis::serialization::load(logic::Simulation & simulation)
 
       // decompress & load
       std::ifstream ifs(filePath.string().c_str());
-      boost::iostreams::filtering_istream f;
-      f.push(boost::iostreams::zlib_decompressor());
-      f.push(ifs);
+//      boost::iostreams::filtering_istream f;
+//      f.push(boost::iostreams::zlib_decompressor());
+//      f.push(ifs);
 //      boost::archive::binary_iarchive ia(f);
-      boost::archive::text_iarchive ia(f);
+      boost::archive::text_iarchive ia(ifs);
       // read class state from archive
       try
       {
