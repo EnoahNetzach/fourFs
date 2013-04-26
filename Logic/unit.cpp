@@ -15,10 +15,14 @@
 using namespace fourFs;
 using namespace logic;
 
-// STATIC members
-unsigned Unit::radius()
+unsigned & Unit::radius()
 {
-   return 1;
+   return m_radius;
+}
+
+const unsigned & Unit::radius() const
+{
+   return m_radius;
 }
 
 unsigned Unit::fieldOfView()
@@ -26,8 +30,9 @@ unsigned Unit::fieldOfView()
    return 5;
 }
 
-Unit::Unit()
-   : m_belligerance(0)
+Unit::Unit(unsigned radius)
+   : m_radius(radius)
+   , m_belligerance(0)
    , m_fertility(0)
    , m_longevity(0)
 {

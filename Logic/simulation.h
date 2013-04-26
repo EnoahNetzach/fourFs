@@ -13,6 +13,8 @@
 
 #include "../utilities.hpp"
 
+class lua_State;
+
 namespace fourFs {
 namespace logic {
 
@@ -85,6 +87,7 @@ private:
    bool m_isRunning;
    boost::condition_variable m_cond;
    bool m_shouldRun;
+   lua_State * m_lua;
 };
 
 } /* namespace logic */

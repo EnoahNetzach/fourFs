@@ -10,7 +10,7 @@
 #include <boost/chrono.hpp>
 #include <boost/foreach.hpp>
 #ifdef DEBUG
-//#include <boost/python.hpp>
+#include <lua/lua.hpp>
 #endif // DEBUG
 #include <boost/random.hpp>
 #include <boost/scope_exit.hpp>
@@ -38,7 +38,9 @@ Simulation::Simulation()
    , m_smooth(0)
    , m_isRunning(false)
    , m_shouldRun(false)
+   , m_lua(luaL_newstate())
 {
+   luaL_openlibs(m_lua);
 }
 
 Simulation::Simulation(const Simulation & simulation)
@@ -54,12 +56,16 @@ Simulation::Simulation(const Simulation & simulation)
    , m_units(simulation.m_units)
    , m_isRunning(false)
    , m_shouldRun(false)
+   , m_lua(luaL_newstate())
 {
+   luaL_openlibs(m_lua);
 }
 
 Simulation::~Simulation()
 {
    stop();
+   // finalize the lua interpreter
+   lua_close(m_lua);
 }
 
 void Simulation::operator =(const Simulation & simulation)
@@ -247,7 +253,7 @@ void Simulation::addUnits(unsigned num)
 
    for (unsigned i = 0; i < num; i++)
    {
-      logic::sharedUnit unit(new logic::Unit);
+      logic::sharedUnit unit(new logic::Unit(1));
       m_units.push_back(unit);
 
       logic::pixelsList area = matrix->pixelsAroundPosition(xDist(rng), yDist(rng), 1);
@@ -260,7 +266,6 @@ void Simulation::addUnits(unsigned num)
       }
 
    }
-
    // m_mutex unlocked here in ~guard()
 }
 
@@ -281,7 +286,6 @@ void Simulation::deleteUnits(unsigned num)
          m_units.pop_front();
       }
    }
-
    // m_mutex unlocked here in ~guard()
 }
 
@@ -336,19 +340,39 @@ void Simulation::stop()
 
    m_loopThread.interrupt();
    m_loopThread.join();
-   m_shouldRun = true;
+   m_shouldRun = false;
 }
 
 void Simulation::runLoop() // main while cycle, (god function)
 {
    m_isRunning = true;
-   BOOST_SCOPE_EXIT(& m_isRunning)
+
+   BOOST_SCOPE_EXIT(& m_shouldRun, & m_isRunning)
    {
+      m_shouldRun = false;
       m_isRunning = false;
       Logger() << "[Simulation] Stop.\n";
    } BOOST_SCOPE_EXIT_END
 
    Logger() << "[Simulation] Start.\n";
+
+   // open lua script file
+   luaL_dofile(m_lua, "Scripts/functions.lua");
+
+   lua_getglobal(m_lua, "sum");
+   double result = 0;
+   if (lua_isfunction(m_lua, lua_gettop(m_lua)))
+   {
+      lua_pushinteger(m_lua, 14);
+      lua_pushinteger(m_lua, 28);
+      lua_call(m_lua, 2, 1);
+      if (lua_isnumber(m_lua, lua_gettop(m_lua)))
+      {
+         result = lua_tonumber(m_lua, lua_gettop(m_lua));
+      }
+   }
+   std::cout << result << std::endl;
+
    while (true)
    {
       boost::unique_lock<boost::mutex> lock(m_mutex);
@@ -357,6 +381,8 @@ void Simulation::runLoop() // main while cycle, (god function)
          Logger() << "[Simulation] Pause.\n";
          m_cond.wait(lock);
          Logger() << "[Simulation] Resume.\n";
+
+         // TODO: check if the lua script file is changed, and reload it
       }
       boost::this_thread::interruption_point();
 
@@ -364,7 +390,14 @@ void Simulation::runLoop() // main while cycle, (god function)
        * Real computing stuff here!
        */
 
+      BOOST_FOREACH(sharedUnit unit, m_units)
+      {
+         // move the unit
+
+      }
+
       boost::this_thread::interruption_point();
    }
+
    Logger() << "[Simulation] End.\n";
 }

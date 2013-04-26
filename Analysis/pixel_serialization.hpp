@@ -53,7 +53,7 @@ inline void serialize(Archive & ar, fourFs::logic::Pixel & pixel, unsigned /*v*/
 }
 
 template< class Archive >
-inline void load_construct_data(Archive & /*ar*/, fourFs::logic:: Pixel * pixel, unsigned /*v*/)
+inline void load_construct_data(Archive & /*ar*/, fourFs::logic::Pixel * pixel, unsigned /*v*/)
 {
    ::new(pixel) fourFs::logic::Pixel(0);
 }

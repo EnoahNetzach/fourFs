@@ -18,10 +18,11 @@ class Unit
    friend class analysis::serialization::SerializeUnit;
 
 public:
-   explicit Unit();
+   explicit Unit(unsigned radius);
    ~Unit();
 
-   static unsigned radius();
+   unsigned & radius();
+   const unsigned & radius() const;
    static unsigned fieldOfView();
    const double & longevity() const;
    const double & fertility() const;
@@ -37,6 +38,7 @@ public:
 protected:
 
 private:
+   unsigned m_radius;
    double m_belligerance;
    double m_fertility;
    double m_longevity;

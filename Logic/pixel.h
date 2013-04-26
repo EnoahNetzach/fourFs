@@ -21,6 +21,7 @@ public:
    explicit Pixel(unsigned index, bool border = false);
    ~Pixel();
 
+   sharedConstMatrix matrix() const;
    unsigned index() const;
    double & height();
    const double & height() const;

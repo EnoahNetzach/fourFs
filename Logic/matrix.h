@@ -21,6 +21,8 @@ class Matrix
    friend class analysis::serialization::SerializeMatrix;
 
 public:
+   typedef std::pair< unsigned, unsigned > coordinates;
+
    Matrix(unsigned width, unsigned height);
    ~Matrix();
 

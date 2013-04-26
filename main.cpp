@@ -145,7 +145,7 @@ int main(int argc, char * argv[])
    logic::Simulation simulation;
    simulation.newMap(mapWidth, mapHeight, mapRange, mapFrequency,
                      mapAmplitude, mapPace, mapSquare, mapSmooth);
-   simulation.addUnits(50);
+   simulation.addUnits(nOfUnits);
 
    interfaces::Viewer viewer(simulation, viewFlags);
    viewer.run();

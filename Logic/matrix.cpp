@@ -55,7 +55,7 @@ unsigned Matrix::indexFromPosition(unsigned x, unsigned y) const
    return y * m_width + x;
 }
 
-std::pair< unsigned, unsigned > Matrix::positionFromIndex(unsigned index) const
+Matrix::coordinates Matrix::positionFromIndex(unsigned index) const
 {
    unsigned x = index % m_width;
    unsigned y = (index - x) / m_width;

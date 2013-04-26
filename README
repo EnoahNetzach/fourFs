@@ -3,9 +3,13 @@ fourFs
 
 Simulated environment for social analysis about units' fighting, fleeing, feeding, and mating.
 
+Requirements: 
+boost 1.53 (http://sourceforge.net/projects/boost/files/boost/1.53.0/)
+lua 5.2 (http://www.lua.org/ftp/lua-5.2.2.tar.gz)
+
 Compile flags:
-Debug: -DDEBUG=1
+[Debug] -DDEBUG=1
 
 Link flags:
 -lboost_random -lboost_program_options -lboost_timer -lboost_system -lboost_thread
--lboost_serialization -lboost_filesystem -lboost_iostreams
+-lboost_serialization -lboost_filesystem -lboost_iostreams -llua
