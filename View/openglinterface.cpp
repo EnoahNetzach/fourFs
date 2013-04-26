@@ -82,8 +82,8 @@ void OpenGLInterface::initializeImpl()
 
       glfwSetWindowTitle(WINDOW_TITLE_DEFAULT); // Set a Title
 
-      // Black background -> Red-Green-Blue-Alpha
-      glClearColor(0.0, 0.0, 0.0, 0.0);
+      // Lovely pink background -> Red-Green-Blue-Alpha
+      glClearColor(1.0, 0.702, 0.855, 0.0);
 
       // Ensure we can capture the escape key being pressed below
       glfwEnable(GLFW_STICKY_KEYS);
@@ -99,11 +99,17 @@ void OpenGLInterface::showImpl(sharedConstMatrix map)
 {
    // everything needed to show a new window here!
 
-   loadMap(vertexbuffer, colorbuffer, indexbuffer ,VertexArrayID, map);
+   GLuint vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID;
+
+   loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map);
+
+   GLuint vertexBufferUnits, colorBufferUnits, vertexUnitsID;
+
+   loadUnits(vertexBufferUnits, colorBufferUnits, vertexUnitsID, map);
 
    initializeShader();
 
-   runLoop(vertexbuffer, colorbuffer, indexbuffer, VertexArrayID);
+   runLoop(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
 
    //m_runLoopThread = boost::thread(& OpenGLInterface::runLoop, this);
 
@@ -118,7 +124,7 @@ void OpenGLInterface::initializeShader(void)
    glUseProgram(programID);
 }
 
-void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint &indexbuffer, GLuint &VertexArrayID)
+void OpenGLInterface::runLoop(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID)
 {
    // the run loop!
    // Use boost mutex and boost interrupt points for code stability
@@ -131,46 +137,9 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
       // Clear the screen
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      glEnableVertexAttribArray(0);
-      glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+      drawMap(vertexBufferMap, colorBufferMap, indexBufferMap);
 
-      // 1st attribute buffer: points
-      glVertexAttribPointer(
-         0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-         3,                  // size (X, Y, Z)
-         GL_FLOAT,           // type
-         GL_FALSE,           // normalized?
-         0,                  // stride
-         (void*)0            // array buffer offset
-      );
-
-      glEnableVertexAttribArray(1);
-      glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-
-      // 2nd attribute buffer : colors
-      glVertexAttribPointer(
-         1,                                // attribute 1. No particular reason for 1, but must match the layout in the shader.
-         3,                                // size
-         GL_FLOAT,                         // type
-         GL_FALSE,                         // normalized?
-         0,                                // stride
-         (void*)0                          // array buffer offset
-      );
-
-      // Index buffer
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
-
-      // Draw the triangles !
-      glDrawElements(
-         GL_TRIANGLES,                // mode
-         numberOfIndices,                  // count
-         GL_UNSIGNED_INT,                  // type
-         (void*)0                          // element array buffer offset
-      );
-
-
-      // Draw!!
-      //glDrawArrays(GL_POINTS, 0, numberOfBufferPoints);
+      drawUnits(vertexBufferUnits, colorBufferUnits);
 
       glDisableVertexAttribArray(0);
       glDisableVertexAttribArray(1);
@@ -182,8 +151,13 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
 
    }  while(glfwGetKey(GLFW_KEY_ESC) != GLFW_PRESS && glfwGetWindowParam(GLFW_OPENED));
 
-   glDeleteBuffers(1, &vertexbuffer);
-   glDeleteVertexArrays(1, &VertexArrayID);
+   glDeleteBuffers(1, &vertexBufferMap);
+   glDeleteBuffers(1, &vertexBufferUnits);
+   glDeleteBuffers(1, &colorBufferMap);
+   glDeleteBuffers(1, &colorBufferUnits);
+   glDeleteBuffers(1, &indexBufferMap);
+   glDeleteVertexArrays(1, &vertexArrayMapID);
+   glDeleteVertexArrays(1, &vertexUnitsID);
    glDeleteProgram(programID);
 
    // Close OpenGL window and terminate GLFW
@@ -191,14 +165,86 @@ void OpenGLInterface::runLoop(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
 
 }
 
-
-void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint &indexbuffer, GLuint &VertexArrayID, logic::sharedConstMatrix matrix)
+void OpenGLInterface::drawMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap)
 {
-   glGenVertexArrays(1, &VertexArrayID);
-   glBindVertexArray(VertexArrayID);
+   glBindBuffer(GL_ARRAY_BUFFER, vertexBufferMap);
+   glEnableVertexAttribArray(0);
 
-   // Generate 1 buffer, put the resulting identifier in vertexbuffer
-   glGenBuffers(1, &vertexbuffer);
+   // 1st attribute buffer: maps
+   glVertexAttribPointer(
+      0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+      3,                  // size (X, Y, Z)
+      GL_FLOAT,           // type
+      GL_FALSE,           // normalized?
+      0,                  // stride
+      (void*)0            // array buffer offset
+   );
+
+   glBindBuffer(GL_ARRAY_BUFFER, colorBufferMap);
+   glEnableVertexAttribArray(1);
+
+   // 2nd attribute buffer : color_map
+   glVertexAttribPointer(
+      1,                                // attribute 1. No particular reason for 1, but must match the layout in the shader.
+      3,                                // size
+      GL_FLOAT,                         // type
+      GL_FALSE,                         // normalized?
+      0,                                // stride
+      (void*)0                          // array buffer offset
+   );
+
+   // Index buffer
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferMap);
+
+   // Draw the triangles !
+   glDrawElements(
+      GL_TRIANGLES,                     // mode
+      numberOfIndices,                  // count
+      GL_UNSIGNED_INT,                  // type
+      (void*)0                          // element array buffer offset
+   );
+}
+
+void OpenGLInterface::drawUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUnits)
+{
+   glBindBuffer(GL_ARRAY_BUFFER, vertexBufferUnits);
+   glEnableVertexAttribArray(0);
+
+   // 1st attribute buffer: units
+   glVertexAttribPointer(
+      0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+      3,                  // size (X, Y, Z)
+      GL_FLOAT,           // type
+      GL_FALSE,           // normalized?
+      0,                  // stride
+      (void*)0            // array buffer offset
+   );
+
+   glBindBuffer(GL_ARRAY_BUFFER, colorBufferUnits);
+   glEnableVertexAttribArray(1);
+
+   // 2nd attribute buffer : color_map
+   glVertexAttribPointer(
+      1,                                // attribute 1. No particular reason for 1, but must match the layout in the shader.
+      3,                                // size
+      GL_FLOAT,                         // type
+      GL_FALSE,                         // normalized?
+      0,                                // stride
+      (void*)0                          // array buffer offset
+   );
+
+   //Draw!!
+   glDrawArrays(GL_POINTS, 0, numberOfUnits);
+}
+
+
+void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, logic::sharedConstMatrix matrix)
+{
+   glGenVertexArrays(1, &vertexArrayMapID);
+   glBindVertexArray(vertexArrayMapID);
+
+   // Generate 1 buffer, put the resulting identifier in vertexBufferMap
+   glGenBuffers(1, &vertexBufferMap);
 
    std::vector<GLfloat> g_vertex_buffer_data;
 
@@ -239,8 +285,8 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    }
    */
 
-   // The following commands will talk about our 'vertexbuffer' buffer
-   glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+   // The following commands will talk about our 'vertexBufferMap' buffer
+   glBindBuffer(GL_ARRAY_BUFFER, vertexBufferMap);
    glBufferData(GL_ARRAY_BUFFER, numberOfBufferPoints*sizeof(GLfloat), &g_vertex_buffer_data[0], GL_STATIC_DRAW);
 
    //INITIALIZE UVS
@@ -275,8 +321,8 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    */
 
    // Generate a buffer for the indices
-   glGenBuffers(1, &indexbuffer);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
+   glGenBuffers(1, &indexBufferMap);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferMap);
    glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(GLuint), &g_index_buffer_data[0] , GL_STATIC_DRAW);
 
    //INITIALIZE COLOR
@@ -307,6 +353,8 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
          g_color_buffer_data.push_back(std::max(1. - std::abs(z_height), 0.15));
       }
 
+
+
    }
 
    //DEBUG
@@ -321,13 +369,84 @@ void OpenGLInterface::loadMap(GLuint &vertexbuffer, GLuint &colorbuffer, GLuint 
    }
    */
 
-   // Generate 1 buffer, put the resulting identifier in colorbuffer
-   glGenBuffers(1, &colorbuffer);
+   // Generate 1 buffer, put the resulting identifier in colorBufferMap
+   glGenBuffers(1, &colorBufferMap);
 
-   // The following commands will talk about our 'colorbuffer' buffer
-   glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+   // The following commands will talk about our 'colorBufferMap' buffer
+   glBindBuffer(GL_ARRAY_BUFFER, colorBufferMap);
    glBufferData(GL_ARRAY_BUFFER, numberOfBufferPoints*sizeof(GLfloat), &g_color_buffer_data[0], GL_STATIC_DRAW);
+}
 
+void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID, logic::sharedConstMatrix matrix)
+{
+
+   glGenVertexArrays(1, &vertexUnitsID);
+   glBindVertexArray(vertexUnitsID);
+
+   unsigned matrix_width = matrix->width(), matrix_height = matrix->height();
+   std::vector<GLfloat> g_units_buffer_data;
+
+      for(unsigned x=0; x<(matrix_width); ++x)
+      {
+         for(unsigned y=0; y<matrix_height; ++y)
+         {
+            sharedConstPixel pixel = matrix->pixelAtPosition(x, y);
+
+            if(!(pixel->isUnitsEmpty()))
+            {
+               float appo_x = ((float)x/matrix_width), appo_y = -((float)y/matrix_height);
+
+               appo_x += -0.5;
+               appo_y += 0.5;
+
+               appo_x *= 2.05;
+               appo_y *= 2.05;
+
+               g_units_buffer_data.push_back(appo_x);
+               g_units_buffer_data.push_back(appo_y);
+               g_units_buffer_data.push_back( pixel->height());
+            }
+         }
+      }
+
+      numberOfUnits = g_units_buffer_data.size();
+
+      //DEBUG
+   /*
+      for(unsigned i=0, n=0; i<numberOfUnits; ++i, ++n)
+      {
+         std::cout<<n<<") x: "<<g_units_buffer_data[i];
+         ++i;
+         std::cout<<" y: "<<g_units_buffer_data[i]<<"  ";
+         ++i;
+         std::cout<<" z: "<<g_units_buffer_data[i]<<std::endl;
+      }
+   */
+
+      // Generate 1 buffer, put the resulting identifier in colorBufferMap
+      glGenBuffers(1, &vertexBufferUnits);
+
+      // The following commands will talk about our 'colorBufferMap' buffer
+      glBindBuffer(GL_ARRAY_BUFFER, vertexBufferUnits);
+      glBufferData(GL_ARRAY_BUFFER, numberOfUnits*sizeof(GLfloat), &g_units_buffer_data[0], GL_STATIC_DRAW);
+
+      //COLORS:
+
+      std::vector<GLfloat> g_units_color_data;
+
+      for(unsigned i=0; i<numberOfUnits; ++i)
+      {
+         g_units_color_data.push_back(1.0);
+         g_units_color_data.push_back(0.0);
+         g_units_color_data.push_back(0.0);
+      }
+
+      // Generate 1 buffer, put the resulting identifier in colorBufferMap
+      glGenBuffers(1, &colorBufferUnits);
+
+      // The following commands will talk about our 'colorBufferMap' buffer
+      glBindBuffer(GL_ARRAY_BUFFER, colorBufferUnits);
+      glBufferData(GL_ARRAY_BUFFER, numberOfUnits*sizeof(GLfloat), &g_units_color_data[0], GL_STATIC_DRAW);
 }
 
 double OpenGLInterface::fotogramsPerSecond(unsigned int &frameCount, double step, double oldTime){

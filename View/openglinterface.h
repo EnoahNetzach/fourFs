@@ -25,7 +25,6 @@ namespace fourFs {
 namespace view {
 
 #define WINDOW_TITLE_DEFAULT "Rob Halford?"
-#define NUMBER_OF_TRIANGLES 100
 
 class OpenGLInterface : virtual public Interface_base
 {
@@ -35,19 +34,22 @@ public:
 
 protected:
    bool initialized;
-   unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices;
-   GLuint vertexbuffer, VertexArrayID, programID, colorbuffer, indexbuffer, frameCount;
+   unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices, numberOfUnits;
+   GLuint programID, frameCount;
 
    std::string windowTitleDefault;
 
-   void initializeImpl();
-   void showImpl(logic::sharedConstMatrix map);
-   void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
-   void initializeShader(void);
+   void drawMap(GLuint &, GLuint &, GLuint &);
+   void drawUnits(GLuint &, GLuint &);
    double fotogramsPerSecond(unsigned int &, double, double);
+   void initializeImpl();
+   void initializeShader(void);
+   void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
+   void loadUnits(GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
+   void showImpl(logic::sharedConstMatrix map);
 
 private:
-   void runLoop(GLuint &, GLuint &, GLuint &, GLuint &);
+   void runLoop(GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &);
 
    boost::thread m_runLoopThread;
 };
