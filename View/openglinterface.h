@@ -16,6 +16,8 @@
 
 #include <GL/glew.h>          // Include GLEW
 #include <GL/glfw.h>          // Include GLFW
+#include <glm/glm.hpp>        // Include GLM
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -39,6 +41,7 @@ protected:
 
    std::string windowTitleDefault;
 
+   void computeMatricesFromInputs(glm::mat4 &, glm::mat4 &, glm::vec3 &, float &, float &);
    void drawMap(GLuint &, GLuint &, GLuint &);
    void drawUnits(GLuint &, GLuint &);
    double fotogramsPerSecond(unsigned int &, double, double);
