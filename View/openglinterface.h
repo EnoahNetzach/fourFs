@@ -35,24 +35,25 @@ public:
    ~OpenGLInterface();
 
 protected:
-   bool initialized;
+   bool initialized, ENABLE_3D;
    unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices, numberOfUnits;
    GLuint programID, frameCount;
 
    std::string windowTitleDefault;
 
+   void cleanMesh(GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &);
    void computeMatricesFromInputs(glm::mat4 &, glm::mat4 &, glm::vec3 &, float &, float &);
    void drawMap(GLuint &, GLuint &, GLuint &);
    void drawUnits(GLuint &, GLuint &);
    double fotogramsPerSecond(unsigned int &, double, double);
-   void initializeImpl();
+   void initializeImpl(void);
    void initializeShader(void);
-   void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
-   void loadUnits(GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
+   void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map, bool);
+   void loadUnits(GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map, bool);
    void showImpl(logic::sharedConstMatrix map);
 
 private:
-   void runLoop(GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &);
+   void runLoop(logic::sharedConstMatrix matrix, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &);
 
    boost::thread m_runLoopThread;
 };

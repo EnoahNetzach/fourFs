@@ -22,6 +22,7 @@ OpenGLInterface::OpenGLInterface(bool time)
    // initialization and other things NOT here
    // use initializeImpl() instead
    initialized = false;
+   ENABLE_3D = false;
    window_width = 1024, window_height = 768;
    numberOfBufferPoints = 0;
 }
@@ -32,6 +33,17 @@ OpenGLInterface::~OpenGLInterface()
 
    // stops the run loop thread
    //m_runLoopThread.join();
+}
+
+void OpenGLInterface::cleanMesh(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID)
+{
+   glDeleteBuffers(1, &vertexBufferMap);
+   glDeleteBuffers(1, &vertexBufferUnits);
+   glDeleteBuffers(1, &colorBufferMap);
+   glDeleteBuffers(1, &colorBufferUnits);
+   glDeleteBuffers(1, &indexBufferMap);
+   glDeleteVertexArrays(1, &vertexArrayMapID);
+   glDeleteVertexArrays(1, &vertexUnitsID);
 }
 
 void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm::mat4 &ViewMatrix, glm::vec3 &position, float &verticalAngle, float &horizontalAngle)
@@ -63,7 +75,7 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
    }
 
    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-   ProjectionMatrix = glm::perspective(FoV, (float)(window_width/window_height), 0.1f, 100.0f);
+   ProjectionMatrix = glm::perspective(FoV, (float)(window_width/window_height), (float)0.1, (float)100.0);
    // Camera matrix
 
    // Direction : Spherical coordinates to Cartesian coordinates conversion
@@ -74,9 +86,9 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
    );
    // Right vector
    glm::vec3 right = glm::vec3(
-           std::sin(horizontalAngle - 3.14f/2.0f),
+           std::sin(horizontalAngle - 3.14/2.0),
            0,
-           std::cos(horizontalAngle - 3.14f/2.0f)
+           std::cos(horizontalAngle - 3.14/2.0)
    );
 
    // Up vector
@@ -169,10 +181,6 @@ double OpenGLInterface::fotogramsPerSecond(unsigned int &frameCount, double step
 
    double newTime = glfwGetTime();
 
-   if(frameCount == 0){
-      glfwSetTime(0.0);
-   }
-
    if(std::abs(oldTime - newTime) > step)
    {
       unsigned int fps = frameCount/(newTime - oldTime);
@@ -256,18 +264,17 @@ void OpenGLInterface::initializeImpl()
 void OpenGLInterface::showImpl(sharedConstMatrix map)
 {
    // everything needed to show a new window here!
-
    GLuint vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID;
 
-   loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map);
+   loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map, ENABLE_3D);
 
    GLuint vertexBufferUnits, colorBufferUnits, vertexUnitsID;
 
-   loadUnits(vertexBufferUnits, colorBufferUnits, vertexUnitsID, map);
+   loadUnits(vertexBufferUnits, colorBufferUnits, vertexUnitsID, map, ENABLE_3D);
 
    initializeShader();
 
-   runLoop(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
+   runLoop(map, vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
 
    //m_runLoopThread = boost::thread(& OpenGLInterface::runLoop, this);
 
@@ -282,7 +289,7 @@ void OpenGLInterface::initializeShader(void)
    glUseProgram(programID);
 }
 
-void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, logic::sharedConstMatrix matrix)
+void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, logic::sharedConstMatrix matrix, bool ENABLED_3D)
 {
    glGenVertexArrays(1, &vertexArrayMapID);
    glBindVertexArray(vertexArrayMapID);
@@ -311,17 +318,17 @@ void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
 
          g_vertex_buffer_data.push_back(appo_x);
          g_vertex_buffer_data.push_back(appo_y);
-
          appo_vertex_z_data.push_back(pixel->height());
 
-         if(pixel->height()>=0)
+         if(ENABLED_3D == true)
          {
-            g_vertex_buffer_data.push_back( pixel->height() );
+            if(pixel->height()>=0)
+            {
+               g_vertex_buffer_data.push_back( pixel->height()/2 );
+            }
+            else g_vertex_buffer_data.push_back(0.0);
          }
-         else
-         {
-            g_vertex_buffer_data.push_back(0.0);
-         }
+         else g_vertex_buffer_data.push_back(0.0);
       }
    }
 
@@ -418,9 +425,6 @@ void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
          g_color_buffer_data.push_back(0.);
          g_color_buffer_data.push_back(std::max(1. - std::abs(z_height), 0.15));
       }
-
-
-
    }
 
    //DEBUG
@@ -443,7 +447,7 @@ void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
    glBufferData(GL_ARRAY_BUFFER, numberOfBufferPoints*sizeof(GLfloat), &g_color_buffer_data[0], GL_STATIC_DRAW);
 }
 
-void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID, logic::sharedConstMatrix matrix)
+void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID, logic::sharedConstMatrix matrix, bool ENABLED_3D)
 {
 
    glGenVertexArrays(1, &vertexUnitsID);
@@ -470,7 +474,13 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
 
                g_units_buffer_data.push_back(appo_x);
                g_units_buffer_data.push_back(appo_y);
-               g_units_buffer_data.push_back( pixel->height());
+
+               if(ENABLED_3D == true)
+               {
+                  g_units_buffer_data.push_back( pixel->height());
+
+               }
+               else g_units_buffer_data.push_back(0.0);
             }
          }
       }
@@ -515,13 +525,16 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
       glBufferData(GL_ARRAY_BUFFER, numberOfUnits*sizeof(GLfloat), &g_units_color_data[0], GL_STATIC_DRAW);
 }
 
-void OpenGLInterface::runLoop(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID)
+void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID)
 {
    // the run loop!
    // Use boost mutex and boost interrupt points for code stability
    // (refer to http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html).
 
-   double oldTime = 0;
+   double oldTime = 0, oldTimeEvents = 0;
+
+   glfwSetTime(0.0);
+
 
    glm::mat4 ViewMatrix;
    glm::mat4 ProjectionMatrix;
@@ -545,6 +558,18 @@ void OpenGLInterface::runLoop(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
 
       computeMatricesFromInputs(ProjectionMatrix, ViewMatrix, position, verticalAngle, horizontalAngle);
 
+      if(glfwGetKey(90) && (std::abs(oldTimeEvents - glfwGetTime()) > 0.3))
+      {
+         (ENABLE_3D == true) ? ENABLE_3D = false : ENABLE_3D = true;
+
+         cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
+
+         loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map, ENABLE_3D);
+         loadUnits(vertexBufferUnits, colorBufferUnits, vertexUnitsID, map, ENABLE_3D);
+
+         oldTimeEvents = glfwGetTime();
+      }
+
       glm::mat4 ModelMatrix = glm::mat4(1.0);
 
       glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
@@ -567,15 +592,9 @@ void OpenGLInterface::runLoop(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
 
    }  while(glfwGetKey(GLFW_KEY_ESC) != GLFW_PRESS && glfwGetWindowParam(GLFW_OPENED));
 
-   glDeleteBuffers(1, &vertexBufferMap);
-   glDeleteBuffers(1, &vertexBufferUnits);
-   glDeleteBuffers(1, &colorBufferMap);
-   glDeleteBuffers(1, &colorBufferUnits);
-   glDeleteBuffers(1, &indexBufferMap);
-   glDeleteVertexArrays(1, &vertexArrayMapID);
-   glDeleteVertexArrays(1, &vertexUnitsID);
-   glDeleteProgram(programID);
+   cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
 
+   glDeleteProgram(programID);
    // Close OpenGL window and terminate GLFW
    glfwTerminate();
 
