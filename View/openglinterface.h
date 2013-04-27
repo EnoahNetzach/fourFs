@@ -45,7 +45,7 @@ protected:
    void computeMatricesFromInputs(glm::mat4 &, glm::mat4 &, glm::vec3 &, float &, float &);
    void drawMap(GLuint &, GLuint &, GLuint &);
    void drawUnits(GLuint &, GLuint &);
-   double fotogramsPerSecond(unsigned int &, double, double);
+   void fotogramsPerSecond(double);
    void initializeImpl(void);
    void initializeShader(void);
    void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map, bool);

@@ -48,33 +48,32 @@ void OpenGLInterface::cleanMesh(GLuint &vertexBufferMap, GLuint &colorBufferMap,
 
 void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm::mat4 &ViewMatrix, glm::vec3 &position, float &verticalAngle, float &horizontalAngle)
 {
-   // glfwGetTime is called only once, the first time this function is called
    static double lastTime = glfwGetTime();
-
-   // Compute time difference between current and last frame
    double currentTime = glfwGetTime();
    float deltaTime = float(currentTime - lastTime);
 
    float FoV = 45. - 1  * glfwGetMouseWheel();
 
-   if(glfwGetKey(65))
+   enum keyboardKeys { key_A = 65, key_W = 87, key_D = 68, key_S = 83};
+
+   if(glfwGetKey(key_A))
    {
       position[0] -= 0.6 * deltaTime;
    }
-   if(glfwGetKey(68))
+   if(glfwGetKey(key_D))
    {
       position[0] += 0.6 * deltaTime;
    }
-   if(glfwGetKey(87))
+   if(glfwGetKey(key_W))
    {
       position[1] += 0.6 * deltaTime;
    }
-   if(glfwGetKey(83))
+   if(glfwGetKey(key_S))
    {
       position[1] -= 0.6 * deltaTime;
    }
 
-   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+   // Projection matrix : Field of View, ratio, display range : 0.1 unit <-> 100 units
    ProjectionMatrix = glm::perspective(FoV, (float)(window_width/window_height), (float)0.1, (float)100.0);
    // Camera matrix
 
@@ -84,6 +83,7 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
            std::sin(verticalAngle),
            std::cos(verticalAngle) * std::cos(horizontalAngle)
    );
+
    // Right vector
    glm::vec3 right = glm::vec3(
            std::sin(horizontalAngle - 3.14/2.0),
@@ -177,8 +177,10 @@ void OpenGLInterface::drawUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
    glDrawArrays(GL_POINTS, 0, numberOfUnits);
 }
 
-double OpenGLInterface::fotogramsPerSecond(unsigned int &frameCount, double step, double oldTime){
-
+void OpenGLInterface::fotogramsPerSecond(double step)
+{
+   static double oldTime = glfwGetTime();
+   static float frameCount = 0;
    double newTime = glfwGetTime();
 
    if(std::abs(oldTime - newTime) > step)
@@ -194,10 +196,9 @@ double OpenGLInterface::fotogramsPerSecond(unsigned int &frameCount, double step
       glfwSetWindowTitle(newTitle.c_str());
 
       oldTime = newTime;
-      frameCount=0;
+      frameCount = 0;
    }
-
-   return oldTime;
+   ++frameCount;
 }
 
 void OpenGLInterface::initializeImpl()
@@ -416,7 +417,7 @@ void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
       else if(z_height < 0.90 && z_height > 0.0)
       {
          g_color_buffer_data.push_back(0.);
-         g_color_buffer_data.push_back(z_height+0.10); //std::max(1.-(z_height+0.10), 0.33) -> alternative
+         g_color_buffer_data.push_back(z_height+0.10);
          g_color_buffer_data.push_back(0);
       }
       else
@@ -531,7 +532,7 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
    // Use boost mutex and boost interrupt points for code stability
    // (refer to http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html).
 
-   double oldTime = 0, oldTimeEvents = 0;
+   double oldTimeEvents = 0;
 
    glfwSetTime(0.0);
 
@@ -549,12 +550,12 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
       // Clear the screen
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      /*
+
       // Enable depth test
       glEnable(GL_DEPTH_TEST);
       // Accept fragment if it closer to the camera than the former one
       glDepthFunc(GL_LESS);
-      */
+
 
       computeMatricesFromInputs(ProjectionMatrix, ViewMatrix, position, verticalAngle, horizontalAngle);
 
@@ -587,15 +588,12 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
 
       glfwSwapBuffers();   // Swap buffers
 
-      ++frameCount;
-      oldTime = fotogramsPerSecond(frameCount, 1.0, oldTime);     //FPS counter
+      fotogramsPerSecond(1.0);     //FPS counter
 
    }  while(glfwGetKey(GLFW_KEY_ESC) != GLFW_PRESS && glfwGetWindowParam(GLFW_OPENED));
 
    cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
-
    glDeleteProgram(programID);
-   // Close OpenGL window and terminate GLFW
-   glfwTerminate();
+   glfwTerminate();   // Close OpenGL window and terminate GLFW
 
 }
