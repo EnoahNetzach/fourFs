@@ -37,6 +37,7 @@ public:
 protected:
    bool initialized, ENABLE_3D;
    unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices, numberOfUnits;
+   float FoV;
    GLuint programID, frameCount;
 
    std::string windowTitleDefault;

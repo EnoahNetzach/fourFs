@@ -24,6 +24,7 @@ OpenGLInterface::OpenGLInterface(bool time)
    initialized = false;
    ENABLE_3D = false;
    window_width = 1024, window_height = 768;
+   FoV = 45.;
    numberOfBufferPoints = 0;
 }
 
@@ -52,7 +53,13 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
    double currentTime = glfwGetTime();
    float deltaTime = float(currentTime - lastTime);
 
-   float FoV = 45. - 1  * glfwGetMouseWheel();
+   double mouseWeel = glfwGetMouseWheel();      //int, float, long int doesn't work ???
+
+   if((FoV - mouseWeel > 0.) && (FoV - mouseWeel < 180.)) FoV -= mouseWeel;
+   else if(FoV > 180.) FoV = 180.;
+   else if(FoV < 0.) FoV = 0.;
+
+   glfwSetMouseWheel(0);
 
    enum keyboardKeys { key_A = 65, key_W = 87, key_D = 68, key_S = 83};
 
@@ -71,6 +78,14 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
    if(glfwGetKey(key_S))
    {
       position[1] -= 0.6 * deltaTime;
+   }
+   if(glfwGetKey(GLFW_KEY_UP))
+   {
+      verticalAngle += 0.4 * deltaTime;
+   }
+   if(glfwGetKey(GLFW_KEY_DOWN))
+   {
+      verticalAngle -= 0.4 * deltaTime;
    }
 
    // Projection matrix : Field of View, ratio, display range : 0.1 unit <-> 100 units
