@@ -28,6 +28,8 @@ OpenGLInterface::OpenGLInterface(bool time)
    window_width = 1024, window_height = 768;
    FoV = 45.;
    numberOfBufferPoints = 0;
+   numberOfIndices = 0;
+   numberOfUnits = 0;
 }
 
 OpenGLInterface::~OpenGLInterface()
@@ -390,7 +392,7 @@ void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
 
          float appo_x = ((float)x/matrix_width), appo_y = -((float)y/matrix_height);
 
-         appo_x += -0.5;
+         appo_x -= 0.5;
          appo_y += 0.5;
 
          appo_x *= 2.;
@@ -545,7 +547,7 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
             {
                float appo_x = ((float)x/matrix_width), appo_y = -((float)y/matrix_height);
 
-               appo_x += 0.5;
+               appo_x -= 0.5;
                appo_y += 0.5;
 
                appo_x *= 2.;
@@ -567,7 +569,7 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
       numberOfUnits = g_units_buffer_data.size();
 
       //DEBUG
-   /*
+/*
       for(unsigned i=0, n=0; i<numberOfUnits; ++i, ++n)
       {
          std::cout<<n<<") x: "<<g_units_buffer_data[i];
@@ -576,7 +578,7 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
          ++i;
          std::cout<<" z: "<<g_units_buffer_data[i]<<std::endl;
       }
-   */
+*/
 
       // Generate 1 buffer, put the resulting identifier in colorBufferMap
       glGenBuffers(1, &vertexBufferUnits);
@@ -626,8 +628,8 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       // Enable depth test
       glEnable(GL_DEPTH_TEST);
-      // Accept fragment if it closer to the camera than the former one
-      glDepthFunc(GL_LESS);
+      // Passes if the incoming depth value is less than or equal to the stored depth value.
+      glDepthFunc(GL_LEQUAL);
 
       computeMatricesFromInputs(ProjectionMatrix, ViewMatrix, position, verticalAngle, horizontalAngle);
 
