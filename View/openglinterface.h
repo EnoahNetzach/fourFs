@@ -35,7 +35,7 @@ public:
    ~OpenGLInterface();
 
 protected:
-   bool initialized, ENABLE_3D;
+   bool initialized, ENABLE_3D, ENABLE_UNITS, ENABLE_MAP;
    unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices, numberOfUnits;
    float FoV;
    GLuint programID, frameCount;
@@ -47,6 +47,7 @@ protected:
    void drawMap(GLuint &, GLuint &, GLuint &);
    void drawUnits(GLuint &, GLuint &);
    void fotogramsPerSecond(double);
+   void keyHandler(GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map);
    void initializeImpl(void);
    void initializeShader(void);
    void loadMap(GLuint &, GLuint &, GLuint &, GLuint &, logic::sharedConstMatrix map, bool);

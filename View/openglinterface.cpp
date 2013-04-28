@@ -23,6 +23,8 @@ OpenGLInterface::OpenGLInterface(bool time)
    // use initializeImpl() instead
    initialized = false;
    ENABLE_3D = false;
+   ENABLE_UNITS = true;
+   ENABLE_MAP = true;
    window_width = 1024, window_height = 768;
    FoV = 45.;
    numberOfBufferPoints = 0;
@@ -216,6 +218,70 @@ void OpenGLInterface::fotogramsPerSecond(double step)
    ++frameCount;
 }
 
+void OpenGLInterface::keyHandler(GLuint &vertexBufferMap, GLuint &colorBufferMap,
+                                 GLuint &indexBufferMap, GLuint &vertexArrayMapID,
+                                 GLuint &vertexBufferUnits, GLuint &colorBufferUnits,
+                                 GLuint &vertexUnitsID, logic::sharedConstMatrix map)
+{
+   enum {key_Z = 90, key_U = 85, key_M = 77};
+   static double oldTimeEvents;
+
+   if(glfwGetKey(key_Z) && (std::abs(oldTimeEvents - glfwGetTime()) > 0.3))
+   {
+      (ENABLE_3D == true) ? ENABLE_3D = false : ENABLE_3D = true;
+
+      if(!ENABLE_MAP && ENABLE_UNITS)
+      {
+         glDeleteBuffers(1, &vertexBufferUnits);
+         glDeleteBuffers(1, &colorBufferUnits);
+         glDeleteVertexArrays(1, &vertexUnitsID);
+
+         loadUnits(vertexBufferUnits, colorBufferUnits, vertexUnitsID, map, ENABLE_3D);
+      }
+      else if(ENABLE_MAP && !ENABLE_UNITS)
+      {
+         glDeleteBuffers(1, &vertexBufferMap);
+         glDeleteBuffers(1, &colorBufferMap);
+         glDeleteVertexArrays(1, &vertexArrayMapID);
+         glDeleteBuffers(1, &indexBufferMap);
+
+         loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map, ENABLE_3D);
+      }
+      else if(ENABLE_MAP && ENABLE_UNITS)
+      {
+         cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
+         loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map, ENABLE_3D);
+         loadUnits(vertexBufferUnits, colorBufferUnits, vertexUnitsID, map, ENABLE_3D);
+      }
+
+      oldTimeEvents = glfwGetTime();
+   }
+
+   if(glfwGetKey(key_U) && (std::abs(oldTimeEvents - glfwGetTime()) > 0.3))
+   {
+      if(ENABLE_UNITS == true)
+      {
+         ENABLE_UNITS = false;
+         glDisableVertexAttribArray(1);
+      }
+      else ENABLE_UNITS = true;
+
+      oldTimeEvents = glfwGetTime();
+   }
+
+   if(glfwGetKey(key_M) && (std::abs(oldTimeEvents - glfwGetTime()) > 0.3))
+   {
+      if(ENABLE_MAP == true)
+      {
+         ENABLE_MAP = false;
+         glDisableVertexAttribArray(0);
+      }
+      else ENABLE_MAP = true;
+
+      oldTimeEvents = glfwGetTime();
+   }
+}
+
 void OpenGLInterface::initializeImpl()
 {
    // resources init here!
@@ -232,7 +298,7 @@ void OpenGLInterface::initializeImpl()
          m_good = false;
       }
 
-      glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);                   // 4x antialiasing
+      glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 32);                   // 4x antialiasing
       glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);           // Major number of the desired minimum OpenGL version.
       glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);           // Minor number of the desired minimum OpenGL version.
       glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    // Disallow legacy functionality if needed (OpenGl 3.0 or above)
@@ -273,8 +339,15 @@ void OpenGLInterface::initializeImpl()
       m_good = true;
       initialized = true;
    }
+}
 
+void OpenGLInterface::initializeShader(void)
+{
+   // Create and compile our GLSL program from the shaders
+   programID = LoadShaders( "View/VertexShader", "View/FragmentShader" );
 
+   // Use our shader
+   glUseProgram(programID);
 }
 
 void OpenGLInterface::showImpl(sharedConstMatrix map)
@@ -294,15 +367,6 @@ void OpenGLInterface::showImpl(sharedConstMatrix map)
 
    //m_runLoopThread = boost::thread(& OpenGLInterface::runLoop, this);
 
-}
-
-void OpenGLInterface::initializeShader(void)
-{
-   // Create and compile our GLSL program from the shaders
-   programID = LoadShaders( "View/VertexShader", "View/FragmentShader" );
-
-   // Use our shader
-   glUseProgram(programID);
 }
 
 void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, logic::sharedConstMatrix matrix, bool ENABLED_3D)
@@ -329,8 +393,8 @@ void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
          appo_x += -0.5;
          appo_y += 0.5;
 
-         appo_x *= 2.055;
-         appo_y *= 2.055;
+         appo_x *= 2.;
+         appo_y *= 2.;
 
          g_vertex_buffer_data.push_back(appo_x);
          g_vertex_buffer_data.push_back(appo_y);
@@ -485,8 +549,8 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
                appo_x += 0.5;
                appo_y += 0.5;
 
-               appo_x *= 2.05;
-               appo_y *= 2.05;
+               appo_x *= 2.;
+               appo_y *= 2.;
 
                g_units_buffer_data.push_back(appo_x);
                g_units_buffer_data.push_back(appo_y);
@@ -500,6 +564,14 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
             }
          }
       }
+
+      //FAKE POINT DEBUG ONLY:
+
+      g_units_buffer_data.push_back(-1.);
+      g_units_buffer_data.push_back(1.);
+      g_units_buffer_data.push_back(0.);
+
+      //END FAKE
 
       numberOfUnits = g_units_buffer_data.size();
 
@@ -547,10 +619,7 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
    // Use boost mutex and boost interrupt points for code stability
    // (refer to http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html).
 
-   double oldTimeEvents = 0;
-
    glfwSetTime(0.0);
-
 
    glm::mat4 ViewMatrix;
    glm::mat4 ProjectionMatrix;
@@ -564,42 +633,32 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
    {
       // Clear the screen
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
       // Enable depth test
       glEnable(GL_DEPTH_TEST);
       // Accept fragment if it closer to the camera than the former one
       glDepthFunc(GL_LESS);
 
-
       computeMatricesFromInputs(ProjectionMatrix, ViewMatrix, position, verticalAngle, horizontalAngle);
 
-      if(glfwGetKey(90) && (std::abs(oldTimeEvents - glfwGetTime()) > 0.3))
-      {
-         (ENABLE_3D == true) ? ENABLE_3D = false : ENABLE_3D = true;
-
-         cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
-
-         loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map, ENABLE_3D);
-         loadUnits(vertexBufferUnits, colorBufferUnits, vertexUnitsID, map, ENABLE_3D);
-
-         oldTimeEvents = glfwGetTime();
-      }
+      keyHandler(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID,
+                 vertexBufferUnits, colorBufferUnits, vertexUnitsID, map);
 
       glm::mat4 ModelMatrix = glm::mat4(1.0);
-
       glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
-      // Send our transformation to the currently bound shader,
-      // in the "MVP" uniform
+      // Send our transformation to the currently bound shader, in the "MVP" uniform
       glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-      drawMap(vertexBufferMap, colorBufferMap, indexBufferMap);
-
-      drawUnits(vertexBufferUnits, colorBufferUnits);
-
-      glDisableVertexAttribArray(0);
-      glDisableVertexAttribArray(1);
+      if(ENABLE_MAP)
+      {
+         drawMap(vertexBufferMap, colorBufferMap, indexBufferMap);
+         glDisableVertexAttribArray(0);
+      }
+      if(ENABLE_UNITS)
+      {
+         drawUnits(vertexBufferUnits, colorBufferUnits);
+         glDisableVertexAttribArray(1);
+      }
 
       glfwSwapBuffers();   // Swap buffers
 
@@ -607,7 +666,8 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
 
    }  while(glfwGetKey(GLFW_KEY_ESC) != GLFW_PRESS && glfwGetWindowParam(GLFW_OPENED));
 
-   cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
+   cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID,
+             vertexBufferUnits, colorBufferUnits, vertexUnitsID);
    glDeleteProgram(programID);
    glfwTerminate();   // Close OpenGL window and terminate GLFW
 
