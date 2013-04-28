@@ -30,7 +30,7 @@ protected:
 
 private:
    double m_vivibility;
-   pixelsList m_pixels;
+   pixelList m_pixels;
 };
 
 } /* namespace logic */

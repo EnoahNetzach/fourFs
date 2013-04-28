@@ -26,6 +26,7 @@ public:
    template< class Archive >
    void serialize(Archive & ar, unsigned /*v*/)
    {
+      ar & m_unit.m_radius;
       ar & m_unit.m_belligerance;
       ar & m_unit.m_fertility;
       ar & m_unit.m_longevity;

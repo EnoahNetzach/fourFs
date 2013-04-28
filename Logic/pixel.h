@@ -21,7 +21,6 @@ public:
    explicit Pixel(unsigned index, bool border = false);
    ~Pixel();
 
-   sharedConstMatrix matrix() const;
    unsigned index() const;
    double & height();
    const double & height() const;
@@ -32,9 +31,10 @@ public:
    bool isUnitsUnique() const;
    unsigned nOfUnits() const;
    void addUnit(sharedUnit unit);
-   bool removeUnit(sharedConstUnit unit);
+   bool removeUnit(sharedUnit unit);
    void clearUnits();
-   weakUnitList & units();
+   unitList units();
+   const constUnitList units() const;
 
 protected:
 

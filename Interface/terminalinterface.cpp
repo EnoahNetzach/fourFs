@@ -17,6 +17,7 @@
 #include "../Logic/matrix.h"
 #include "../Logic/pixel.h"
 #include "../Logic/simulation.h"
+#include "../Logic/unit.h"
 
 using namespace fourFs;
 using namespace logic;
@@ -34,7 +35,7 @@ void TerminalInterface::runImpl()
    do
    {
       std::cout << "[Term interface] What would you like to do?\n"
-                   "p=play/pause, r=resume, s=stop\n"
+                   "p=play/pause, r=resume, s=stop, y=reload script\n"
                    "m=new map, u=resize units, o=change options\n"
                    "v=save map, l=load map, w=show, i=info, q=quit\n> " << std::flush;
       input.clear();
@@ -46,20 +47,28 @@ void TerminalInterface::runImpl()
          {
             m_simulation.pause();
          }
+         else if (m_simulation.isPaused())
+         {
+            m_simulation.resume();
+         }
          else
          {
             m_simulation.start();
          }
       }
-      if (input == "r") // resume
+      else if (input == "r") // resume
       {
          m_simulation.resume();
       }
-      if (input == "s") // stop
+      else if (input == "s") // stop
       {
          m_simulation.stop();
       }
-      if (input == "m") // new map
+      else if (input == "y") // reload script
+      {
+         m_simulation.reloadScript();
+      }
+      else if (input == "m") // new map
       {
          m_simulation.stop();
          std::cout << "[Term interface] New map with:"
@@ -75,7 +84,7 @@ void TerminalInterface::runImpl()
                    << std::endl;
          m_simulation.newMap();
       }
-      if (input == "u") // resize units
+      else if (input == "u") // resize units
       {
          std::cout << "[Term interface] Resize units (now " << m_simulation.units().size()
                    << ") (c=cancel) " << std::flush;
@@ -85,7 +94,7 @@ void TerminalInterface::runImpl()
          if (input == "c") continue;
          m_simulation.resizeUnits(boost::lexical_cast< unsigned >(input));
       }
-      if (input == "o") // change options
+      else if (input == "o") // change options
       {
          std::cout << "[Term interface] What would you like to change\n"
                       "(w=width, h=height, l=length, r=range, f=frequency,\n"
@@ -94,7 +103,7 @@ void TerminalInterface::runImpl()
          std::cin >> input;
 
          if (input == "c") continue;
-         if (input == "w") // change options - width
+         else if (input == "w") // change options - width
          {
             std::cout << "[Term interface] Insert map width (now " << m_simulation.width()
                       << ") (c=cancel) " << std::flush;
@@ -104,7 +113,7 @@ void TerminalInterface::runImpl()
             if (input == "c") continue;
             m_simulation.width() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "h") // change options - height
+         else if (input == "h") // change options - height
          {
             std::cout << "[Term interface] Insert map height (now " << m_simulation.height()
                       << ") (c=cancel) " << std::flush;
@@ -114,7 +123,7 @@ void TerminalInterface::runImpl()
             if (input == "c") continue;
             m_simulation.height() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "l") // change options - length
+         else if (input == "l") // change options - length
          {
             std::cout << "[Term interface] Insert map length (now " << m_simulation.width()
                       << " x " << m_simulation.height() << ") (c=cancel) " << std::flush;
@@ -125,7 +134,7 @@ void TerminalInterface::runImpl()
             m_simulation.width() = boost::lexical_cast< unsigned >(input);
             m_simulation.height() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "r") // change options - range
+         else if (input == "r") // change options - range
          {
             std::cout << "[Term interface] Insert map range (now " << m_simulation.range()
                       << ") (c=cancel) " << std::flush;
@@ -135,7 +144,7 @@ void TerminalInterface::runImpl()
             if (input == "c") continue;
             m_simulation.range() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "f") // change options - frequency
+         else if (input == "f") // change options - frequency
          {
             std::cout << "[Term interface] Insert map frequency (now " << m_simulation.frequency()
                       << ") (c=cancel) " << std::flush;
@@ -145,7 +154,7 @@ void TerminalInterface::runImpl()
             if (input == "c") continue;
             m_simulation.frequency() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "a") // change options - amplitude
+         else if (input == "a") // change options - amplitude
          {
             std::cout << "[Term interface] Insert map amplitude (now " << m_simulation.amplitude()
                       << ") (c=cancel) " << std::flush;
@@ -155,7 +164,7 @@ void TerminalInterface::runImpl()
             if (input == "c") continue;
             m_simulation.amplitude() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "p") // change options - pace
+         else if (input == "p") // change options - pace
          {
             std::cout << "[Term interface] Insert map pace (now " << m_simulation.pace()
                       << ") (c=cancel) " << std::flush;
@@ -165,7 +174,7 @@ void TerminalInterface::runImpl()
             if (input == "c") continue;
             m_simulation.pace() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "s") // change options - square
+         else if (input == "s") // change options - square
          {
             std::cout << "[Term interface] Insert map square (now " << m_simulation.square()
                       << ") (c=cancel) " << std::flush;
@@ -175,7 +184,7 @@ void TerminalInterface::runImpl()
             if (input == "c") continue;
             m_simulation.square() = boost::lexical_cast< unsigned >(input);
          }
-         if (input == "m") // change options - smooth
+         else if (input == "m") // change options - smooth
          {
             std::cout << "[Term interface] Insert map smooth (now " << m_simulation.smooth()
                       << ") (c=cancel) " << std::flush;
@@ -186,14 +195,14 @@ void TerminalInterface::runImpl()
             m_simulation.smooth() = boost::lexical_cast< unsigned >(input);
          }
       }
-      if (input == "v") // save map
+      else if (input == "v") // save map
       {
          bool wasRunning = m_simulation.isRunning();
          m_simulation.pause();
          analysis::serialization::save(m_simulation);
          if (wasRunning) m_simulation.start();
       }
-      if (input == "l") // load map
+      else if (input == "l") // load map
       {
          m_simulation.stop();
 
@@ -206,7 +215,7 @@ void TerminalInterface::runImpl()
             std::cerr << "Some error occured while loading the map." << std::endl;
          }
       }
-      if (input == "w") // show
+      else if (input == "w") // show
       {
          std::cout << "[Term interface] What would you like to show? (m=map, u=units, c=cancel) " << std::flush;
          input.clear();
@@ -216,7 +225,7 @@ void TerminalInterface::runImpl()
          if (input == "m") callShowMap();
          if (input == "u") callShowUnits();
       }
-      if (input == "i") // info
+      else if (input == "i") // info
       {
          std::cout << "[Term interface] Map with:"
                    << std::setprecision(7)

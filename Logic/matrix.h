@@ -27,18 +27,18 @@ public:
    ~Matrix();
 
    unsigned indexFromPosition(unsigned x, unsigned y) const;
-   std::pair< unsigned, unsigned > positionFromIndex(unsigned index) const;
+   coordinates positionFromIndex(unsigned index) const;
    unsigned height() const;
    unsigned width() const;
    unsigned size() const;
    sharedPixel pixelAtIndex(unsigned index);
-   sharedConstPixel pixelAtIndex(unsigned index) const;
+   const sharedConstPixel pixelAtIndex(unsigned index) const;
    sharedPixel pixelAtPosition(unsigned x, unsigned y);
-   sharedConstPixel pixelAtPosition(unsigned x, unsigned y) const;
-   pixelsList pixelsAroundIndex(unsigned index, unsigned radius);
-   constPixelList pixelsAroundIndex(unsigned index, unsigned radius) const;
-   pixelsList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius);
-   constPixelList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const;
+   const sharedConstPixel pixelAtPosition(unsigned x, unsigned y) const;
+   pixelList pixelsAroundIndex(unsigned index, unsigned radius);
+   const constPixelList pixelsAroundIndex(unsigned index, unsigned radius) const;
+   pixelList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius);
+   const constPixelList pixelsAroundPosition(unsigned x, unsigned y, unsigned radius) const;
 
 protected:
 

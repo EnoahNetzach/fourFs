@@ -13,8 +13,6 @@
 
 #include "../utilities.hpp"
 
-class lua_State;
-
 namespace fourFs {
 namespace logic {
 
@@ -51,7 +49,7 @@ public:
    sharedMap map();
    sharedConstMap map() const;
    unitList units();
-   constUnitList units() const;
+   const constUnitList units() const;
    void options(unsigned width, unsigned height, double range,
                 unsigned frequency, double amplitude, unsigned pace,
                 unsigned square, unsigned smooth);
@@ -66,6 +64,7 @@ public:
    void pause();
    void resume();
    void stop();
+   void reloadScript();
 
 protected:
 
@@ -87,7 +86,7 @@ private:
    bool m_isRunning;
    boost::condition_variable m_cond;
    bool m_shouldRun;
-   lua_State * m_lua;
+   bool m_shouldReloadScript;
 };
 
 } /* namespace logic */

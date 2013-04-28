@@ -28,7 +28,7 @@ public:
    unsigned width() const;
    bool empty() const;
    sharedMatrix matrix();
-   sharedConstMatrix matrix() const;
+   const sharedConstMatrix matrix() const;
 
 protected:
 

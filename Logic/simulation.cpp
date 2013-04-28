@@ -9,16 +9,12 @@
 
 #include <boost/chrono.hpp>
 #include <boost/foreach.hpp>
-#ifdef DEBUG
-#include <lua/lua.hpp>
-#endif // DEBUG
 #include <boost/random.hpp>
 #include <boost/scope_exit.hpp>
+#include <boost/make_shared.hpp>
 
 #include "../logger.h"
-#ifndef DEBUG
-#include "functions.h"
-#endif // DEBUG
+#include "../Scripts/classes.hpp"
 #include "map.h"
 #include "matrix.h"
 #include "pixel.h"
@@ -38,9 +34,10 @@ Simulation::Simulation()
    , m_smooth(0)
    , m_isRunning(false)
    , m_shouldRun(false)
-   , m_lua(luaL_newstate())
+   , m_shouldReloadScript(false)
 {
-   luaL_openlibs(m_lua);
+   // start the python interpreter
+   Py_Initialize();
 }
 
 Simulation::Simulation(const Simulation & simulation)
@@ -56,16 +53,17 @@ Simulation::Simulation(const Simulation & simulation)
    , m_units(simulation.m_units)
    , m_isRunning(false)
    , m_shouldRun(false)
-   , m_lua(luaL_newstate())
+   , m_shouldReloadScript(false)
 {
-   luaL_openlibs(m_lua);
+   // start the python interpreter
+   Py_Initialize();
 }
 
 Simulation::~Simulation()
 {
    stop();
-   // finalize the lua interpreter
-   lua_close(m_lua);
+   // stop the python interpreter
+   Py_Finalize();
 }
 
 void Simulation::operator =(const Simulation & simulation)
@@ -198,7 +196,7 @@ unitList Simulation::units()
    return m_units;
 }
 
-constUnitList Simulation::units() const
+const constUnitList Simulation::units() const
 {
    constUnitList units;
 
@@ -249,30 +247,31 @@ void Simulation::addUnits(unsigned num)
    boost::random::uniform_int_distribution<> yDist(0, matrix->height() - 1);
 
    // lock m_mutex ::RAII::
-   boost::lock_guard< boost::mutex > guard(m_mutex);
+   boost::lock_guard< boost::mutex > lock(m_mutex);
 
    for (unsigned i = 0; i < num; i++)
    {
       logic::sharedUnit unit(new logic::Unit(1));
       m_units.push_back(unit);
 
-      logic::pixelsList area = matrix->pixelsAroundPosition(xDist(rng), yDist(rng), 1);
+      unsigned x = xDist(rng);
+      unsigned y = yDist(rng);
 
-      logic::pixelIterator it;
-      for (it = area.begin(); it != area.end(); ++it)
+      logic::pixelList area = matrix->pixelsAroundPosition(x, y, 1);
+      unit->centralPixel(matrix->pixelAtPosition(x, y));
+
+      BOOST_FOREACH(sharedPixel pixel, area)
       {
-         unit->addPixel(* it);
-         (* it)->addUnit(unit);
+         unit->addPixel(pixel);
+         pixel->addUnit(unit);
       }
-
    }
-   // m_mutex unlocked here in ~guard()
 }
 
 void Simulation::deleteUnits(unsigned num)
 {
    // lock m_mutex ::RAII::
-   boost::lock_guard< boost::mutex > guard(m_mutex);
+   boost::lock_guard< boost::mutex > lock(m_mutex);
 
    if (num == 0)
    {
@@ -286,7 +285,6 @@ void Simulation::deleteUnits(unsigned num)
          m_units.pop_front();
       }
    }
-   // m_mutex unlocked here in ~guard()
 }
 
 void Simulation::resizeUnits(unsigned num)
@@ -307,7 +305,7 @@ void Simulation::start()
    {
       m_loopThread = boost::thread(& Simulation::runLoop, this);
 
-      boost::lock_guard< boost::mutex > guard(m_mutex);
+      boost::lock_guard< boost::mutex > lock(m_mutex);
       m_shouldRun = true;
    }
 }
@@ -317,7 +315,7 @@ void Simulation::pause()
    if (! isRunning()) return;
 
    {
-	   boost::lock_guard< boost::mutex > guard(m_mutex);
+	   boost::lock_guard< boost::mutex > lock(m_mutex);
 	   m_shouldRun = false;
    }
    m_cond.notify_one();
@@ -328,7 +326,7 @@ void Simulation::resume()
    if (! isPaused()) return;
 
    {
-      boost::lock_guard< boost::mutex > guard(m_mutex);
+      boost::lock_guard< boost::mutex > lock(m_mutex);
       m_shouldRun = true;
    }
    m_cond.notify_one();
@@ -343,7 +341,13 @@ void Simulation::stop()
    m_shouldRun = false;
 }
 
-void Simulation::runLoop() // main while cycle, (god function)
+void Simulation::reloadScript()
+{
+   boost::lock_guard< boost::mutex > lock(m_mutex);
+   m_shouldReloadScript = true;
+}
+
+void Simulation::runLoop()
 {
    m_isRunning = true;
 
@@ -356,45 +360,90 @@ void Simulation::runLoop() // main while cycle, (god function)
 
    Logger() << "[Simulation] Start.\n";
 
-   // open lua script file
-   luaL_dofile(m_lua, "Scripts/functions.lua");
+   initfourFs();
+   boost::python::object main = boost::python::import("__main__");
+   boost::python::object gloabl(main.attr("__dict__"));
+   boost::python::exec_file("Scripts/functions.py", gloabl, gloabl);
 
-   lua_getglobal(m_lua, "sum");
-   double result = 0;
-   if (lua_isfunction(m_lua, lua_gettop(m_lua)))
-   {
-      lua_pushinteger(m_lua, 14);
-      lua_pushinteger(m_lua, 28);
-      lua_call(m_lua, 2, 1);
-      if (lua_isnumber(m_lua, lua_gettop(m_lua)))
-      {
-         result = lua_tonumber(m_lua, lua_gettop(m_lua));
-      }
-   }
-   std::cout << result << std::endl;
+   bool runOnce = false;
 
    while (true)
    {
-      boost::unique_lock<boost::mutex> lock(m_mutex);
-      while (! m_shouldRun)
       {
-         Logger() << "[Simulation] Pause.\n";
-         m_cond.wait(lock);
-         Logger() << "[Simulation] Resume.\n";
-
-         // TODO: check if the lua script file is changed, and reload it
+         boost::unique_lock< boost::mutex > wait_lock(m_mutex);
+         while (! m_shouldRun)
+         {
+            Logger() << "[Simulation] Pause.\n";
+            m_cond.wait(wait_lock);
+            Logger() << "[Simulation] Resume.\n";
+         }
       }
+
+      boost::this_thread::interruption_point();
+
+      if (m_shouldReloadScript)
+      {
+         boost::lock_guard< boost::mutex > lock(m_mutex);
+         boost::python::exec_file("Scripts/functions.py", gloabl, gloabl);
+
+         Logger() << "[Simulation] Script reloaded.\n";
+
+         m_shouldReloadScript = false;
+      }
+
       boost::this_thread::interruption_point();
 
       /*
        * Real computing stuff here!
        */
-
-      BOOST_FOREACH(sharedUnit unit, m_units)
+      if (! runOnce)
       {
-         // move the unit
-
+         try
+         {
+            boost::python::object help = gloabl["printHelp"];
+            if(! help.is_none())
+            {
+               boost::lock_guard< boost::mutex > lock(m_mutex);
+               help();
+            }
+         }
+         catch (boost::python::error_already_set & e)
+         {
+            PyErr_Print();
+            pause();
+            continue;
+         }
+         catch(...)
+         {
+            std::cerr << "Something wrong occurred\n";
+            pause();
+            continue;
+         }
       }
+
+      try
+      {
+         boost::python::object function = gloabl["simulation"];
+         if(! function.is_none())
+         {
+            boost::lock_guard< boost::mutex > lock(m_mutex);
+            function(boost::python::ptr(m_map.get()), & m_units);
+         }
+      }
+      catch (boost::python::error_already_set & e)
+      {
+         PyErr_Print();
+         pause();
+         continue;
+      }
+      catch(...)
+      {
+         std::cerr << "Something wrong occurred\n";
+         pause();
+         continue;
+      }
+
+      runOnce = true;
 
       boost::this_thread::interruption_point();
    }

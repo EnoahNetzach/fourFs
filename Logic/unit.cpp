@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include <boost/foreach.hpp>
+
 #include "pixel.h"
 #include "state.h"
 
@@ -85,14 +87,43 @@ void Unit::clearPixels()
    m_pixels.clear();
 }
 
-weakPixelConstIterator Unit::pixelsBegin() const
+void Unit::centralPixel(sharedPixel pixel)
 {
-   return m_pixels.begin();
+   m_centralPixel = pixel;
 }
 
-weakPixelConstIterator Unit::pixelsEnd() const
+sharedPixel Unit::centralPixel()
 {
-   return m_pixels.end();
+   return m_centralPixel.lock();
+}
+
+const sharedConstPixel Unit::centralPixel() const
+{
+   return m_centralPixel.lock();
+}
+
+pixelList Unit::pixels()
+{
+   pixelList pixels;
+
+   BOOST_FOREACH(weakPixel pixel, m_pixels)
+   {
+      pixels.push_back(pixel.lock());
+   }
+
+   return pixels;
+}
+
+const constPixelList Unit::pixels() const
+{
+   constPixelList pixels;
+
+   BOOST_FOREACH(weakPixel pixel, m_pixels)
+   {
+      pixels.push_back(pixel.lock());
+   }
+
+   return pixels;
 }
 
 sharedState Unit::state()

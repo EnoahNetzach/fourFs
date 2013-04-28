@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include <boost/foreach.hpp>
+
 #include "environment.h"
 #include "unit.h"
 
@@ -76,7 +78,7 @@ void Pixel::addUnit(sharedUnit unit)
    m_units.push_back(unit);
 }
 
-bool Pixel::removeUnit(sharedConstUnit unit)
+bool Pixel::removeUnit(sharedUnit unit)
 {
    bool found = false;
    weakUnitIterator it;
@@ -99,7 +101,22 @@ void Pixel::clearUnits()
    m_units.clear();
 }
 
-weakUnitList & Pixel::units()
+unitList Pixel::units()
 {
-   return m_units;
+   unitList units;
+   BOOST_FOREACH(weakUnit unit, m_units)
+   {
+      units.push_back(unit.lock());
+   }
+   return units;
+}
+
+const constUnitList Pixel::units() const
+{
+   constUnitList units;
+   BOOST_FOREACH(weakUnit unit, m_units)
+   {
+      units.push_back(unit.lock());
+   }
+   return units;
 }

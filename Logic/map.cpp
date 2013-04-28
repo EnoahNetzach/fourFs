@@ -80,7 +80,7 @@ Map::Map(unsigned width, unsigned height, double range,
          y = std::max(0, y - p);
          break;
       default:
-         pixelsList pixelSquare = m_matrix->pixelsAroundPosition(x, y, square);
+         pixelList pixelSquare = m_matrix->pixelsAroundPosition(x, y, square);
          BOOST_FOREACH(sharedPixel pixel, pixelSquare)
          {
             pixel->height() += realDist(rng);
@@ -95,7 +95,7 @@ Map::Map(unsigned width, unsigned height, double range,
 
       double height = 0;
 
-      pixelsList pixelSquare = m_matrix->pixelsAroundIndex(i, smooth);
+      pixelList pixelSquare = m_matrix->pixelsAroundIndex(i, smooth);
       BOOST_FOREACH(sharedConstPixel p, pixelSquare)
       {
          height += p->height();
@@ -137,7 +137,7 @@ sharedMatrix Map::matrix()
    return m_matrix;
 }
 
-sharedConstMatrix Map::matrix() const
+const sharedConstMatrix Map::matrix() const
 {
    return m_matrix;
 }

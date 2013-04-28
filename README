@@ -5,11 +5,12 @@ Simulated environment for social analysis about units' fighting, fleeing, feedin
 
 Requirements: 
 boost 1.53 (http://sourceforge.net/projects/boost/files/boost/1.53.0/)
-lua 5.2 (http://www.lua.org/ftp/lua-5.2.2.tar.gz)
+python 2.7
 
 Compile flags:
 [Debug] -DDEBUG=1
 
 Link flags:
 -lboost_random -lboost_program_options -lboost_timer -lboost_system -lboost_thread
--lboost_serialization -lboost_filesystem -lboost_iostreams -llua
+-lboost_serialization -lboost_filesystem -lboost_iostreams -lboost_python
+/path/to/python/bin/2.7/Python

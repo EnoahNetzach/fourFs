@@ -7,17 +7,36 @@
 
 #include <iostream>
 
-#include <boost/chrono.hpp>
-#include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
-#include <boost/thread.hpp>
 #include <boost/timer/timer.hpp>
 
 #include "fourfs"
 
-#include <boost/random/random_device.hpp>
-
 using namespace fourFs;
+
+#include <boost/smart_ptr.hpp>
+
+class B;
+typedef boost::shared_ptr< B > B_ptr;
+typedef boost::weak_ptr< B > B_wptr;
+
+class A
+{
+public:
+   void b(B_ptr b) { m_b = b; }
+   B_ptr b() { return m_b.lock(); }
+
+private:
+   B_wptr m_b;
+};
+
+class B
+{
+public:
+   B(int i) : num(i) {}
+
+   int num;
+};
 
 int main(int argc, char * argv[])
 {
