@@ -218,6 +218,65 @@ void OpenGLInterface::fotogramsPerSecond(double step)
    ++frameCount;
 }
 
+void OpenGLInterface::initializeImpl()
+{
+   // resources init here!
+   // if everything is OK set m_good to true, else set it to false.
+   // If something more complex is needed, overload inherited bool good() const.
+   // everything needed to show a new window here!
+
+   if (initialized == false)
+   {
+      // Initialize GLFW
+      if(!glfwInit())
+      {
+         std::cerr<<"Failed to initialize GLFW"<<std::endl;
+         m_good = false;
+      }
+
+      glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);                   // 4x antialiasing
+      glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);           // Major number of the desired minimum OpenGL version.
+      glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);           // Minor number of the desired minimum OpenGL version.
+      glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    // Disallow legacy functionality if needed (OpenGl 3.0 or above)
+      glfwOpenWindowHint(GLFW_OPENGL_PROFILE, 0);                 // Default. Let the system choose which context should implement.
+
+      // Open a window "1024x768" and create its OpenGL context
+      if(!glfwOpenWindow(window_width, window_height, 0,0,0,0, 32,0, GLFW_WINDOW))
+      {
+         std::cerr<<"Failed to open GLFW window"<<std::endl;
+
+         glfwTerminate();
+         m_good = false;
+      }
+      else
+      {
+         int major, minor, rev;
+
+         glfwGetGLVersion(&major, &minor, &rev);
+         std::cout<<"OpenGL version received: "<<major<<"."<<minor<<"."<<rev<<"\n"<<std::endl;
+      }
+
+      // Initialize GLEW
+      glewExperimental = true; // Needed for core profile
+
+      if (glewInit() != GLEW_OK) {
+         std::cerr<<"Failed to initialize GLEW"<<std::endl;
+         m_good = false;
+      }
+
+      glfwSetWindowTitle(WINDOW_TITLE_DEFAULT); // Set a Title
+
+      // Lovely pink background -> Red-Green-Blue-Alpha
+      glClearColor(1.0, 0.702, 0.855, 0.0);
+
+      // Ensure we can capture the escape key being pressed below
+      glfwEnable(GLFW_STICKY_KEYS);
+
+      m_good = true;
+      initialized = true;
+   }
+}
+
 void OpenGLInterface::keyHandler(GLuint &vertexBufferMap, GLuint &colorBufferMap,
                                  GLuint &indexBufferMap, GLuint &vertexArrayMapID,
                                  GLuint &vertexBufferUnits, GLuint &colorBufferUnits,
@@ -279,65 +338,6 @@ void OpenGLInterface::keyHandler(GLuint &vertexBufferMap, GLuint &colorBufferMap
       else ENABLE_MAP = true;
 
       oldTimeEvents = glfwGetTime();
-   }
-}
-
-void OpenGLInterface::initializeImpl()
-{
-   // resources init here!
-   // if everything is OK set m_good to true, else set it to false.
-   // If something more complex is needed, overload inherited bool good() const.
-   // everything needed to show a new window here!
-
-   if (initialized == false)
-   {
-      // Initialize GLFW
-      if(!glfwInit())
-      {
-         std::cerr<<"Failed to initialize GLFW"<<std::endl;
-         m_good = false;
-      }
-
-      glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 32);                   // 4x antialiasing
-      glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);           // Major number of the desired minimum OpenGL version.
-      glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);           // Minor number of the desired minimum OpenGL version.
-      glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    // Disallow legacy functionality if needed (OpenGl 3.0 or above)
-      glfwOpenWindowHint(GLFW_OPENGL_PROFILE, 0);                 // Default. Let the system choose which context should implement.
-
-      // Open a window "1024x768" and create its OpenGL context
-      if(!glfwOpenWindow(window_width, window_height, 0,0,0,0, 32,0, GLFW_WINDOW))
-      {
-         std::cerr<<"Failed to open GLFW window"<<std::endl;
-
-         glfwTerminate();
-         m_good = false;
-      }
-      else
-      {
-         int major, minor, rev;
-
-         glfwGetGLVersion(&major, &minor, &rev);
-         std::cout<<"OpenGL version received: "<<major<<"."<<minor<<"."<<rev<<"\n"<<std::endl;
-      }
-
-      // Initialize GLEW
-      glewExperimental = true; // Needed for core profile
-
-      if (glewInit() != GLEW_OK) {
-         std::cerr<<"Failed to initialize GLEW"<<std::endl;
-         m_good = false;
-      }
-
-      glfwSetWindowTitle(WINDOW_TITLE_DEFAULT); // Set a Title
-
-      // Lovely pink background -> Red-Green-Blue-Alpha
-      glClearColor(1.0, 0.702, 0.855, 0.0);
-
-      // Ensure we can capture the escape key being pressed below
-      glfwEnable(GLFW_STICKY_KEYS);
-
-      m_good = true;
-      initialized = true;
    }
 }
 
@@ -529,7 +529,6 @@ void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, G
 
 void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUnits, GLuint &vertexUnitsID, logic::sharedConstMatrix matrix, bool ENABLED_3D)
 {
-
    glGenVertexArrays(1, &vertexUnitsID);
    glBindVertexArray(vertexUnitsID);
 
@@ -564,14 +563,6 @@ void OpenGLInterface::loadUnits(GLuint &vertexBufferUnits, GLuint &colorBufferUn
             }
          }
       }
-
-      //FAKE POINT DEBUG ONLY:
-
-      g_units_buffer_data.push_back(-1.);
-      g_units_buffer_data.push_back(1.);
-      g_units_buffer_data.push_back(0.);
-
-      //END FAKE
 
       numberOfUnits = g_units_buffer_data.size();
 
