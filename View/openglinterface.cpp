@@ -355,6 +355,7 @@ void OpenGLInterface::initializeShader(void)
 void OpenGLInterface::showImpl(sharedConstMatrix map)
 {
    // everything needed to show a new window here!
+
    GLuint vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID;
 
    loadMap(vertexBufferMap, colorBufferMap, indexBufferMap , vertexArrayMapID, map, ENABLE_3D);
@@ -368,7 +369,6 @@ void OpenGLInterface::showImpl(sharedConstMatrix map)
    runLoop(map, vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID, vertexBufferUnits, colorBufferUnits, vertexUnitsID);
 
    //m_runLoopThread = boost::thread(& OpenGLInterface::runLoop, this);
-
 }
 
 void OpenGLInterface::loadMap(GLuint &vertexBufferMap, GLuint &colorBufferMap, GLuint &indexBufferMap, GLuint &vertexArrayMapID, logic::sharedConstMatrix matrix, bool ENABLED_3D)
@@ -621,7 +621,6 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
 
    // Get a handle for our "MVP" uniform
    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
    do
    {
       // Clear the screen
