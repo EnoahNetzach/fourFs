@@ -8,6 +8,8 @@
 #ifndef fourFs_WRAPPERS_HPP_
 #define fourFs_WRAPPERS_HPP_
 
+#include <python2.7/Python.h>
+
 template< class T >
 struct listwrap
 {
@@ -101,13 +103,13 @@ struct listwrap
               boost::python::copy_non_const_reference >()) \
       .def("__setitem__", & listwrap< type >::set, \
            boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__delitem__", & listwrap< type >::del) \
+      .def("__delitem__", & listwrap< type >::erase) \
       .def("__contains__", & listwrap< type >::in) \
       .def("__iter__", iterator< type >()) \
       .def("index", & listwrap< type >::index) \
    ;
 
-#define EXPORT_STD_LIST_OF_TYPE(type, typeName) EXPORT_STD_LIST(std::list< type >, typeName)
+//#define EXPORT_STD_LIST_OF_TYPE(type, typeName) EXPORT_STD_LIST(std::list< type >, typeName)
 
 template< class T >
 struct pairwarp
@@ -126,6 +128,38 @@ struct pairwarp
       .def("second", & pairwarp< type >::second) \
    ;
 
-#define EXPORT_STD_PAIR_OF_TYPE(type1, type2, typeName) EXPORT_STD_PAIR(std::pair< type1, type2 >, typeName)
+//#define EXPORT_STD_PAIR_OF_TYPE(type1, type2, typeName) EXPORT_STD_PAIR(std::pair< type1, type2 >, typeName)
+
+template< class T >
+struct mapwrap
+{
+   typedef T map_type;
+   typedef typename map_type::key_type key_type;
+   typedef typename map_type::value_type value_type;
+   typedef typename map_type::iterator iter_type;
+
+   static void add(map_type & x, value_type const & v)
+   {
+      x.push_back(v);
+   }
+
+#define EXPORT_STD_MAP(type, typeName) \
+   EXPORT_STD_PAIR(type::value, typeName * _pair) \
+   boost::python::class_< type >(typeName) \
+      .def("__len__", & type::size) \
+      .def("clear", & type::clear) \
+      .def("append", & mapwrap< type >::insert, \
+           boost::python::with_custodian_and_ward< 1, 2 >()) \
+      .def("__getitem__", & mapwrap< type >::at, \
+           boost::python::return_value_policy< \
+              boost::python::copy_non_const_reference >()) \
+      .def("__setitem__", & listwrap< type >::at, \
+           boost::python::with_custodian_and_ward< 1, 2 >()) \
+      .def("__delitem__", & listwrap< type >::del) \
+      .def("__contains__", & listwrap< type >::count) \
+      .def("__iter__", iterator< type >()) \
+   ;
+
+//#define EXPORT_STD_MAP_OF_TYPE(type, typeName) EXPORT_STD_MAP(std::map< keyType, mapType >, typeName)
 
 #endif /* fourFs_WRAPPERS_HPP_ */
