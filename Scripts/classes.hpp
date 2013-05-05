@@ -23,6 +23,10 @@
 #include "../Logic/unit.h"
 #include "wrappers.hpp"
 
+// Show the type without parenthesis
+#define REM(...) __VA_ARGS__
+#define PAIR(x) REM x
+
 #define GET_REF(className, type, function) \
    type get_ ## className ## _ ## function(className & c) \
    { \
@@ -48,7 +52,8 @@
 #define CALL_METHOD(type) \
    type call_ ## type(type & c) { return c; }
 
-#define OVERLOAD(className, returnType, args)
+#define OVERLOAD(className, method, returnType, args, ...) \
+   static_cast< returnType(className:: *)(PAIR(args)) __VA_ARGS__ >(& className::method)
 
 /*
  * Python exposition
@@ -97,35 +102,32 @@ BOOST_PYTHON_MODULE(fourFs)
    EXPORT_STD_PAIR(Matrix::coordinates, "Pos")
 
    class_< sharedMap >("Map")
-      // .def(init< unsigned , unsigned , double , unsigned ,
-      //            double , unsigned , unsigned , unsigned >())
       .def("__call__", call_sharedMap, return_value_policy< return_by_value >())
       .def("height", & Map::height)
       .def("width", & Map::width)
-      .def("matrix", static_cast< sharedMatrix(Map:: *)() >(& Map::matrix), return_value_policy< return_by_value >())
+      .def("matrix", OVERLOAD(Map, matrix, sharedMatrix, ()),
+           return_value_policy< return_by_value >())
    ;
 
-   class_< sharedMatrix >("Matrix"/*, init< unsigned, unsigned >()*/)
+   class_< sharedMatrix >("Matrix")
       .def("__call__", call_sharedMap, return_value_policy< return_by_value >())
       .def("indexFromPosition", & Matrix::indexFromPosition)
       .def("positionFromIndex", & Matrix::positionFromIndex)
       .def("height", & Matrix::height)
       .def("width", & Matrix::width)
       .def("size", & Matrix::size)
-      .def("pixelAtIndex",
-           static_cast< sharedPixel(Matrix:: *)(unsigned) >(& Matrix::pixelAtIndex), return_value_policy< return_by_value >())
+      .def("pixelAtIndex", OVERLOAD(Matrix, pixelAtIndex, sharedPixel, (unsigned)),
+           return_value_policy< return_by_value >())
       .def("pixelAtPosition",
-           static_cast< sharedPixel(Matrix:: *)(unsigned, unsigned) >
-           (& Matrix::pixelAtPosition), return_value_policy< return_by_value >())
+           OVERLOAD(Matrix, pixelAtPosition, sharedPixel, (unsigned, unsigned)),
+           return_value_policy< return_by_value >())
       .def("pixelsAroundIndex",
-           static_cast< pixelList(Matrix:: *)(unsigned, unsigned) >
-           (& Matrix::pixelsAroundIndex))
+           OVERLOAD(Matrix, pixelsAroundIndex, pixelList, (unsigned, unsigned)))
       .def("pixelsAroundPosition",
-           static_cast< pixelList(Matrix:: *)(unsigned, unsigned, unsigned) >
-           (& Matrix::pixelsAroundPosition))
+           OVERLOAD(Matrix, pixelsAroundPosition, pixelList, (unsigned, unsigned, unsigned)))
    ;
 
-   class_< sharedPixel >("Pixel"/*, init< unsigned, bool >()*/)
+   class_< sharedPixel >("Pixel")
       .def("__call__", call_sharedPixel, return_value_policy< return_by_value >())
       .def("index", & Pixel::index)
       .add_property("height", get_sharedPixel_height, set_sharedPixel_height)
@@ -139,17 +141,17 @@ BOOST_PYTHON_MODULE(fourFs)
       .def("units", & Pixel::units)
    ;
 
-   class_< sharedSwarm >("Swarm"/*, init<>()*/)
+   class_< sharedSwarm >("Swarm")
       .def("size", & Swarm::size)
       .def("empty", & Swarm::empty)
       .def("addUnit", & Swarm::addUnit)
       .def("removeUnit", & Swarm::removeUnit)
       .def("clearUnits", & Swarm::clearUnits)
-      .def("unitFromId", static_cast< sharedUnit(Swarm:: *)(id_type) >(& Swarm::unitFromId))
+      .def("unitFromId", OVERLOAD(Swarm, unitFromId, sharedUnit, (id_type)))
       .def("units", & Swarm::units)
    ;
 
-   class_< sharedUnit >("Unit"/*, init< unsigned >()*/)
+   class_< sharedUnit >("Unit")
       .def("__call__", call_sharedUnit, return_value_policy< return_by_value >())
       .add_property("radius", get_sharedUnit_radius, set_sharedUnit_radius)
       .def("fieldOfView", & Unit::fieldOfView)
@@ -159,8 +161,8 @@ BOOST_PYTHON_MODULE(fourFs)
       .def("addPixel", & Unit::addPixel)
       .def("removePixel", & Unit::removePixel)
       .def("clearPixels", & Unit::clearPixels)
-      .def("centralPixel", static_cast< void(Unit::*)(index_type) >(& Unit::centralPixel))
-      .def("centralPixel", static_cast< index_type(Unit::*)() const >(& Unit::centralPixel))
+      .def("centralPixel", OVERLOAD(Unit, centralPixel, void, (index_type)))
+      .def("centralPixel", OVERLOAD(Unit, centralPixel, index_type, (), const))
       .def("pixels", & Unit::pixels)
    ;
 }
