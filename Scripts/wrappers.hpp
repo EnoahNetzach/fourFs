@@ -103,7 +103,7 @@ struct listwrap
               boost::python::copy_non_const_reference >()) \
       .def("__setitem__", & listwrap< type >::set, \
            boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__delitem__", & listwrap< type >::erase) \
+      .def("__delitem__", & listwrap< type >::del) \
       .def("__contains__", & listwrap< type >::in) \
       .def("__iter__", iterator< type >()) \
       .def("index", & listwrap< type >::index) \
@@ -142,21 +142,22 @@ struct mapwrap
    {
       x.push_back(v);
    }
+};
 
 #define EXPORT_STD_MAP(type, typeName) \
-   EXPORT_STD_PAIR(type::value, typeName * _pair) \
+   EXPORT_STD_PAIR(type::value_type, typeName "_pair") \
    boost::python::class_< type >(typeName) \
       .def("__len__", & type::size) \
       .def("clear", & type::clear) \
-      .def("append", & mapwrap< type >::insert, \
+      .def("append", & type::insert, \
            boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__getitem__", & mapwrap< type >::at, \
+      .def("__getitem__", & type::at, \
            boost::python::return_value_policy< \
               boost::python::copy_non_const_reference >()) \
-      .def("__setitem__", & listwrap< type >::at, \
+      .def("__setitem__", & type::at, \
            boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__delitem__", & listwrap< type >::del) \
-      .def("__contains__", & listwrap< type >::count) \
+      .def("__delitem__", & type::erase) \
+      .def("__contains__", & type::count) \
       .def("__iter__", iterator< type >()) \
    ;
 
