@@ -39,21 +39,20 @@ def checDirection(direction, x, y, matrix):
 
 def moveUnit(unit, matrix, x, y):
    for pixel in unit.pixels():
-      pixel.removeUnit(unit)
+      matrix.pixelAtIndex(pixel).removeUnit(unit.id())
       unit.removePixel(pixel)
    for pixel in matrix.pixelsAroundPosition(x, y, unit.radius):
-      pixel.addUnit(unit)
-      unit.addPixel(pixel)
+      pixel.addUnit(unit.id())
+      unit.addPixel(pixel.index())
    #
    # FIXME: sharedPixel assignment to unit's centralPixel 
    # works in C++, but doesn't seem to work here..
    #
-   unit.centralPixel(matrix.pixelAtPosition(x, y))
+   unit.centralPixel = matrix.pixelAtPosition(x, y).index()
 
 def simulation(map, swarm):
-   units = swarm.units()
-   for unit in units:
-      index = unit.centralPixel().index()
+   for unit in swarm.units():
+      index = unit.second().centralPixel
       pos = map.matrix().positionFromIndex(index)
       x = pos.first()
       y = pos.second()
@@ -70,6 +69,6 @@ def simulation(map, swarm):
             y = pos.second()
             direction = randInt(0, 7)
             moved, x, y = checDirection(direction, x, y, map.matrix())
-         moveUnit(unit, map.matrix(), x, y)
+         moveUnit(unit.second(), map.matrix(), x, y)
       # elif (ratio > 0.75): # @fight
       # else: # @mate
