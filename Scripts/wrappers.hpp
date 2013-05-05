@@ -109,7 +109,7 @@ struct listwrap
       .def("index", & listwrap< type >::index) \
    ;
 
-//#define EXPORT_STD_LIST_OF_TYPE(type, typeName) EXPORT_STD_LIST(std::list< type >, typeName)
+#define EXPORT_STD_LIST_OF_TYPE(type, typeName) EXPORT_STD_LIST(std::list< type >, typeName)
 
 template< class T >
 struct pairwarp

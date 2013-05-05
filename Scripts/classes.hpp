@@ -186,7 +186,7 @@ BOOST_PYTHON_MODULE(fourFs)
 
    EXPORT_STD_LIST(pixelList, "PixelList")
    EXPORT_STD_LIST(unitList, "UnitList")
-   EXPORT_STD_LIST(unsigned, "UnsignedList")
+   EXPORT_STD_LIST_OF_TYPE(unsigned, "UnsignedList")
    EXPORT_STD_MAP(unitMap, "UnitMap")
 
    EXPORT_STD_PAIR(Matrix::coordinates, "Pos")

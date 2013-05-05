@@ -9,6 +9,7 @@ python 2.7
 
 Compile flags:
 [Debug] -DDEBUG=1
+[simulation.cpp] -DBOOST_PP_VARIADICS=1
 
 Link flags:
 -lboost_random -lboost_program_options -lboost_timer -lboost_system -lboost_thread
