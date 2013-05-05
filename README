@@ -13,4 +13,4 @@ Compile flags:
 Link flags:
 -lboost_random -lboost_program_options -lboost_timer -lboost_system -lboost_thread
 -lboost_serialization -lboost_filesystem -lboost_iostreams -lboost_python
-/path/to/python/bin/2.7/Python
+-lpython2.7
