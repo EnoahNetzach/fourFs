@@ -184,9 +184,7 @@ struct mapwrap
    boost::python::class_< type >(typeName) \
       .def("__len__", & type::size) \
       .def("clear", & type::clear) \
-      .def("__getitem__", & mapwrap< type >::get, \
-           boost::python::return_value_policy< \
-              boost::python::copy_non_const_reference >()) \
+      .def("__getitem__", & mapwrap< type >::get) \
       .def("__setitem__", & mapwrap< type >::set, \
            boost::python::with_custodian_and_ward< 1, 2 >()) \
       .def("__delitem__", & mapwrap< type >::del) \
