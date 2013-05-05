@@ -25,25 +25,25 @@ public:
    double & height();
    const double & height() const;
    bool isBorder() const;
-   sharedEnvironment environment();
-   sharedConstEnvironment environment() const;
    bool isUnitsEmpty() const;
    bool isUnitsUnique() const;
    unsigned nOfUnits() const;
-   void addUnit(sharedUnit unit);
-   bool removeUnit(sharedUnit unit);
+   void addUnit(id_type id);
+   bool removeUnit(id_type id);
    void clearUnits();
-   unitList units();
-   const constUnitList units() const;
+   bool hasUnit(id_type id);
+   idList units() const;
+//   sharedEnvironment environment();
+//   sharedConstEnvironment environment() const;
 
 protected:
 
 private:
-   unsigned m_index;
+   const unsigned m_index;
    double m_height;
    bool m_border;
-   sharedEnvironment m_environment;
-   weakUnitList m_units;
+   idList m_units;
+//   sharedEnvironment m_environment;
 };
 
 } /* namespace logic */

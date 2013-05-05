@@ -17,6 +17,25 @@
 using namespace fourFs;
 using namespace logic;
 
+Unit::Unit(id_type id, unsigned radius)
+   : m_id(id)
+   , m_radius(radius)
+   , m_belligerance(0)
+   , m_fertility(0)
+   , m_longevity(0)
+   , m_centralPixel(0)
+{
+}
+
+Unit::~Unit()
+{
+}
+
+id_type Unit::id() const
+{
+   return m_id;
+}
+
 unsigned & Unit::radius()
 {
    return m_radius;
@@ -30,18 +49,6 @@ const unsigned & Unit::radius() const
 unsigned Unit::fieldOfView()
 {
    return 5;
-}
-
-Unit::Unit(unsigned radius)
-   : m_radius(radius)
-   , m_belligerance(0)
-   , m_fertility(0)
-   , m_longevity(0)
-{
-}
-
-Unit::~Unit()
-{
 }
 
 const double & Unit::longevity () const
@@ -59,19 +66,17 @@ const double & Unit::belligerance () const
    return m_belligerance;
 }
 
-void Unit::addPixel(sharedPixel pixel)
+void Unit::addPixel(index_type index)
 {
-   m_pixels.push_back(pixel);
+   m_pixels.push_back(index);
 }
 
-bool Unit::removePixel(sharedPixel pixel)
+bool Unit::removePixel(index_type index)
 {
    bool found = false;
-   weakPixelIterator it;
-
-   for (it = m_pixels.begin(); it != m_pixels.end(); ++it)
+   for (indexList::iterator it = m_pixels.begin(); it != m_pixels.end(); ++it)
    {
-      if ((* it).lock() == pixel)
+      if ((* it) == index)
       {
          found = true;
          m_pixels.erase(it);
@@ -87,51 +92,42 @@ void Unit::clearPixels()
    m_pixels.clear();
 }
 
-void Unit::centralPixel(sharedPixel pixel)
+bool Unit::hasPixel(index_type index)
 {
-   m_centralPixel = pixel;
-}
-
-sharedPixel Unit::centralPixel()
-{
-   return m_centralPixel.lock();
-}
-
-const sharedConstPixel Unit::centralPixel() const
-{
-   return m_centralPixel.lock();
-}
-
-pixelList Unit::pixels()
-{
-   pixelList pixels;
-
-   BOOST_FOREACH(weakPixel pixel, m_pixels)
+   bool found = false;
+   BOOST_FOREACH(index_type i, m_pixels)
    {
-      pixels.push_back(pixel.lock());
+      if (i == index)
+      {
+         found = true;
+         break;
+      }
    }
 
-   return pixels;
+   return found;
 }
 
-const constPixelList Unit::pixels() const
+indexList Unit::pixels() const
 {
-   constPixelList pixels;
-
-   BOOST_FOREACH(weakPixel pixel, m_pixels)
-   {
-      pixels.push_back(pixel.lock());
-   }
-
-   return pixels;
+   return m_pixels;
 }
 
-sharedState Unit::state()
+void Unit::centralPixel(index_type index)
 {
-   return m_state;
+   m_centralPixel = index;
 }
 
-sharedConstState Unit::state() const
+index_type Unit::centralPixel() const
 {
-   return m_state;
+   return m_centralPixel;
 }
+
+//sharedState Unit::state()
+//{
+//   return m_state;
+//}
+//
+//sharedConstState Unit::state() const
+//{
+//   return m_state;
+//}

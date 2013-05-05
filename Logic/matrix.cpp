@@ -23,9 +23,9 @@ Matrix::Matrix(unsigned width, unsigned height)
    : m_height(height)
    , m_width(width)
 {
-   for (unsigned i = 0; i < m_width * m_height; i++)
+   for (index_type i = 0; i < m_width * m_height; i++)
    {
-      m_pixels.push_back(sharedPixel(new Pixel(i)));
+      m_pixels.push_back(sharedPixel(new Pixel(i + 1)));
    }
 }
 
@@ -35,27 +35,20 @@ Matrix::~Matrix()
    BOOST_FOREACH(sharedPixel pixel, m_pixels)
    {
       // clear environments
-      if (pixel->environment() != 0)
-      {
-         pixel->environment()->clearPixels();
-      }
-
-      // clear units
-      BOOST_FOREACH(weakUnit wunit, pixel->units())
-      {
-         sharedUnit unit = wunit.lock();
-         if (unit != 0) unit->clearPixels();
-      }
+//      if (pixel->environment() != 0)
+//      {
+//         pixel->environment()->clearPixels();
+//      }
    }
 
 }
 
-unsigned Matrix::indexFromPosition(unsigned x, unsigned y) const
+index_type Matrix::indexFromPosition(unsigned x, unsigned y) const
 {
    return y * m_width + x;
 }
 
-Matrix::coordinates Matrix::positionFromIndex(unsigned index) const
+Matrix::coordinates Matrix::positionFromIndex(index_type index) const
 {
    unsigned x = index % m_width;
    unsigned y = (index - x) / m_width;
@@ -78,12 +71,12 @@ unsigned Matrix::size() const
    return m_width * m_height;
 }
 
-sharedPixel Matrix::pixelAtIndex(unsigned index)
+sharedPixel Matrix::pixelAtIndex(index_type index)
 {
    return m_pixels.at(index);
 }
 
-const sharedConstPixel Matrix::pixelAtIndex(unsigned index) const
+const sharedConstPixel Matrix::pixelAtIndex(index_type index) const
 {
    return m_pixels.at(index);
 }
@@ -98,14 +91,14 @@ const sharedConstPixel Matrix::pixelAtPosition(unsigned x, unsigned y) const
    return pixelAtIndex(indexFromPosition(x, y));
 }
 
-pixelList Matrix::pixelsAroundIndex(unsigned index, unsigned radius)
+pixelList Matrix::pixelsAroundIndex(index_type index, unsigned radius)
 {
    std::pair< unsigned, unsigned > pos = positionFromIndex(index);
 
    return pixelsAroundPosition(pos.first, pos.second, radius);
 }
 
-const constPixelList Matrix::pixelsAroundIndex(unsigned index, unsigned radius) const
+const constPixelList Matrix::pixelsAroundIndex(index_type index, unsigned radius) const
 {
    std::pair< unsigned, unsigned > pos = positionFromIndex(index);
 

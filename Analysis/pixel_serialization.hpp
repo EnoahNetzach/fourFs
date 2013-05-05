@@ -26,7 +26,7 @@ public:
    template< class Archive >
    void serialize(Archive & ar, unsigned /*v*/)
    {
-      ar & m_pixel.m_index;
+      ar & const_cast< logic::index_type & >(m_pixel.m_index);
       ar & m_pixel.m_height;
       //ar & m_pixel.m_environment;
       ar & m_pixel.m_border;

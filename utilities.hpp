@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <list>
+#include <map>
 #include <string>
 
 #include <boost/random.hpp>
@@ -40,6 +41,7 @@ class SerializeMatrix;
 class SerializePixel;
 class SerializeSimulation;
 class SerializeState;
+class SerializeSwarm;
 class SerializeMap;
 class SerializeUnit;
 
@@ -68,16 +70,14 @@ namespace logic {
 class Environment;
 typedef boost::shared_ptr< Environment > sharedEnvironment;
 typedef boost::shared_ptr< const Environment > sharedConstEnvironment;
-typedef boost::weak_ptr< Environment > weakEnvironment;
-typedef boost::weak_ptr< const Environment > weakConstEnvironment;
 
 class Matrix;
 typedef boost::shared_ptr< Matrix > sharedMatrix;
 typedef boost::shared_ptr< const Matrix > sharedConstMatrix;
-typedef boost::weak_ptr< Matrix > weakMatrix;
-typedef boost::weak_ptr< const Matrix > weakConstMatrix;
 
 class Pixel;
+typedef unsigned index_type;
+typedef std::list< index_type > indexList;
 typedef boost::shared_ptr< Pixel > sharedPixel;
 typedef boost::shared_ptr< const Pixel > sharedConstPixel;
 typedef std::list< sharedPixel > pixelList;
@@ -86,14 +86,6 @@ typedef pixelList::const_iterator pixelConstIterator;
 typedef std::list< sharedConstPixel > constPixelList;
 typedef constPixelList::iterator constPixelIterator;
 typedef constPixelList::const_iterator constPixelConstIterator;
-typedef boost::weak_ptr< Pixel > weakPixel;
-typedef boost::weak_ptr< const Pixel > weakConstPixel;
-typedef std::list< weakPixel > weakPixelList;
-typedef weakPixelList::iterator weakPixelIterator;
-typedef weakPixelList::const_iterator weakPixelConstIterator;
-typedef std::list< weakConstPixel > constWeakPixelList;
-typedef constWeakPixelList::iterator constWeakPixelIterator;
-typedef constWeakPixelList::const_iterator constWeakPixelConstIterator;
 
 class State;
 typedef boost::shared_ptr< State > sharedState;
@@ -101,11 +93,17 @@ typedef boost::shared_ptr< const State > sharedConstState;
 
 class Simulation;
 
+class Swarm;
+typedef boost::shared_ptr< Swarm > sharedSwarm;
+typedef boost::shared_ptr< Swarm const > sharedConstSwarm;
+
 class Map;
 typedef boost::shared_ptr< Map > sharedMap;
 typedef boost::shared_ptr< const Map > sharedConstMap;
 
 class Unit;
+typedef unsigned id_type;
+typedef std::list< id_type > idList;
 typedef boost::shared_ptr< Unit > sharedUnit;
 typedef boost::shared_ptr< const Unit > sharedConstUnit;
 typedef std::list< sharedUnit > unitList;
@@ -114,14 +112,7 @@ typedef unitList::const_iterator unitConstIterator;
 typedef std::list< sharedConstUnit > constUnitList;
 typedef constUnitList::iterator constUnitIterator;
 typedef constUnitList::const_iterator constUnitConstIterator;
-typedef boost::weak_ptr< Unit > weakUnit;
-typedef boost::weak_ptr< const Unit > weakConstUnit;
-typedef std::list< weakUnit > weakUnitList;
-typedef weakUnitList::iterator weakUnitIterator;
-typedef weakUnitList::const_iterator weakUnitConstIterator;
-typedef std::list< weakConstUnit > constWeakUnitList;
-typedef constWeakUnitList::iterator constWeakUnitIterator;
-typedef constWeakUnitList::const_iterator constWeakUnitConstIterator;
+typedef std::map< id_type, sharedUnit > unitMap;
 
 } /* namespace logic */
 namespace view {

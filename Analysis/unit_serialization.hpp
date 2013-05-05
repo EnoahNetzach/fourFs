@@ -26,6 +26,7 @@ public:
    template< class Archive >
    void serialize(Archive & ar, unsigned /*v*/)
    {
+      ar & const_cast< logic::id_type & >(m_unit.m_id);
       ar & m_unit.m_radius;
       ar & m_unit.m_belligerance;
       ar & m_unit.m_fertility;
@@ -56,7 +57,7 @@ inline void serialize(Archive & ar, fourFs::logic::Unit & unit, unsigned /*v*/)
 template< class Archive >
 inline void load_construct_data(Archive & /*ar*/, fourFs::logic::Unit * unit, unsigned /*v*/)
 {
-   ::new(unit) fourFs::logic::Unit(0);
+   ::new(unit) fourFs::logic::Unit(0, 0);
 }
 
 } /* namespace boost */

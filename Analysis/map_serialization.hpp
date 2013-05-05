@@ -48,11 +48,6 @@ inline void serialize(Archive & ar, fourFs::logic::Map & map, unsigned /*v*/)
    ar & sp;
 }
 
-//template< class Archive >
-//void load_construct_data(Archive & /*ar*/, Map * map, unsigned /*v*/)
-//{
-//   ::new(map) Map(0, 0);
-//}
 } /* namespace boost */
 } /* namespace serialization */
 

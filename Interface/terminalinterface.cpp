@@ -17,6 +17,7 @@
 #include "../Logic/matrix.h"
 #include "../Logic/pixel.h"
 #include "../Logic/simulation.h"
+#include "../Logic/swarm.h"
 #include "../Logic/unit.h"
 
 using namespace fourFs;
@@ -36,7 +37,7 @@ void TerminalInterface::runImpl()
    {
       std::cout << "[Term interface] What would you like to do?\n"
                    "p=play/pause, r=resume, s=stop, y=reload script\n"
-                   "m=new map, u=resize units, o=change options\n"
+                   "m=new map, u=resize swarm, o=change options\n"
                    "v=save map, l=load map, w=show, i=info, q=quit\n> " << std::flush;
       input.clear();
       std::cin >> input;
@@ -84,15 +85,15 @@ void TerminalInterface::runImpl()
                    << std::endl;
          m_simulation.newMap();
       }
-      else if (input == "u") // resize units
+      else if (input == "u") // resize swarm
       {
-         std::cout << "[Term interface] Resize units (now " << m_simulation.units().size()
+         std::cout << "[Term interface] Resize swarm (now " << m_simulation.swarm()->size()
                    << ") (c=cancel) " << std::flush;
          input.clear();
          std::cin >> input;
 
          if (input == "c") continue;
-         m_simulation.resizeUnits(boost::lexical_cast< unsigned >(input));
+         m_simulation.resizeSwarm(boost::lexical_cast< unsigned >(input));
       }
       else if (input == "o") // change options
       {
@@ -237,7 +238,7 @@ void TerminalInterface::runImpl()
                    << std::setw(30) << std::left << "\npace" << m_simulation.pace()
                    << std::setw(30) << std::left << "\nsquare = " << m_simulation.square()
                    << std::setw(30) << std::left << "\nsmooth = " << m_simulation.smooth()
-                   << std::setw(30) << std::left << "\nnumber of units = " << m_simulation.units().size()
+                   << std::setw(30) << std::left << "\nnumber of units = " << m_simulation.swarm()->size()
                    << std::endl;
       }
 

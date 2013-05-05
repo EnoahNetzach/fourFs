@@ -10,7 +10,7 @@
 
 #include "../Logic/simulation.h"
 #include "map_serialization.hpp"
-#include "unit_serialization.hpp"
+#include "swarm_serialization.hpp"
 
 #include <boost/archive/shared_ptr_helper.hpp>
 #include <boost/serialization/shared_ptr.hpp>
@@ -37,7 +37,7 @@ public:
       ar & m_simulation.m_square;
       ar & m_simulation.m_smooth;
       ar & m_simulation.m_map;
-      ar & m_simulation.m_units;
+      ar & m_simulation.m_swarm;
    }
 
 private:

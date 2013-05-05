@@ -19,143 +19,34 @@
 #include "../Logic/map.h"
 #include "../Logic/matrix.h"
 #include "../Logic/pixel.h"
+#include "../Logic/swarm.h"
 #include "../Logic/unit.h"
+#include "wrappers.hpp"
 
-#define GET_REF(type, className, function) \
-   type get_ ## function ## className(className & c) \
+#define GET_REF(className, type, function) \
+   type get_ ## className ## _ ## function(className & c) \
    { \
-      return c.function(); \
+      return c->function(); \
    }
 
-#define SET_REF(type, className, function) \
-   void set_ ## function ## className(className & c, type n) \
+#define SET_REF(className, type, function) \
+   void set_ ## className ## _ ## function(className & c, type n) \
    { \
-      c.function() = n; \
+      c->function() = n; \
    }
 
-#define GET_SET_REF(type, className, function) \
-   GET_REF(type, className, function) \
-   SET_REF(type, className, function)
+#define GET_SET_REF(className, type, function) \
+   GET_REF(className, type, function) \
+   SET_REF(className, type, function)
 
-template< class T >
-struct listwrap
-{
-   typedef T list_type;
-   typedef typename list_type::value_type value_type;
-   typedef typename list_type::iterator iter_type;
-
-   static void add(list_type & x, value_type const & v)
-   {
-      x.push_back(v);
+#define SET_VAL(className, type, function) \
+   void set_ ## className ## _ ## function(className & c, type n) \
+   { \
+      c->function(n); \
    }
 
-   static bool in(list_type const & x, value_type const & v)
-   {
-      return std::find(x.begin(), x.end(), v) != x.end();
-   }
-
-   static int index(list_type const & x, value_type const & v)
-   {
-      int i = 0;
-      for(typename list_type::const_iterator it=x.begin(); it!=x.end(); ++it,++i)
-      {
-         if( *it == v ) return i;
-      }
-
-      PyErr_SetString(PyExc_ValueError, "Value not in the list");
-      throw boost::python::error_already_set();
-   }
-
-   static void del(list_type & x, int i)
-   {
-      if( i<0 ) i += x.size();
-
-      iter_type it = x.begin();
-      for (int pos = 0; pos < i; ++pos) ++it;
-
-      if( i >= 0 && i < (int)x.size() )
-      {
-         x.erase(it);
-      }
-      else
-      {
-         PyErr_SetString(PyExc_IndexError, "Index out of range");
-         boost::python::throw_error_already_set();
-      }
-   }
-
-   static value_type & get(list_type & x, int i)
-   {
-      if( i < 0 ) i += x.size();
-
-      if( i >= 0 && i < (int)x.size() )
-      {
-         iter_type it = x.begin();
-         for(int pos = 0; pos < i; ++pos) ++it;
-         return * it;
-      }
-      else
-      {
-         PyErr_SetString(PyExc_IndexError, "Index out of range");
-         throw boost::python::error_already_set();
-      }
-   }
-
-   static void set(list_type & x, int i, value_type const & v)
-   {
-      if( i < 0 ) i += x.size();
-
-      if( i >= 0 && i < (int)x.size() )
-      {
-         iter_type it = x.begin();
-         for(int pos = 0; pos < i; ++pos) ++it;
-         *it = v;
-      }
-      else
-      {
-         PyErr_SetString(PyExc_IndexError, "Index out of range");
-         boost::python::throw_error_already_set();
-      }
-   }
-};
-
-#define EXPORT_STD_LIST(type, typeName) \
-   boost::python::class_< type >(typeName) \
-      .def("__len__", & type::size) \
-      .def("clear", & type::clear) \
-      .def("append", & listwrap< type >::add, \
-           boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__getitem__", & listwrap< type >::get, \
-           boost::python::return_value_policy< \
-              boost::python::copy_non_const_reference >()) \
-      .def("__setitem__", & listwrap< type >::set, \
-           boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__delitem__", & listwrap< type >::del) \
-      .def("__contains__", & listwrap< type >::in) \
-      .def("__iter__", iterator< type >()) \
-      .def("index", & listwrap< type >::index) \
-   ;
-
-#define EXPORT_STD_LIST_OF_TYPE(type, typeName) EXPORT_STD_LIST(std::list< type >, typeName)
-
-template< class T >
-struct pairwarp
-{
-   typedef T pair_type;
-   typedef typename pair_type::first_type first_type;
-   typedef typename pair_type::second_type second_type;
-
-   static first_type first(pair_type & x) { return x.first; }
-   static second_type second(pair_type & x) { return x.second; }
-};
-
-#define EXPORT_STD_PAIR(type, typeName) \
-   boost::python::class_< type >(typeName) \
-      .def("first", & pairwarp< type >::first) \
-      .def("second", & pairwarp< type >::second) \
-   ;
-
-#define EXPORT_STD_PAIR_OF_TYPE(type1, type2, typeName) EXPORT_STD_PAIR(std::pair< type1, type2 >, typeName)
+#define CALL_METHOD(type) \
+   type call_ ## type(type & c) { return c; }
 
 /*
  * Python exposition
@@ -178,11 +69,15 @@ double rand01()
 
 using namespace fourFs::logic;
 
-GET_SET_REF(double, Pixel, height)
-GET_SET_REF(unsigned, Unit, radius)
-GET_REF(double, Unit, longevity)
-GET_REF(double, Unit, fertility)
-GET_REF(double, Unit, belligerance)
+CALL_METHOD(sharedMap)
+CALL_METHOD(sharedMatrix)
+CALL_METHOD(sharedPixel)
+CALL_METHOD(sharedUnit)
+GET_SET_REF(sharedPixel, double, height)
+GET_SET_REF(sharedUnit, unsigned, radius)
+GET_REF(sharedUnit, double, longevity)
+GET_REF(sharedUnit, double, fertility)
+GET_REF(sharedUnit, double, belligerance)
 
 BOOST_PYTHON_MODULE(fourFs)
 {
@@ -195,28 +90,31 @@ BOOST_PYTHON_MODULE(fourFs)
 
    EXPORT_STD_LIST(pixelList, "PixelList")
    EXPORT_STD_LIST(unitList, "UnitList")
+   EXPORT_STD_LIST(unitMap, "UnitMap")
 
    EXPORT_STD_PAIR(Matrix::coordinates, "Pos")
 
-   class_< Map, sharedMap, boost::noncopyable >("Map")
-      .def(init< unsigned , unsigned , double , unsigned ,
-                 double , unsigned , unsigned , unsigned >())
+   class_< sharedMap >("Map")
+      // .def(init< unsigned , unsigned , double , unsigned ,
+      //            double , unsigned , unsigned , unsigned >())
+      .def("__call__", call_sharedMap, return_value_policy< return_by_value >())
       .def("height", & Map::height)
       .def("width", & Map::width)
-      .def("matrix", static_cast< sharedMatrix(Map::*)() >(& Map::matrix))
+      .def("matrix", static_cast< sharedMatrix(Map::*)() >(& Map::matrix), return_value_policy< return_by_value >())
    ;
 
-   class_< Matrix, sharedMatrix, boost::noncopyable >("Matrix", init< unsigned, unsigned >())
+   class_< sharedMatrix >("Matrix"/*, init< unsigned, unsigned >()*/)
+      .def("__call__", call_sharedMap, return_value_policy< return_by_value >())
       .def("indexFromPosition", & Matrix::indexFromPosition)
       .def("positionFromIndex", & Matrix::positionFromIndex)
       .def("height", & Matrix::height)
       .def("width", & Matrix::width)
       .def("size", & Matrix::size)
       .def("pixelAtIndex",
-           static_cast< sharedPixel(Matrix:: *)(unsigned) >(& Matrix::pixelAtIndex))
+           static_cast< sharedPixel(Matrix:: *)(unsigned) >(& Matrix::pixelAtIndex), return_value_policy< return_by_value >())
       .def("pixelAtPosition",
            static_cast< sharedPixel(Matrix:: *)(unsigned, unsigned) >
-           (& Matrix::pixelAtPosition))
+           (& Matrix::pixelAtPosition), return_value_policy< return_by_value >())
       .def("pixelsAroundIndex",
            static_cast< pixelList(Matrix:: *)(unsigned, unsigned) >
            (& Matrix::pixelsAroundIndex))
@@ -225,9 +123,10 @@ BOOST_PYTHON_MODULE(fourFs)
            (& Matrix::pixelsAroundPosition))
    ;
 
-   class_< Pixel, sharedPixel, boost::noncopyable >("Pixel", init< unsigned, bool >())
+   class_< sharedPixel >("Pixel"/*, init< unsigned, bool >()*/)
+      .def("__call__", call_sharedPixel, return_value_policy< return_by_value >())
       .def("index", & Pixel::index)
-      .add_property("height", get_heightPixel, set_heightPixel)
+      .add_property("height", get_sharedPixel_height, set_sharedPixel_height)
       .def("isBorder", & Pixel::isBorder)
       .def("isUnitsEmpty", & Pixel::isUnitsEmpty)
       .def("isUnitsUnique", & Pixel::isUnitsUnique)
@@ -235,21 +134,32 @@ BOOST_PYTHON_MODULE(fourFs)
       .def("addUnit", & Pixel::addUnit)
       .def("removeUnit", & Pixel::removeUnit)
       .def("clearUnits", & Pixel::clearUnits)
-      .def("units", static_cast< unitList(Pixel:: *)() >(& Pixel::units))
+      .def("units", & Pixel::units)
    ;
 
-   class_< Unit, sharedUnit, boost::noncopyable >("Unit", init< unsigned >())
-      .add_property("radius", get_radiusUnit, set_radiusUnit)
+   class_< sharedSwarm >("Swarm"/*, init<>()*/)
+      .def("size", & Swarm::size)
+      .def("empty", & Swarm::empty)
+      .def("addUnit", & Swarm::addUnit)
+      .def("removeUnit", & Swarm::removeUnit)
+      .def("clearUnits", & Swarm::clearUnits)
+      .def("unitFromId", static_cast< sharedUnit(Swarm:: *)(id_type) >(& Swarm::unitFromId))
+      .def("units", & Swarm::units)
+   ;
+
+   class_< sharedUnit >("Unit"/*, init< unsigned >()*/)
+      .def("__call__", call_sharedUnit, return_value_policy< return_by_value >())
+      .add_property("radius", get_sharedUnit_radius, set_sharedUnit_radius)
       .def("fieldOfView", & Unit::fieldOfView)
-      .def("longevity", get_longevityUnit)
-      .def("fertility", get_fertilityUnit)
-      .def("belligerance", get_belligeranceUnit)
+      .def("longevity", get_sharedUnit_longevity)
+      .def("fertility", get_sharedUnit_fertility)
+      .def("belligerance", get_sharedUnit_belligerance)
       .def("addPixel", & Unit::addPixel)
       .def("removePixel", & Unit::removePixel)
       .def("clearPixels", & Unit::clearPixels)
-      .def("centralPixel", static_cast< void(Unit::*)(sharedPixel) >(& Unit::centralPixel))
-      .def("centralPixel", static_cast< sharedPixel(Unit::*)() >(& Unit::centralPixel))
-      .def("pixels", static_cast< pixelList(Unit::*)() >(& Unit::pixels))
+      .def("centralPixel", static_cast< void(Unit::*)(index_type) >(& Unit::centralPixel))
+      .def("centralPixel", static_cast< index_type(Unit::*)() const >(& Unit::centralPixel))
+      .def("pixels", & Unit::pixels)
    ;
 }
 

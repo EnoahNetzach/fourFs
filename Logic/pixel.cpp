@@ -48,16 +48,6 @@ bool Pixel::isBorder() const
    return m_border;
 }
 
-sharedEnvironment Pixel::environment()
-{
-   return m_environment;
-}
-
-sharedConstEnvironment Pixel::environment() const
-{
-   return m_environment;
-}
-
 bool Pixel::isUnitsEmpty() const
 {
    return m_units.empty();
@@ -73,19 +63,17 @@ unsigned Pixel::nOfUnits() const
    return m_units.size();
 }
 
-void Pixel::addUnit(sharedUnit unit)
+void Pixel::addUnit(id_type id)
 {
-   m_units.push_back(unit);
+   m_units.push_back(id);
 }
 
-bool Pixel::removeUnit(sharedUnit unit)
+bool Pixel::removeUnit(id_type id)
 {
    bool found = false;
-   weakUnitIterator it;
-
-   for (it = m_units.begin(); it != m_units.end(); ++it)
+   for (idList::iterator it = m_units.begin(); it != m_units.end(); ++it)
    {
-      if ((* it).lock() == unit)
+      if ((* it) == id)
       {
          found = true;
          m_units.erase(it);
@@ -101,22 +89,32 @@ void Pixel::clearUnits()
    m_units.clear();
 }
 
-unitList Pixel::units()
+bool Pixel::hasUnit(id_type id)
 {
-   unitList units;
-   BOOST_FOREACH(weakUnit unit, m_units)
+   bool found = false;
+   BOOST_FOREACH(id_type i, m_units)
    {
-      units.push_back(unit.lock());
+      if (i == id)
+      {
+         found = true;
+         break;
+      }
    }
-   return units;
+
+   return found;
 }
 
-const constUnitList Pixel::units() const
+idList Pixel::units() const
 {
-   constUnitList units;
-   BOOST_FOREACH(weakUnit unit, m_units)
-   {
-      units.push_back(unit.lock());
-   }
-   return units;
+   return m_units;
 }
+
+//sharedEnvironment Pixel::environment()
+//{
+//   return m_environment;
+//}
+//
+//sharedConstEnvironment Pixel::environment() const
+//{
+//   return m_environment;
+//}

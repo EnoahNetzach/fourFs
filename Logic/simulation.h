@@ -48,8 +48,8 @@ public:
    const unsigned & smooth() const;
    sharedMap map();
    sharedConstMap map() const;
-   unitList units();
-   const constUnitList units() const;
+   sharedSwarm swarm();
+   const sharedConstSwarm swarm() const;
    void options(unsigned width, unsigned height, double range,
                 unsigned frequency, double amplitude, unsigned pace,
                 unsigned square, unsigned smooth);
@@ -59,7 +59,7 @@ public:
                unsigned square, unsigned smooth);
    void addUnits(unsigned num);
    void deleteUnits(unsigned num = 0);
-   void resizeUnits(unsigned num);
+   void resizeSwarm(unsigned num);
    void start();
    void pause();
    void resume();
@@ -80,7 +80,7 @@ private:
    unsigned m_square;
    unsigned m_smooth;
    sharedMap m_map;
-   unitList m_units;
+   sharedSwarm m_swarm;
    boost::mutex m_mutex;
    boost::thread m_loopThread;
    bool m_isRunning;

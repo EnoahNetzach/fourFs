@@ -18,35 +18,36 @@ class Unit
    friend class analysis::serialization::SerializeUnit;
 
 public:
-   explicit Unit(unsigned radius);
+   explicit Unit(id_type id, unsigned radius);
    ~Unit();
 
+   id_type id() const;
    unsigned & radius();
    const unsigned & radius() const;
    static unsigned fieldOfView();
    const double & longevity() const;
    const double & fertility() const;
    const double & belligerance() const;
-   void addPixel(sharedPixel pixel);
-   bool removePixel(sharedPixel pixel);
+   void addPixel(index_type index);
+   bool removePixel(index_type index);
    void clearPixels();
-   void centralPixel(sharedPixel pixel);
-   sharedPixel centralPixel();
-   const sharedConstPixel centralPixel() const;
-   pixelList pixels();
-   const constPixelList pixels() const;
-   sharedState state();
-   sharedConstState state() const;
+   bool hasPixel(index_type index);
+   indexList pixels() const;
+   void centralPixel(index_type index);
+   index_type centralPixel() const;
+//   sharedState state();
+//   sharedConstState state() const;
 
 protected:
 
 private:
+   const id_type m_id;
    unsigned m_radius;
    double m_belligerance;
    double m_fertility;
    double m_longevity;
-   weakPixelList m_pixels;
-   weakPixel m_centralPixel;
+   indexList m_pixels;
+   index_type m_centralPixel;
    sharedState m_state;
 };
 

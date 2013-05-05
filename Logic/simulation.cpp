@@ -18,6 +18,7 @@
 #include "map.h"
 #include "matrix.h"
 #include "pixel.h"
+#include "swarm.h"
 #include "unit.h"
 
 using namespace fourFs;
@@ -32,6 +33,7 @@ Simulation::Simulation()
    , m_pace(0)
    , m_square(0)
    , m_smooth(0)
+   , m_swarm(new Swarm)
    , m_isRunning(false)
    , m_shouldRun(false)
    , m_shouldReloadScript(false)
@@ -50,7 +52,7 @@ Simulation::Simulation(const Simulation & simulation)
    , m_square(simulation.m_square)
    , m_smooth(simulation.m_smooth)
    , m_map(simulation.m_map)
-   , m_units(simulation.m_units)
+   , m_swarm(simulation.m_swarm)
    , m_isRunning(false)
    , m_shouldRun(false)
    , m_shouldReloadScript(false)
@@ -78,12 +80,12 @@ void Simulation::operator =(const Simulation & simulation)
    m_square = simulation.m_square;
    m_smooth = simulation.m_smooth;
    m_map = simulation.m_map;
-   m_units = simulation.m_units;
+   m_swarm = simulation.m_swarm;
 }
 
 bool Simulation::good() const
 {
-   return ((! m_map->empty()) && (! m_units.empty()));
+   return ((! m_map->empty()) && (! m_swarm->empty()));
 }
 
 bool Simulation::isRunning() const
@@ -191,21 +193,14 @@ sharedConstMap Simulation::map() const
    return m_map;
 }
 
-unitList Simulation::units()
+sharedSwarm Simulation::swarm()
 {
-   return m_units;
+   return m_swarm;
 }
 
-const constUnitList Simulation::units() const
+const sharedConstSwarm Simulation::swarm() const
 {
-   constUnitList units;
-
-   BOOST_FOREACH(sharedUnit unit, m_units)
-   {
-      units.push_back(unit);
-   }
-
-   return units;
+   return m_swarm;
 }
 
 void Simulation::options(unsigned width, unsigned height, double range,
@@ -251,19 +246,18 @@ void Simulation::addUnits(unsigned num)
 
    for (unsigned i = 0; i < num; i++)
    {
-      logic::sharedUnit unit(new logic::Unit(1));
-      m_units.push_back(unit);
+      sharedUnit unit = m_swarm->addUnit(1);
 
       unsigned x = xDist(rng);
       unsigned y = yDist(rng);
 
       logic::pixelList area = matrix->pixelsAroundPosition(x, y, 1);
-      unit->centralPixel(matrix->pixelAtPosition(x, y));
+      unit->centralPixel(matrix->pixelAtPosition(x, y)->index());
 
       BOOST_FOREACH(sharedPixel pixel, area)
       {
-         unit->addPixel(pixel);
-         pixel->addUnit(unit);
+         unit->addPixel(pixel->index());
+         pixel->addUnit(unit->id());
       }
    }
 }
@@ -275,27 +269,30 @@ void Simulation::deleteUnits(unsigned num)
 
    if (num == 0)
    {
-      m_units.clear();
+      m_swarm->clearUnits();
    }
    else
    {
+      // FIXME: delete feature broken!
+      indexList deleted = m_swarm->deleteUnits(num);
+
       for (unsigned i = 0; i < num; i++)
       {
-         if (m_units.size() == 0) break;
-         m_units.pop_front();
+         m_map->matrix()->pixelAtIndex(deleted.front());
+         deleted.pop_front();
       }
    }
 }
 
-void Simulation::resizeUnits(unsigned num)
+void Simulation::resizeSwarm(unsigned num)
 {
-   if (m_units.size() > num)
+   if (m_swarm->size() > num)
    {
-      deleteUnits(m_units.size() - num);
+      deleteUnits(m_swarm->size() - num);
    }
-   else if (m_units.size() < num)
+   else if (m_swarm->size() < num)
    {
-      addUnits(num - m_units.size());
+      addUnits(num - m_swarm->size());
    }
 }
 
@@ -427,7 +424,7 @@ void Simulation::runLoop()
          if(! function.is_none())
          {
             boost::lock_guard< boost::mutex > lock(m_mutex);
-            function(boost::python::ptr(m_map.get()), & m_units);
+            function(m_map, m_swarm);
          }
       }
       catch (boost::python::error_already_set & e)
