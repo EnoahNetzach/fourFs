@@ -48,6 +48,8 @@
 #define CALL_METHOD(type) \
    type call_ ## type(type & c) { return c; }
 
+#define OVERLOAD(className, returnType, args)
+
 /*
  * Python exposition
  */
@@ -100,7 +102,7 @@ BOOST_PYTHON_MODULE(fourFs)
       .def("__call__", call_sharedMap, return_value_policy< return_by_value >())
       .def("height", & Map::height)
       .def("width", & Map::width)
-      .def("matrix", static_cast< sharedMatrix(Map::*)() >(& Map::matrix), return_value_policy< return_by_value >())
+      .def("matrix", static_cast< sharedMatrix(Map:: *)() >(& Map::matrix), return_value_policy< return_by_value >())
    ;
 
    class_< sharedMatrix >("Matrix"/*, init< unsigned, unsigned >()*/)

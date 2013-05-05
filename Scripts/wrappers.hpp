@@ -135,12 +135,47 @@ struct mapwrap
 {
    typedef T map_type;
    typedef typename map_type::key_type key_type;
+   typedef typename map_type::mapped_type mapped_type;
    typedef typename map_type::value_type value_type;
    typedef typename map_type::iterator iter_type;
 
-   static void add(map_type & x, value_type const & v)
+   static mapped_type get(map_type & x, const key_type & v)
    {
-      x.push_back(v);
+      if (x.count(v) != 0)
+      {
+         return x.at(v);
+      }
+      else
+      {
+         PyErr_SetString(PyExc_IndexError, "Index out of range");
+         boost::python::throw_error_already_set();
+      }
+   }
+
+   static void set(map_type & x, const key_type & v, mapped_type & m)
+   {
+      if (x.count(v) == 0)
+      {
+         x.insert(std::make_pair(v, m));
+      }
+      else
+      {
+         PyErr_SetString(PyExc_IndexError, "Value already set");
+         boost::python::throw_error_already_set();
+      }
+   }
+
+   static void del(map_type & x, const key_type & v)
+   {
+      if (x.count(v) != 0)
+      {
+         x.erase(v);
+      }
+      else
+      {
+         PyErr_SetString(PyExc_IndexError, "Index out of range");
+         boost::python::throw_error_already_set();
+      }
    }
 };
 
@@ -149,14 +184,12 @@ struct mapwrap
    boost::python::class_< type >(typeName) \
       .def("__len__", & type::size) \
       .def("clear", & type::clear) \
-      .def("append", & type::insert, \
-           boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__getitem__", & type::at, \
+      .def("__getitem__", & mapwrap< type >::get, \
            boost::python::return_value_policy< \
               boost::python::copy_non_const_reference >()) \
-      .def("__setitem__", & type::at, \
+      .def("__setitem__", & mapwrap< type >::set, \
            boost::python::with_custodian_and_ward< 1, 2 >()) \
-      .def("__delitem__", & type::erase) \
+      .def("__delitem__", & mapwrap< type >::del) \
       .def("__contains__", & type::count) \
       .def("__iter__", iterator< type >()) \
    ;
