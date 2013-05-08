@@ -38,12 +38,12 @@ protected:
    bool initialized, ENABLE_3D, ENABLE_UNITS, ENABLE_MAP;
    unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices, numberOfUnits;
    float FoV;
-   GLuint programID, frameCount;
+   GLuint programID;
 
    std::string windowTitleDefault;
 
    void cleanMesh(GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &, GLuint &);
-   void computeMatricesFromInputs(glm::mat4 &, glm::mat4 &, glm::vec3 &, float &, float &);
+   void computeMatricesFromInputs(glm::mat4 &, glm::mat4 &, glm::mat4&, glm::vec3 &, float &, float &);
    void drawMap(GLuint &, GLuint &, GLuint &);
    void drawUnits(GLuint &, GLuint &);
    void fotogramsPerSecond(double);

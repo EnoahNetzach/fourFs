@@ -51,11 +51,13 @@ void OpenGLInterface::cleanMesh(GLuint &vertexBufferMap, GLuint &colorBufferMap,
    glDeleteVertexArrays(1, &vertexUnitsID);
 }
 
-void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm::mat4 &ViewMatrix, glm::vec3 &position, float &verticalAngle, float &horizontalAngle)
+void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm::mat4 &ViewMatrix, glm::mat4 &ModelMatrix, glm::vec3 &position, float &verticalAngle, float &horizontalAngle)
 {
    static double lastTime = glfwGetTime();
    double currentTime = glfwGetTime();
-   float deltaTime = float(currentTime - lastTime);
+   double deltaTime = currentTime - lastTime;
+
+   glm::vec3 rotationAxis(0.0f, 0.0f, 1.0f);
 
    double mouseWeel = glfwGetMouseWheel();      //int, float, long int doesn't work ???
 
@@ -85,11 +87,19 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
    }
    if(glfwGetKey(GLFW_KEY_UP))
    {
-      verticalAngle += 0.4 * deltaTime;
+      verticalAngle -= 0.4 * deltaTime;
    }
    if(glfwGetKey(GLFW_KEY_DOWN))
    {
-      verticalAngle -= 0.4 * deltaTime;
+      verticalAngle += 0.4 * deltaTime;
+   }
+   if(glfwGetKey(GLFW_KEY_LEFT))
+   {
+      ModelMatrix = glm::rotate(ModelMatrix, float(deltaTime*20.), glm::vec3(0.0, 0.0, -1.0));
+   }
+   if(glfwGetKey(GLFW_KEY_RIGHT))
+   {
+      ModelMatrix = glm::rotate(ModelMatrix, float(deltaTime*20.), glm::vec3(0.0, 0.0, 1.0));
    }
 
    // Projection matrix : Field of View, ratio, display range : 0.1 unit <-> 100 units
@@ -98,16 +108,16 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
 
    // Direction : Spherical coordinates to Cartesian coordinates conversion
    glm::vec3 direction(
-           std::cos(verticalAngle) * std::sin(horizontalAngle),
-           std::sin(verticalAngle),
-           std::cos(verticalAngle) * std::cos(horizontalAngle)
+       cos(verticalAngle) * sin(horizontalAngle),
+       sin(verticalAngle),
+       cos(verticalAngle) * cos(horizontalAngle)
    );
 
    // Right vector
    glm::vec3 right = glm::vec3(
-           std::sin(horizontalAngle - 3.14/2.0),
-           0,
-           std::cos(horizontalAngle - 3.14/2.0)
+       cos(horizontalAngle),
+       0,
+       sin(horizontalAngle)
    );
 
    // Up vector
@@ -616,8 +626,9 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
 
    glm::mat4 ViewMatrix;
    glm::mat4 ProjectionMatrix;
+   glm::mat4 ModelMatrix = glm::mat4(1.0);
    glm::vec3 position = glm::vec3(0, 0, 3.5);               // Initial position : on +Z
-   float verticalAngle = 0.0, horizontalAngle = 3.1415;
+   float verticalAngle = 3.1415, horizontalAngle = 0.0;
 
    // Get a handle for our "MVP" uniform
    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
@@ -630,12 +641,11 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
       // Passes if the incoming depth value is less than or equal to the stored depth value.
       glDepthFunc(GL_LEQUAL);
 
-      computeMatricesFromInputs(ProjectionMatrix, ViewMatrix, position, verticalAngle, horizontalAngle);
+      computeMatricesFromInputs(ProjectionMatrix, ViewMatrix, ModelMatrix, position, verticalAngle, horizontalAngle);
 
       keyHandler(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID,
                  vertexBufferUnits, colorBufferUnits, vertexUnitsID, map);
 
-      glm::mat4 ModelMatrix = glm::mat4(1.0);
       glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
       // Send our transformation to the currently bound shader, in the "MVP" uniform
