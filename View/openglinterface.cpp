@@ -67,7 +67,7 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
 
    glfwSetMouseWheel(0);
 
-   enum keyboardKeys { key_A = 65, key_W = 87, key_D = 68, key_S = 83};
+   enum keyboardKeys { key_A = 65, key_W = 87, key_D = 68, key_S = 83, key_R = 82};
 
    if(glfwGetKey(key_A))
    {
@@ -84,6 +84,13 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
    if(glfwGetKey(key_S))
    {
       position[1] -= 0.6 * deltaTime;
+   }
+   if(glfwGetKey(key_R))
+   {
+      verticalAngle = 3.1415;
+      horizontalAngle = 0.0;
+      position = glm::vec3(0., 0., 3.5);
+      ModelMatrix = glm::mat4(1.0);
    }
    if(glfwGetKey(GLFW_KEY_UP))
    {
