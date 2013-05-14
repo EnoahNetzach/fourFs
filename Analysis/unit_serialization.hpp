@@ -58,7 +58,7 @@ inline void serialize(Archive & ar, fourFs::logic::Unit & unit, unsigned /*v*/)
 template< class Archive >
 inline void load_construct_data(Archive & /*ar*/, fourFs::logic::Unit * unit, unsigned /*v*/)
 {
-   ::new(unit) fourFs::logic::Unit(0, 0);
+   ::new(unit) fourFs::logic::Unit(0, 0, 0, 0, 0);
 }
 
 } /* namespace boost */

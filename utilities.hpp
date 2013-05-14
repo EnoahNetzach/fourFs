@@ -72,8 +72,8 @@ namespace interfaces {
 
 typedef enum
 {
-   _openGL = 1L << 0, //!< _openGL
-   _terminal = 1L << 1//!< _terminal
+   _openGL = 1L << 0,
+   _terminal = 1L << 1
 } Option;
 static const Option openGL = _openGL;
 static const Option terminal = _terminal;

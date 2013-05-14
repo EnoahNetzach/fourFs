@@ -35,7 +35,7 @@ int main(int argc, char * argv[])
    unsigned nOfUnits;
 
    // VIEW options
-   view::Options viewFlags = 0;
+   interfaces::Options viewFlags = 0;
 
    { // Program options BEGIN
       namespace po = boost::program_options;
@@ -115,15 +115,15 @@ int main(int argc, char * argv[])
       // VIEW options
       if (vm.count("openGL"))
       {
-         viewFlags |= view::openGL;
+         viewFlags |= interfaces::openGL;
       }
       if (vm.count("view-terminal"))
       {
-         viewFlags |= view::terminal;
+         viewFlags |= interfaces::terminal;
       }
       if (vm.count("view-none"))
       {
-         viewFlags &= ~(view::openGL | view::terminal);
+         viewFlags &= ~(interfaces::openGL | interfaces::terminal);
       }
 
       // verbose option overrides all

@@ -29,9 +29,11 @@ bool Swarm::empty() const
    return m_units.empty();
 }
 
-sharedUnit Swarm::addUnit(unsigned radius)
+sharedUnit Swarm::addUnit(unsigned radius, double longevity,
+                      double fertility, double belligerance)
 {
-   sharedUnit unit(new Unit(m_nextId, radius));
+   sharedUnit unit(new Unit(m_nextId, radius, longevity,
+                            fertility, belligerance));
    m_units.insert(std::make_pair(unit->id(), unit));
    m_nextId++;
    return unit;

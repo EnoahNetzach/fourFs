@@ -18,6 +18,5 @@
 #include "Logic/simulation.h"
 #include "Logic/state.h"
 #include "Logic/unit.h"
-#include "View/mapviewer.h"
 
 #endif /* fourFs_FOURFS_ */

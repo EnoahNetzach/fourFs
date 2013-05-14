@@ -360,7 +360,7 @@ void Simulation::runLoop()
 
    Logger() << "[Simulation] Start.\n";
 
-   initfourFs();
+   script::initfourFs();
    boost::python::object main = boost::python::import("__main__");
    boost::python::object gloabl(main.attr("__dict__"));
    boost::python::exec_file("Scripts/functions.py", gloabl, gloabl);
