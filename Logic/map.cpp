@@ -113,10 +113,6 @@ Map::Map(unsigned width, unsigned height, double range,
    }
 }
 
-Map::~Map()
-{
-}
-
 unsigned Map::height() const
 {
    return m_matrix->height();

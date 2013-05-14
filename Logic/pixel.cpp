@@ -24,10 +24,6 @@ Pixel::Pixel(unsigned index, bool border)
 {
 }
 
-Pixel::~Pixel()
-{
-}
-
 unsigned Pixel::index () const
 {
    return m_index;

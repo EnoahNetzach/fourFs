@@ -1,8 +1,10 @@
-/*
- * pixel_serialization.hpp
+/**
+ * @file pixel_serialization.hpp
  *
- *  Created on: Apr 8, 2013
- *      Author: Enoah Netzach
+ * @date Apr 8, 2013
+ * @author Enoah Netzach
+ *
+ * @brief Provides serialization (save/load) utilities for fourFs::logic::Pixel @c class
  */
 
 #ifndef fourFs_PIXEL_SERIALIZATION_HPP_

@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
             ("map-amplitude", po::value< double >(& mapAmplitude)->default_value(1),
                   "set the amplitude of the random generated mapHeight for each pixel")
             ("map-frequency", po::value< unsigned >(& mapFrequency)->default_value(10),
-                  "set the frequency of changing a pixel mapHeight")
+                  "set the frequency of changing a pixel's height")
             ("map-height", po::value< unsigned >(& mapHeight)->default_value(70),
                   "set the height")
             ("map-length,l", po::value< unsigned >(),

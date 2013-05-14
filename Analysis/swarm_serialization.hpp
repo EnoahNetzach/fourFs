@@ -1,8 +1,10 @@
-/*
- * swarm_serialization.hpp
+/**
+ * @file swarm_serialization.hpp
  *
- *  Created on: May 1, 2013
- *      Author: Enoah Netzach
+ * @date May 1, 2013
+ * @author Enoah Netzach
+ *
+ * @brief Provides serialization (save/load) utilities for fourFs::logic::Swarm @c class
  */
 
 #ifndef fourFs_SWARM_SERIALIZATION_HPP_

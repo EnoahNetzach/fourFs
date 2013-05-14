@@ -1,8 +1,10 @@
-/*
- * classes.hpp
+/**
+ * @file classes.hpp
  *
- *  Created on: Apr 28, 2013
- *      Author: Enoah Netzach
+ * @date Apr 28, 2013
+ * @author Enoah Netzach
+ *
+ * @brief Exposition of C++ code to Python
  */
 
 #ifndef fourFs_CLASSES_HPP_
@@ -38,10 +40,20 @@
 #define PAIR(x) REM x
 #define DETAIL_DEFINE_ARGS_EACH(r, data, i, x) BOOST_PP_COMMA_IF(i) PAIR(x)
 #define DETAIL_DEFINE_FORWARD_EACH(r, data, i, x) BOOST_PP_COMMA_IF(i) STRIP(x)
-// Get args like (int a, int b)
+/**
+ * @def DETAIL_DEFINE_ARGS(args)
+ * @brief Get @c args for pasting into a function declaration
+ * @param args In the form <c>((type1)name1, (type2)name2)</c>
+ * @return @c args in the form <c>type1 name1, type2 name2</c>
+ */
 #define DETAIL_DEFINE_ARGS(args) \
    BOOST_PP_SEQ_FOR_EACH_I(DETAIL_DEFINE_ARGS_EACH, data, BOOST_PP_VARIADIC_TO_SEQ args)
-// Get args like (a, b)
+/**
+ * @def DETAIL_DEFINE_FORWARD(args)
+ * @brief Get @c args for pasting into a function invocation
+ * @param args In the form <c>((type1)name1, (type2)name2)</c>
+ * @return @c args in the form <c>name1, name2</c>
+ */
 #define DETAIL_DEFINE_FORWARD(args) \
    BOOST_PP_SEQ_FOR_EACH_I(DETAIL_DEFINE_FORWARD_EACH, data, BOOST_PP_VARIADIC_TO_SEQ args)
 
@@ -105,6 +117,9 @@
  * Python exposition
  */
 
+namespace fourFs {
+namespace script {
+
 int randInt(int a, int b)
 {
    return boost::random::uniform_int_distribution<>(a, b)(rng);
@@ -122,6 +137,7 @@ double rand01()
 
 using namespace fourFs::logic;
 
+/// @cond HIDE_CODE
 CALL_METHOD(sharedMap)
 GET(sharedMap, height, double)
 GET(sharedMap, width, double)
@@ -174,7 +190,11 @@ CALL(sharedUnit, clearPixels)
 GET_ARGS(sharedUnit, hasPixel, bool, ((index_type)index))
 GET(sharedUnit, pixels, indexList)
 GET_SET_VAL(sharedUnit, centralPixel, index_type)
+/// @endcond
 
+/**
+ * @brief Definition of the Python module @c %fourFs
+ */
 BOOST_PYTHON_MODULE(fourFs)
 {
    using namespace boost::python;
@@ -254,5 +274,8 @@ BOOST_PYTHON_MODULE(fourFs)
       .def("pixels", sharedUnit_pixels)
    ;
 }
+
+} /* namespace script */
+} /* namespace FourFs */
 
 #endif /* fourFs_CLASSES_HPP_ */

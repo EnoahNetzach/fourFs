@@ -1,10 +1,11 @@
-/*
- * simulation_serialization.hpp
+/**
+ * @file simulation_serialization.hpp
  *
- *  Created on: Apr 24, 2013
- *      Author: Enoah Netzach
+ * @date Apr 24, 2013
+ * @author Enoah Netzach
+ *
+ * @brief Provides serialization (save/load) utilities for fourFs::logic::Simulation @c class
  */
-
 #ifndef fourFs_SIMULATION_SERIALIZATION_HPP_
 #define fourFs_SIMULATION_SERIALIZATION_HPP_
 

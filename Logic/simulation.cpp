@@ -7,8 +7,11 @@
 
 #include "simulation.h"
 
+#include <python2.7/Python.h>
+
 #include <boost/chrono.hpp>
 #include <boost/foreach.hpp>
+#include <boost/python.hpp>
 #include <boost/random.hpp>
 #include <boost/scope_exit.hpp>
 #include <boost/make_shared.hpp>
@@ -246,7 +249,7 @@ void Simulation::addUnits(unsigned num)
 
    for (unsigned i = 0; i < num; i++)
    {
-      sharedUnit unit = m_swarm->addUnit(1);
+      sharedUnit unit = m_swarm->addUnit(1, 1, 1, 1);
 
       unsigned x = xDist(rng);
       unsigned y = yDist(rng);

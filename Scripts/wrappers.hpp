@@ -1,14 +1,19 @@
-/*
- * wrappers.hpp
+/**
+ * @file wrappers.hpp
  *
- *  Created on: May 2, 2013
- *      Author: Enoah Netzach
+ * @date May 2, 2013
+ * @author Enoah Netzach
+ *
+ * @brief Defines some useful wrappers for exposing std containers to Python
  */
 
 #ifndef fourFs_WRAPPERS_HPP_
 #define fourFs_WRAPPERS_HPP_
 
 #include <python2.7/Python.h>
+
+namespace fourFs {
+namespace script {
 
 template< class T >
 struct listwrap
@@ -193,5 +198,8 @@ struct mapwrap
    ;
 
 //#define EXPORT_STD_MAP_OF_TYPE(type, typeName) EXPORT_STD_MAP(std::map< keyType, mapType >, typeName)
+
+} /* namespace script */
+} /* namespace FourFs */
 
 #endif /* fourFs_WRAPPERS_HPP_ */

@@ -19,10 +19,6 @@ Swarm::Swarm()
 {
 }
 
-Swarm::~Swarm()
-{
-}
-
 unsigned Swarm::size() const
 {
    return m_units.size();
@@ -41,15 +37,22 @@ sharedUnit Swarm::addUnit(unsigned radius)
    return unit;
 }
 
-void Swarm::removeUnit(id_type id)
+bool Swarm::removeUnit(id_type id)
 {
+   bool found = false;
    std::map< id_type, sharedUnit >::iterator it = m_units.find(id);
-   if (it != m_units.end()) m_units.erase(it);
+   if (it != m_units.end())
+   {
+      m_units.erase(it);
+      found = true;
+   }
+
+   return found;
 }
 
 indexList Swarm::deleteUnits(unsigned num)
 {
-   if (num == 0) num = m_units.size();
+   if (num == 0 || num > m_units.size()) num = m_units.size();
 
    indexList deleted;
 

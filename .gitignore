@@ -18,3 +18,7 @@
 .*
 compile
 *.4fs
+
+# Doxygen docs
+html
+latex

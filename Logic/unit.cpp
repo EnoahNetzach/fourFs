@@ -1,8 +1,8 @@
-/*
- * unit.cpp
+/**
+ * @file unit.cpp
  *
- *  Created on: Mar 20, 2013
- *      Author: Enoah Netzach
+ * @date Mar 20, 2013
+ * @author Enoah Netzach
  */
 
 #include "unit.h"
@@ -17,17 +17,14 @@
 using namespace fourFs;
 using namespace logic;
 
-Unit::Unit(id_type id, unsigned radius)
+Unit::Unit(id_type id, unsigned radius, double longevity,
+           double fertility, double belligerance)
    : m_id(id)
    , m_radius(radius)
-   , m_belligerance(0)
-   , m_fertility(0)
-   , m_longevity(0)
+   , m_belligerance(belligerance)
+   , m_fertility(fertility)
+   , m_longevity(longevity)
    , m_centralPixel(0)
-{
-}
-
-Unit::~Unit()
 {
 }
 
@@ -51,17 +48,17 @@ unsigned Unit::fieldOfView()
    return 5;
 }
 
-const double & Unit::longevity () const
+double Unit::longevity () const
 {
    return m_longevity;
 }
 
-const double & Unit::fertility () const
+double Unit::fertility () const
 {
    return m_fertility;
 }
 
-const double & Unit::belligerance () const
+double Unit::belligerance () const
 {
    return m_belligerance;
 }

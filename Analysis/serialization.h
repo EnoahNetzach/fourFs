@@ -1,8 +1,10 @@
-/*
- * serialization.h
+/**
+ * @file serialization.h
  *
- *  Created on: Apr 10, 2013
- *      Author: Enoah Netzach
+ * @date Apr 10, 2013
+ * @author Enoah Netzach
+ *
+ * @brief Serialization (save/load) routines
  */
 
 #ifndef fourFs_SERIALIZATION_H_
@@ -15,17 +17,15 @@ namespace analysis {
 namespace serialization {
 
 /**
- * Saves the current state of logic::Map to a file
- *
- * @param map
- * @return
+ * @brief Saves the current state of logic::Simulation to a file
+ * @param simulation The current logic::Simulation to be saved
+ * @return @c true if the state was saved, @c false otherwise
  */
 bool save(const logic::Simulation & simulation);
 
 /**
- * Loads a saved logic::Map from a file
- *
- * @param map
+ * @brief Loads a saved logic::Simulation from a file
+ * @param simulation The logic::Simulation that wiill be overwritten by a previously saved state
  */
 void load(logic::Simulation & simulation);
 
