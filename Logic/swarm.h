@@ -4,7 +4,7 @@
  * @date May 1, 2013
  * @author Enoah Netzach
  *
- * @brief Definition of Matrix @c class
+ * @brief Definition of fuorFs::logic::Swarm @c class
  */
 
 #ifndef fourFs_SWARM_H_
@@ -37,7 +37,7 @@ public:
    unsigned size() const;
    /**
     * @brief Test whether the Swarm is empty
-    * @return @c true if the Swarm @a size is @c 0, @c false otherwise
+    * @return @c true if the size() is @c 0, @c false otherwise
     */
    bool empty() const;
    /**
@@ -86,8 +86,6 @@ public:
     */
    unitMap units();
 
-protected:
-
 private:
    unitMap m_units;
    id_type m_nextId;
@@ -95,4 +93,5 @@ private:
 
 } /* namespace logic */
 } /* namespace fourFs */
+
 #endif /* fourFs_SWARM_H_ */

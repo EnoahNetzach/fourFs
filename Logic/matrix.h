@@ -4,7 +4,7 @@
  * @date Mar 22, 2013
  * @author Enoah Netzach
  *
- * @brief Definition of Matrix @c class
+ * @brief Definition of fourFs::logic::Matrix @c class
  */
 
 #ifndef fourFs_MATRIX_H_
@@ -19,7 +19,6 @@ namespace logic {
 
 class Matrix
 {
-   //friend class Map;
    /**
     * @brief For serialization (save/load) purpose
     */

@@ -4,7 +4,7 @@
  * @date Mar 20, 2013
  * @author Enoah Netzach
  *
- * @brief Definition of Unit @c class
+ * @brief Definition of fuorFs::logic::Unit @c class
  */
 
 #ifndef fourFs_UNIT_H_

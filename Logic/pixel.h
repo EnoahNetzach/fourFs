@@ -4,7 +4,7 @@
  * @date Mar 20, 2013
  * @author Enoah Netzach
  *
- * @brief Definition of Pixel @c class
+ * @brief Definition of fourFs::logic::Pixel @c class
  */
 
 #ifndef fourFs_PIXEL_H_
@@ -28,7 +28,7 @@ public:
     * @param index The unique identifier of this Pixel in the containing Matrix
     * @param border Not implemented yet
     */
-   explicit Pixel(unsigned index, bool border = false);
+   explicit Pixel(index_type index, bool border = false);
 
    /**
     * @brief Getter for index field
@@ -94,7 +94,7 @@ public:
 //   sharedConstEnvironment environment() const;
 
 private:
-   const unsigned m_index;
+   const index_type m_index;
    double m_height;
    bool m_border;
    idList m_units;

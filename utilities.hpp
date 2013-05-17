@@ -4,7 +4,85 @@
  * @date Mar 22, 2013
  * @author Enoah Netzach
  *
- * @brief Aggregates utilities and class definitions and <c>typedef</c>s
+ * @brief Aggregates utilities and @c class definitions and <c>typedef</c>s
+ *
+ * @mainpage
+ *    Classes relations:
+ *    @dot
+digraph G {
+   graph [fontname = "helvetica", fontsize = 10]
+   node [shape = record, fontname = "helvetica", fontsize = 10]
+
+   compound=true
+   rankdir=LR
+
+   simulation [label = "class Simulation", URL="@ref fourFs::logic::Simulation"]
+
+   subgraph cluster0 {
+      label = "boost::shared_ptr"
+      style = rounded
+      map [label = "class Map", URL="@ref fourFs::logic::Map"]
+   }
+
+   subgraph cluster1 {
+      label = "boost::shared_ptr"
+      style = rounded
+      matrix [label = "class Matrix", URL="@ref fourFs::logic::Matrix"]
+   }
+
+   subgraph cluster2 {
+      label = "std::vector"
+      pixels [label = "... |<pixel> class Pixel | ...", URL="@ref fourFs::logic::Pixel"]
+   }
+
+   index [label = "index_type index"]
+
+   subgraph cluster3 {
+      label = "boost::shared_ptr"
+      style = rounded
+      swarm [label = "class Swarm", URL="@ref fourFs::logic::Swarm"]
+   }
+
+   subgraph cluster4 {
+      label = "std::map"
+      style = rounded
+      units [label = "... | {<id> id_type id |<unit> class Unit} | ...", URL="@ref fourFs::logic::Unit"]
+   }
+
+   id [label = "id_type id"]
+
+   subgraph cluster5 {
+      label = "std::list"
+      style = rounded
+      ids [label = "... | <id> id_type id | ..."]
+   }
+
+   subgraph cluster6 {
+      label = "std::list"
+      style = rounded
+      indexes [label = "... | <index> index_type index | ..."]
+   }
+
+   subgraph { 
+      rank = same
+      id
+      index
+   } 
+
+   simulation -> map [lhead = cluster0]
+   map -> matrix [lhead = cluster1]
+   matrix -> pixels [lhead = cluster2]
+   pixels:pixel -> index
+   pixels:pixel -> ids [lhead = cluster5]
+   ids -> id [style = dashed]
+   
+   simulation -> swarm [lhead = cluster3]
+   swarm -> units [lhead = cluster4]
+   units:unit -> id
+   units:unit -> indexes [lhead = cluster6]
+   indexes -> index [style = dashed]
+}
+ *    @enddot
  */
 
 #ifndef fourFs_UTILITIES_HPP_

@@ -4,7 +4,7 @@
  * @date Mar 23, 2013
  * @author Enoah Netzach
  *
- * @brief Definition of Map @c class
+ * @brief Definition of fourFs::logic::Map @c class
  */
 
 #ifndef fourFs_MAP_H_

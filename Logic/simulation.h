@@ -1,8 +1,10 @@
-/*
- * simulation.h
+/**
+ * @file simulation.h
  *
- *  Created on: Apr 11, 2013
- *      Author: Enoah Netzach
+ * @date Apr 11, 2013
+ * @author Enoah Netzach
+ *
+ * @brief Definition of fuorFs::logic::Simulation @c class
  */
 
 #ifndef fourFs_SIMULATION_H_
