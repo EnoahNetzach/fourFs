@@ -35,7 +35,7 @@ public:
    ~OpenGLInterface();
 
 protected:
-   bool initialized, ENABLE_3D, ENABLE_UNITS, ENABLE_MAP;
+   bool INITIALIZED, ENABLE_3D, ENABLE_UNITS, ENABLE_MAP;
    unsigned window_width, window_height, numberOfBufferPoints, numberOfIndices, numberOfUnits;
    float FoV;
    GLuint programID;

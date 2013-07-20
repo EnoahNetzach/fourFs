@@ -21,7 +21,7 @@ OpenGLInterface::OpenGLInterface(bool time)
 {
    // initialization and other things NOT here
    // use initializeImpl() instead
-   initialized = false;
+   INITIALIZED = false;
    ENABLE_3D = false;
    ENABLE_UNITS = true;
    ENABLE_MAP = true;
@@ -57,7 +57,8 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
    double currentTime = glfwGetTime();
    double deltaTime = currentTime - lastTime;
 
-   glm::vec3 rotationAxis(0.0f, 0.0f, 1.0f);
+   // We don't want to modify the projection matrix!
+   glMatrixMode(GL_MODELVIEW);
 
    double mouseWeel = glfwGetMouseWheel();      //int, float, long int doesn't work ???
 
@@ -71,25 +72,25 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
 
    if(glfwGetKey(key_A))
    {
-      position[0] -= 0.6 * deltaTime;
+      ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.6*deltaTime, 0.0, 0.0));
    }
    if(glfwGetKey(key_D))
    {
-      position[0] += 0.6 * deltaTime;
+      ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-0.6*deltaTime, 0.0, 0.0));
    }
    if(glfwGetKey(key_W))
    {
-      position[1] += 0.6 * deltaTime;
+      ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0, -0.6*deltaTime, 0.0));
    }
    if(glfwGetKey(key_S))
    {
-      position[1] -= 0.6 * deltaTime;
+      ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0, 0.6*deltaTime, 0.0));
    }
    if(glfwGetKey(key_R))
    {
       verticalAngle = 3.1415;
       horizontalAngle = 0.0;
-      position = glm::vec3(0., 0., 3.5);
+      FoV = 45.0;
       ModelMatrix = glm::mat4(1.0);
    }
    if(glfwGetKey(GLFW_KEY_UP))
@@ -109,10 +110,7 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
       ModelMatrix = glm::rotate(ModelMatrix, float(deltaTime*20.), glm::vec3(0.0, 0.0, 1.0));
    }
 
-   // Projection matrix : Field of View, ratio, display range : 0.1 unit <-> 100 units
-   ProjectionMatrix = glm::perspective(FoV, (float)(window_width/window_height), (float)0.1, (float)100.0);
-   // Camera matrix
-
+   // Camera matrix:
    // Direction : Spherical coordinates to Cartesian coordinates conversion
    glm::vec3 direction(
        cos(verticalAngle) * sin(horizontalAngle),
@@ -136,6 +134,9 @@ void OpenGLInterface::computeMatricesFromInputs(glm::mat4 &ProjectionMatrix, glm
          position+direction, // and looks here : at the same position, plus "direction"
          up                  // Head is up (set to 0,-1,0 to look upside-down)
     );
+
+   // Projection matrix : Field of View, ratio, display range : 0.1 unit <-> 100 units
+   ProjectionMatrix = glm::perspective(FoV, (float)(window_width/window_height), (float)1., (float)1024.0);
 
    // For the next frame, the "last time" will be "now"
    lastTime = currentTime;
@@ -244,7 +245,7 @@ void OpenGLInterface::initializeImpl()
    // If something more complex is needed, overload inherited bool good() const.
    // everything needed to show a new window here!
 
-   if (initialized == false)
+   if (INITIALIZED == false)
    {
       // Initialize GLFW
       if(!glfwInit())
@@ -254,7 +255,7 @@ void OpenGLInterface::initializeImpl()
       }
 
       glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);                   // 4x antialiasing
-      glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);           // Major number of the desired minimum OpenGL version.
+      glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 4);           // Major number of the desired minimum OpenGL version.
       glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);           // Minor number of the desired minimum OpenGL version.
       glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    // Disallow legacy functionality if needed (OpenGl 3.0 or above)
       glfwOpenWindowHint(GLFW_OPENGL_PROFILE, 0);                 // Default. Let the system choose which context should implement.
@@ -292,7 +293,7 @@ void OpenGLInterface::initializeImpl()
       glfwEnable(GLFW_STICKY_KEYS);
 
       m_good = true;
-      initialized = true;
+      INITIALIZED = true;
    }
 }
 
@@ -645,8 +646,7 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       // Enable depth test
       glEnable(GL_DEPTH_TEST);
-      // Passes if the incoming depth value is less than or equal to the stored depth value.
-      glDepthFunc(GL_LEQUAL);
+      glReadBuffer(GL_FRONT);
 
       computeMatricesFromInputs(ProjectionMatrix, ViewMatrix, ModelMatrix, position, verticalAngle, horizontalAngle);
 
@@ -657,6 +657,34 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
 
       // Send our transformation to the currently bound shader, in the "MVP" uniform
       glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+      if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT))
+      {
+         glm::vec3 pos, appo;
+         int x,y;
+         glfwGetMousePos(&x, &y);
+         float winX, winY, winZ;
+
+         glm::vec4 viewport;
+
+         viewport[0] = 0.0;
+         viewport[1] = 0.0;
+         viewport[2] = window_width;
+         viewport[3] = window_height;
+
+         winX = (float)x;
+         winY = (float)viewport[3] - (float)y;
+         glReadPixels( x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+
+         pos[0] = winX;
+         pos[1] = winY;
+         pos[2] = winZ;
+
+         appo = glm::unProject(pos, ViewMatrix*ModelMatrix, ProjectionMatrix, viewport);
+
+         std::cout<<"p: " <<appo[0]<<" "<<appo[1]<<" "<<appo[2]<<std::endl;
+         std::cout<<"x: " <<x<<" "<<y<<std::endl;
+      }
 
       if(ENABLE_MAP)
       {
@@ -669,15 +697,15 @@ void OpenGLInterface::runLoop(logic::sharedConstMatrix map, GLuint &vertexBuffer
          glDisableVertexAttribArray(1);
       }
 
-      glfwSwapBuffers();   // Swap buffers
+      glfwSwapBuffers();            // Swap buffers
 
-      fotogramsPerSecond(1.0);     //FPS counter
+      fotogramsPerSecond(1.0);      //FPS counter
 
    }  while(glfwGetKey(GLFW_KEY_ESC) != GLFW_PRESS && glfwGetWindowParam(GLFW_OPENED));
 
    cleanMesh(vertexBufferMap, colorBufferMap, indexBufferMap, vertexArrayMapID,
              vertexBufferUnits, colorBufferUnits, vertexUnitsID);
    glDeleteProgram(programID);
-   glfwTerminate();   // Close OpenGL window and terminate GLFW
+   glfwTerminate();                 // Close OpenGL window and terminate GLFW
 
 }
